@@ -2,14 +2,17 @@
 
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-export default function PaymentSuccessPage() {
+const loadingUI = (
+  <div className="w-full h-screen flex items-center justify-center">
+    <p className="text-lg font-medium">Verifying your payment...</p>
+  </div>
+)
+
+function PaymentSuccessContent() {
   const searchParams = useSearchParams();
-  const reference =
-  searchParams.get("reference") || searchParams.get("trxref");
-  //LOGS
-  console.log("PAYSTACK CALLBACK PARAMS:", reference, searchParams.toString());
-
+  const reference = searchParams.get("reference") || searchParams.get("trxref");
   const router = useRouter();
 
   useEffect(() => {
@@ -24,7 +27,7 @@ export default function PaymentSuccessPage() {
       const data = await res.json();
 
       if (data.status === "success" || data.data?.status === "success") {
-        localStorage.removeItem("cart") // ← clear for guests
+        localStorage.removeItem("cart");
         router.replace(`/orders?reference=${reference}`);
       } else {
         router.replace("/payment/failed");
@@ -34,9 +37,13 @@ export default function PaymentSuccessPage() {
     verify();
   }, [reference, router]);
 
+  return loadingUI
+}
+
+export default function PaymentSuccessPage() {
   return (
-    <div className="w-full h-screen flex items-center justify-center">
-      <p className="text-lg ">Verifying your payment...</p>
-    </div>
+    <Suspense fallback={loadingUI}>
+      <PaymentSuccessContent />
+    </Suspense>
   );
 }
