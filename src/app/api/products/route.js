@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import dbConnect from "@/lib/mongodb";
 import Product from "@/models/product";
 import Seller from "@/models/seller";
+import Store from "@/models/store";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -32,6 +33,21 @@ export async function POST(req) {
     }
 
     const isPremium = seller.sellerType === "premium_seller";
+
+    let storeId = null;
+
+    if (isPremium) {
+      const store = await Store.findOne({ sellerId: decoded.id }).select("_id");
+
+      if (!store) {
+        return NextResponse.json(
+          { error: "Premium seller has no store" },
+          { status: 400 }
+        );
+      }
+
+      storeId = store._id;
+    }
 
     const data = await req.json();
 
@@ -73,6 +89,7 @@ export async function POST(req) {
 
     const product = await Product.create({
       sellerId: decoded.id,
+      ...(storeId && { storeId }),
       productName: productName.trim(),
       description: description.trim(),
       price,

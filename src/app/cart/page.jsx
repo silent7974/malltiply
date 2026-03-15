@@ -14,6 +14,8 @@ import formatPrice from "@/lib/utils/formatPrice";
 import productCategoryMap from "@/lib/data/productCategoryMap";
 import AddNewAddress from "../components/AddNewAddress";
 import CheckoutPage from "../components/CheckoutPage";
+import { useMeQuery } from "@/redux/services/authApi";
+import GuestAddressForm from "../components/GuestAddressForm";
 
 export default function CartPage() {
   const dispatch = useDispatch();
@@ -25,16 +27,15 @@ export default function CartPage() {
 
   const [showAddressModal, setShowAddressModal] = useState(false);
 
+  const { data: me } = useMeQuery()
+  const user = me?.user
+
   const handleCheckout = () => {
-      setShowAddressModal(true);
-    };
+    setShowAddressModal(true)
+  }
 
   const totalQuantity = cart.items.reduce((sum, i) => sum + i.quantity, 0);
   const totalPrice = cart.items.reduce(
-    (sum, i) => sum + i.discountedPrice * i.quantity,
-    0
-  );
-  const totalOriginal = cart.items.reduce(
     (sum, i) => sum + i.price * i.quantity,
     0
   );
@@ -75,78 +76,70 @@ export default function CartPage() {
       return;
     }
 
-    // ✅ 1. Optimistically update the Redux store (instant UI change)
-    dispatch(
-      updateQuantity({
-        productId,
-        color: item.color,
-        size: item.size,
-        quantity: newQuantity,
-      })
-    );
+    // Always update Redux (works for both guests and signed-in users)
+    dispatch(updateQuantity({ productId, color: item.color, size: item.size, quantity: newQuantity }));
 
-    try {
-      // ✅ 2. Trigger the backend update in background
-      await updateCartItemApi({ productId, quantity: newQuantity }).unwrap();
-    } catch (err) {
-      console.error("Failed to update quantity:", err);
-
-      // ⚠️ 3. Roll back UI if it fails
-      dispatch(
-        updateQuantity({
-          productId,
-          color: item.color,
-          size: item.size,
-          quantity: item.quantity, // revert to previous
-        })
-      );
+    // Only sync to backend if signed in
+    if (user) {
+      try {
+        await updateCartItemApi({ productId, quantity: newQuantity }).unwrap();
+      } catch (err) {
+        console.error("Failed to update quantity:", err);
+        // Roll back only if backend fails for a signed-in user
+        dispatch(updateQuantity({ productId, color: item.color, size: item.size, quantity: item.quantity }));
+      }
     }
   };
-
 
   const handleRemove = async (item) => {
-    dispatch(removeItem(item));
-    try {
-      await removeCartItemApi(item.productId._id || item.productId).unwrap();
-    } catch (err) {
-      console.error("Failed to remove item:", err);
+    // Normalize productId before dispatching
+    dispatch(removeItem({
+      productId: item.productId?._id || item.productId, // ← normalize here
+      color: item.color,
+      size: item.size,
+    }))
+    // Only call backend if user is logged in
+    if (user) {
+      try {
+        await removeCartItemApi(item.productId._id || item.productId).unwrap()
+      } catch (err) {
+        console.error("Failed to remove item:", err)
+      }
     }
-  };
+  }
 
 
   const handleClearSelected = async () => {
-    if (selectedIds.length === 0) return;
+    if (selectedIds.length === 0) return
 
     const itemsToClear = cart.items.filter((i) =>
       selectedIds.includes(i.productId._id || i.productId)
-    );
+    )
 
-    // ✅ 1. Optimistically remove selected items
     itemsToClear.forEach((item) =>
-      dispatch(
-        removeItem({
-          productId: item.productId._id || item.productId,
-          color: item.color,
-          size: item.size,
-        })
-      )
-    );
+      dispatch(removeItem({
+        productId: item.productId?._id || item.productId, // ← normalize
+        color: item.color,
+        size: item.size,
+      }))
+    )
 
-    try {
-      // ✅ 2. Remove them from backend one by one
-      await Promise.all(
-        itemsToClear.map((item) =>
-          removeCartItemApi(item.productId._id || item.productId).unwrap()
+    // Only hit backend if signed in
+    if (user) {
+      try {
+        await Promise.all(
+          itemsToClear.map((item) =>
+            removeCartItemApi(item.productId._id || item.productId).unwrap()
+          )
         )
-      );
-    } catch (err) {
-      console.error("Failed to clear selected items:", err);
+      } catch (err) {
+        console.error("Failed to clear selected items:", err)
+      }
     }
 
-    setSelectedIds([]);
-    setDropdownOpen(false);
-  };
-
+    setSelectedIds([])
+    setDropdownOpen(false)
+  }
 
   return (
     <div className="px-4 py-4 min-h-screen bg-white relative pb-[140px]">
@@ -207,36 +200,36 @@ export default function CartPage() {
 
       {/* Notice */}
       <div className="flex items-center justify-between border border-black/20 rounded-[2px] p-2">
-        <div className="flex items-center gap-2 text-[#1A7709]">
-          <Check size={19} />
-          <span className="text-[12px] font-inter font-medium">
-            Free delivery across Abuja
+        <div className="flex items-center gap-1 text-[#005770]">
+          <Check size={16} />
+          <span className="text-[10px] font-inter font-medium">
+            Prices are final, no hidden charges
           </span>
         </div>
-        <p className="text-[12px] font-inter font-medium text-black/50">
-          limited time
+        <p className="text-[10px] font-inter font-medium text-black/50">
+          {cart.items.length === 0 ? "add item" : "almost done"}
         </p>
       </div>
 
       {/* Cart Items */}
       <div className="mt-3 flex flex-col gap-2">
         {cart.items.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-[60vh] text-center">
-            <div className="w-[140px] h-[140px] flex items-center justify-center rounded-full bg-[#EEEEEE]">
+          <div className="flex flex-col items-center justify-center h-[40vh] text-center">
+            <div className="w-[120px] h-[120px] flex items-center justify-center rounded-full bg-[#EEEEEE]">
               <ShoppingBasket
                 size={70}
-                strokeWidth={1.5}
+                strokeWidth={1}
                 className="text-black/70"
               />
             </div>
             <p className="text-[16px] font-inter text-black/60 mt-3">
-              Your cart is feeling lonely 🛒
+              No items yet
             </p>
             <a
               href="/"
               className="mt-4 bg-[#005770] text-white px-6 py-2 rounded-[30px] font-inter font-medium text-[14px] shadow-md hover:bg-[#004659] transition-all"
             >
-              Start Shopping
+              Go back to shop
             </a>
           </div>
         ) : (
@@ -280,13 +273,13 @@ export default function CartPage() {
                     alt={item.name}
                     className="object-cover rounded-[4px]"
                   />
-                  {item.quantity < 20 && (
+                  {/* {item.quantity < 20 && (
                     <div className="absolute inset-x-[2px] bottom-[2px] bg-black/50 rounded-[47px] flex items-center justify-center px-1 py-[1px]">
                       <p className="text-[6px] text-white font-montserrat font-bold text-center break-words">
                         ALMOST SOLD OUT
                       </p>
                     </div>
-                  )}
+                  )} */}
                 </div>
 
 
@@ -320,9 +313,6 @@ export default function CartPage() {
                   <div className="flex items-center justify-between mt-2">
                     <div className="flex items-center gap-3">
                       <p className="text-[14px] font-inter font-semibold text-black">
-                        ₦{formatPrice(item.discountedPrice)}
-                      </p>
-                      <p className="text-[12px] font-inter font-light text-black/50 line-through">
                         ₦{formatPrice(item.price)}
                       </p>
                     </div>
@@ -361,10 +351,10 @@ export default function CartPage() {
 
       {/* Availability Notice */}
       {cart.items.length > 0 && (
-        <div className="mt-2 w-full bg-[#EEEEEE] h-[32px] flex items-center px-4 rounded-[4px]">
+        <div className="mt-2 w-full bg-[#EEEEEE] h-[32px] flex items-center gap-2 px-4 rounded-[4px]">
           <CircleAlert size={14} color="rgba(0,0,0,0.3)" />
-          <p className="ml-1 text-[11px] font-inter font-medium text-black/30">
-            Item availability is not guaranteed until payment is final
+          <p className="text-[11px] font-inter font-medium text-black/30">
+            Item is reserved once payment is final
           </p>
         </div>
       )}
@@ -374,10 +364,7 @@ export default function CartPage() {
         <div className="fixed bottom-0 left-0 w-full h-[64px] bg-white border-t border-black/10 flex justify-center items-center z-50">
           <div className="flex items-center justify-between w-[90%] max-w-[400px]">
             <div className="flex flex-col">
-              <p className="text-[14px] font-inter line-through text-black">
-                ₦{formatPrice(totalOriginal)}
-              </p>
-              <p className="text-[18px] font-inter font-semibold text-[#005770]">
+              <p className="text-[18px] font-inter font-semibold text-black">
                 ₦{formatPrice(totalPrice)}
               </p>
             </div>
@@ -385,7 +372,7 @@ export default function CartPage() {
             <motion.button
               whileTap={{ scale: 0.97 }}
               onClick={handleCheckout}
-              className="w-[200px] h-[48px] bg-[#005770] rounded-[44px] text-white font-inter font-semibold text-[20px] flex items-center justify-center gap-2 shadow-lg"
+              className="px-6 h-[48px] bg-[#005770] rounded-[44px] text-white font-inter font-semibold text-[20px] flex items-center justify-center gap-2 shadow-lg"
             >
               Checkout ({totalQuantity})
             </motion.button>
@@ -403,13 +390,17 @@ export default function CartPage() {
             transition={{ type: "tween", duration: 0.35 }}
             className="fixed top-0 right-0 w-full max-w-[420px] h-full bg-white z-[999] shadow-2xl overflow-y-auto"
           >
-            <AddNewAddress
-              onClose={() => setShowAddressModal(false)}
-              onSaveSuccess={() => {
-                setShowAddressModal(false);
-                setShowCheckoutPage(true); // open CheckoutPage instead of window.location.href
-              }}
-            />
+            {user ? (
+              <AddNewAddress
+                onClose={() => setShowAddressModal(false)}
+                onSaveSuccess={() => { setShowAddressModal(false); setShowCheckoutPage(true) }}
+              />
+            ) : (
+              <GuestAddressForm
+                onClose={() => setShowAddressModal(false)}
+                onSaveSuccess={() => { setShowAddressModal(false); setShowCheckoutPage(true) }}
+              />
+            )}
           </motion.div>
         )}
       </AnimatePresence>

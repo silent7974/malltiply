@@ -2,20 +2,36 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-
 import { useGetMyStoreQuery } from "@/redux/services/storeApi";
 import PreviewStore from "./PreviewStore";
 
 export default function StoreHeader() {
   const { data: store } = useGetMyStoreQuery();
+
   const [scrolled, setScrolled] = useState(false);
   const [openPreview, setOpenPreview] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 2);
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  const storeUrl = store?.slug
+    ? `http://localhost:3000/stores/${store.slug}`
+    : "";
+
+  async function handleCopyLink() {
+    if (!storeUrl || copied) return;
+
+    await navigator.clipboard.writeText(storeUrl);
+    setCopied(true);
+
+    setTimeout(() => {
+      setCopied(false);
+    }, 3000);
+  }
 
   return (
     <>
@@ -32,6 +48,7 @@ export default function StoreHeader() {
           </h1>
 
           <div className="flex items-center gap-3">
+            {/* Preview */}
             <button
               onClick={() => setOpenPreview(true)}
               className="flex items-center gap-1 text-[16px] font-inter text-black/50"
@@ -40,13 +57,18 @@ export default function StoreHeader() {
               Preview
             </button>
 
-            {/* Copy link */}
+            {/* Copy Link */}
             <button
-              onClick={() => navigator.clipboard.writeText(storeUrl)}
-              className="flex items-center gap-1 text-[16px] font-[inter] font-regular text-black/50"
+              onClick={handleCopyLink}
+              className="flex items-center gap-1 text-[16px] font-inter text-black/50 transition-all"
             >
-              <Image src="/link.svg" alt="Copy link" width={12} height={12} />
-              Link
+              <Image
+                src={copied ? "/mark.svg" : "/link.svg"}
+                alt="Copy link"
+                width={12}
+                height={12}
+              />
+              {copied ? "Copied" : "Link"}
             </button>
           </div>
         </div>

@@ -56,7 +56,7 @@ export default function FirstTimeDashboard() {
           }
         >
           <img
-            src="/upload-illustration.svg"
+            src="/store-illustration.svg"
             alt="Store"
             className="w-[140px] mt-9"
           />

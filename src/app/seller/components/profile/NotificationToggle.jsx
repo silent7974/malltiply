@@ -1,7 +1,8 @@
 "use client"
 
 import { useDispatch, useSelector } from "react-redux"
-import { toggleNotification, updateSellerProfile } from "@/redux/slices/sellerProfileSlice"
+import { toggleNotification } from "@/redux/slices/sellerProfileSlice"
+import { useUpdateProfileMutation } from "@/redux/services/sellerApi"
 
 export default function NotificationToggle() {
   const dispatch = useDispatch()
@@ -9,10 +10,18 @@ export default function NotificationToggle() {
     (state) => state.sellerProfile.notificationsEnabled
   )
 
-  const handleToggle = () => {
-    dispatch(toggleNotification())
-    dispatch(updateSellerProfile({ notificationsEnabled: !notificationsEnabled }))
-  }
+  const [updateProfile] = useUpdateProfileMutation();
+
+  const handleToggle = async () => {
+    dispatch(toggleNotification());
+    try {
+      const newValue = !notificationsEnabled;
+      dispatch(toggleNotification()); // update UI immediately
+      await updateProfile({ notificationsEnabled: newValue }).unwrap();
+    } catch (err) {
+      console.error("Failed to update notification", err);
+    }
+  };
 
   return (
     <div className="flex justify-center">

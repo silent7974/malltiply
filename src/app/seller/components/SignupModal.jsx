@@ -37,13 +37,13 @@ export default function SignUpModal({ isOpen, onClose }) {
             onClick={() => router.push('/seller/normal/signup')}
             className="w-full py-3 bg-[#005770] text-white rounded-[8px] font-[Montserrat] text-[14px] font-semibold"
           >
-            Normal Seller
+            Normal seller
           </button>
           <button
             onClick={() => router.push('/seller/premium/signup')}
             className="w-full py-3 bg-[#2A9CBC] text-white rounded-[8px] font-[Montserrat] text-[14px] font-semibold"
           >
-            Premium Seller
+            Premium seller
           </button>
         </div>
       </div>

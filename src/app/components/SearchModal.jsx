@@ -4,15 +4,21 @@ import { motion, AnimatePresence } from "framer-motion"
 import { useState } from "react"
 import { ChevronLeft, Search } from "lucide-react"
 import Image from "next/image"
-import { useGetProductsBySearchQuery } from "@/redux/services/productApi"
+import { 
+  useGetProductsBySearchQuery, 
+  useGetProductsByStoreSearchQuery 
+} from "@/redux/services/productApi"
 
-export default function SearchModal({ onClose }) {
+export default function SearchModal({ onClose, storeId }) {
   const [query, setQuery] = useState("")
 
-  // Fetch products from backend when query is not empty
-  const { data, isLoading } = useGetProductsBySearchQuery(query, {
-    skip: !query, // don't run query if input is empty
-  })
+  // ✅ Decide which query hook to use
+  const { data, isLoading } = storeId
+    ? useGetProductsByStoreSearchQuery(
+        { searchTerm: query, storeId },
+        { skip: !query || !storeId }
+      )
+    : useGetProductsBySearchQuery(query, { skip: !query })
 
   const results = data?.products || []
 
@@ -35,10 +41,10 @@ export default function SearchModal({ onClose }) {
           <div className="flex-1 relative flex items-center bg-transparent border border-black rounded-full h-[40px] pl-[16px] pr-[46px]">
             <input
               type="text"
-              placeholder="Search AGS"
+              placeholder="Search Malltiply"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="flex-1 text-black placeholder:text-[#00000080] font-montserrat font-medium text-[16px] outline-none"
+              className="flex-1 text-black placeholder:text-[#00000080] font-montserrat font-medium text-[14px] outline-none"
             />
 
             {/* Cancel button */}

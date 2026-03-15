@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, Check, ChevronDown } from "lucide-react";
+import { ChevronLeft, Check, ChevronDown, Clock } from "lucide-react";
 import Image from "next/image";
 import { useUpdateProfileMutation, useMeQuery } from "@/redux/services/authApi";
 
@@ -79,20 +79,20 @@ export default function AddNewAddress({ onClose, onSaveSuccess }) {
         {/* Encryption Notice */}
         <div className="flex items-center justify-center gap-[2px] mb-[12px]">
           <Image src="/lock.svg" alt="Lock" width={12} height={12} />
-          <p className="text-[12px] font-inter font-normal text-[#1A7709]">
+          <p className="text-[12px] font-inter font-normal text-[#005770]">
             All data will be encrypted
           </p>
         </div>
 
         {/* Notice */}
         <div className="flex items-center justify-between border border-black/20 rounded-[2px] p-2">
-          <div className="flex items-center gap-2 text-[#1A7709]">
-            <Check size={19} />
-            <span className="text-[12px] font-inter font-medium">
+          <div className="flex items-center gap-1 text-[#005770]">
+            <Clock size={16} />
+            <span className="text-[10px] font-inter font-medium">
               Free delivery across Abuja
             </span>
           </div>
-          <p className="text-[12px] font-inter font-medium text-black/50">
+          <p className="text-[10px] font-inter font-medium text-black/50">
             limited time
           </p>
         </div>

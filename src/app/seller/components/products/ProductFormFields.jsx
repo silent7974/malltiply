@@ -184,6 +184,11 @@ export default function ProductFormFields({
 
   const v = categoryData.variants
 
+  // Different Sizes for shoes
+  const activeSizes = (v.categorySizes && subCategory && v.categorySizes[subCategory]) 
+    ? v.categorySizes[subCategory] 
+    : v.sizes
+
   // ✅ Central SKU updater — called on any variant change
   function updateSKUWithVariants(newVariants) {
     setProductData(prev => ({
@@ -223,7 +228,7 @@ export default function ProductFormFields({
         <div className="mt-4 space-y-4">
 
           {/* ✅ Size Guide button only if this category supports sizes */}
-          {v.sizes && (
+          {activeSizes && (
             <>
               <div className="flex justify-end mb-1">
                 <button
@@ -240,7 +245,7 @@ export default function ProductFormFields({
               <CustomDropdown
                 label="Size"
                 placeholder="Select size"
-                options={v.sizes}
+                options={activeSizes}
                 selected={variants.size || ''}
                 onSelect={(val) => {
                   const updated = { ...variants, size: val }

@@ -40,7 +40,7 @@ export default function FirstTimeDashboard() {
         <button
           className="w-[301px] h-[236px] rounded-[16px] bg-[#7B00C3] flex-shrink-0 flex flex-col items-center snap-start"
           onClick={() =>
-            router.push("/seller/normal/dashboard/products/add")
+            router.push("/seller/normal/dashboard/products/form")
           }
         >
           <img

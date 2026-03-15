@@ -2,9 +2,9 @@
 
 import { useDispatch, useSelector } from "react-redux"
 import { useRouter } from "next/navigation"
-import { deleteSellerProfile } from "@/redux/slices/sellerProfileSlice"
 import Image from "next/image"
 import { useState } from "react"
+import { useDeleteAccountMutation } from "@/redux/services/sellerApi"
 
 export default function DeleteAccountButton() {
   const dispatch = useDispatch()
@@ -12,14 +12,16 @@ export default function DeleteAccountButton() {
   const { status } = useSelector((s) => s.sellerProfile)
   const [confirming, setConfirming] = useState(false)
 
+  const [deleteAccount] = useDeleteAccountMutation();
+
   const handleDelete = async () => {
     try {
-      await dispatch(deleteSellerProfile()).unwrap();
-      router.push("/seller"); // ✅ redirect after delete
+      await deleteAccount().unwrap();
+      router.push("/seller");
     } catch (err) {
       alert("Failed to delete account: " + err);
     }
-  }
+  };
 
   return (
     <div className="flex justify-center">

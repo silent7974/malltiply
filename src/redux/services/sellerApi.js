@@ -1,9 +1,11 @@
-// store/sellerApi.js
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const sellerApi = createApi({
   reducerPath: "sellerApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "/api/seller" }),
+  baseQuery: fetchBaseQuery({ 
+    baseUrl: "/api/seller",
+    credentials: "include",
+   }),
   endpoints: (builder) => ({
     signup: builder.mutation({
       query: (payload) => ({
@@ -36,10 +38,30 @@ export const sellerApi = createApi({
         body: payload,
       }),
     }),
+    logout: builder.mutation({
+      query: () => ({
+        url: "/logout",
+        method: "POST",
+      }),
+    }),
     deleteAccount: builder.mutation({
       query: () => ({
         url: "/profile",
         method: "DELETE",
+      })
+    }),
+    forgotPassword: builder.mutation({
+      query: (email) => ({
+        url: "/auth/forgot-password",
+        method: "POST",
+        body: { email },
+      }),
+    }),
+    resetPassword: builder.mutation({
+      query: (payload) => ({
+        url: "/auth/reset-password",
+        method: "POST",
+        body: payload,
       }),
     }),
   }),
@@ -51,5 +73,8 @@ export const {
   useGetProfileQuery,
   useUpdateProfileMutation,
   useUpdatePasswordMutation,
+  useLogoutMutation,
   useDeleteAccountMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation
 } = sellerApi;

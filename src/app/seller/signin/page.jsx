@@ -3,12 +3,17 @@
 import { useRouter } from 'next/navigation'
 import { ChevronLeft } from 'lucide-react'
 import { useState } from 'react'
-import { useSigninMutation } from "@/redux/services/sellerApi"
+import { sellerApi, useSigninMutation } from "@/redux/services/sellerApi"
+import ForgotPasswordModal from '../components/ForgotPasswordModal'
+import { AnimatePresence } from 'framer-motion'
+import { useDispatch } from 'react-redux'
 
 export default function SellerSignInPage() {
   const router = useRouter()
   const [signin, { isLoading, error }] = useSigninMutation();
   const [form, setForm] = useState({ email: '', password: '' })
+  const [showForgot, setShowForgot] = useState(false);
+  const dispatch = useDispatch()
 
   const [errors, setErrors] = useState({})
 
@@ -36,25 +41,23 @@ export default function SellerSignInPage() {
     e.preventDefault();
     if (!validateForm()) return;
 
-    setLoading(true);
     setServerError(null);
 
     try {
-      const response = await signin(form).unwrap();
-      
-      // Assuming response contains sellerType
-      if (response.sellerType === "premium_seller") {
-        router.push("/seller/premium/dashboard");
-      } else {
-        router.push("/seller/normal/dashboard");
-      }
+      const res = await signin(form).unwrap();
+
+      // after successful login:
+      dispatch(sellerApi.endpoints.getProfile.initiate());
+
+      router.replace(
+        res.sellerType === "premium_seller"
+          ? "/seller/premium/dashboard"
+          : "/seller/normal/dashboard"
+      );
     } catch (err) {
-      console.error("Signin failed:", err);
-      setServerError(err.data?.message || "Signin failed");
-    } finally {
-      setLoading(false);
+      setServerError(err?.error || err?.message || "Signin failed");
     }
-  };
+  }
 
   return (
     <div className="w-full px-[16px] py-[40px]">
@@ -65,7 +68,7 @@ export default function SellerSignInPage() {
 
       {/* Title */}
       <h1 className="text-[24px] text-center font-[Inter] font-semibold text-[#000000]">Sign in</h1>
-      <p className="text-[14px] text-center font-[Inter] font-medium text-black/50 mt-[8px]">Welcome back to Malltiply Seller Center</p>
+      <p className="text-[14px] text-center font-[Inter] font-medium text-black/50 mt-[8px]">Welcome back</p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Email */}
@@ -96,9 +99,18 @@ export default function SellerSignInPage() {
             className="w-full border border-black/30 rounded px-3 py-2 text-sm"
             required
           />
-          <button type="button" className="text-xs text-[#005770] mt-1 ml-auto block">
+
+          <button
+            type="button"
+            onClick={() => setShowForgot(true)}
+            className="text-xs text-[#005770] mt-1 ml-auto block"
+          >
             Forgot Password?
           </button>
+          <AnimatePresence>
+            {showForgot && <ForgotPasswordModal onClose={() => setShowForgot(false)} />}
+          </AnimatePresence>
+
           {errors.password && (
             <p className="text-[8px] text-red-500 mt-[4px]">{errors.password}</p>
           )} 
@@ -123,12 +135,12 @@ export default function SellerSignInPage() {
             router.push('/seller/privacy')
         }}
         >
-            Seller Privacy Policy
+        Seller privacy policy
         </button>
       </p>
 
-      {error && (
-        <p className="mt-[8px] text-[8px] text-red-500 text-center">{error.data?.message || "Signin failed"}</p>
+      {serverError && (
+        <p className="mt-[8px] text-[8px] text-red-500 text-center">{serverError}</p>
       )}
 
       {/* Separator */}
@@ -145,7 +157,7 @@ export default function SellerSignInPage() {
         <p>
           Want a branded store?{' '}
           <button onClick={() => router.push('/seller/premium/signup')} className="text-[#005770]">
-            Apply as Premium Seller
+            Apply as premium seller
           </button>
         </p>
       </div>

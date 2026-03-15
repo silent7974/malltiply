@@ -71,10 +71,6 @@ export default function AddToCartButton({
 
   // 🛒 Add to cart
   const handleAddToCart = async (e) => {
-    if (!user) {
-      alert("Please sign in before adding to cart.");
-      return;
-    }
 
     if (isOutOfStock || product.quantity === 0) {
       alert("This item is out of stock.");
@@ -123,15 +119,14 @@ export default function AddToCartButton({
 
     // Add to redux + backend
     dispatch(addToCart(item));
-    triggerToast("Item added successfully to cart ✔");
-    try {
-      const response = await addToCartApi(item).unwrap();
-
-      if (response?.success) {
-        if (onSuccess) onSuccess();
+    triggerToast("Item added to cart ✔");
+    // Only sync to backend if signed in
+    if (user) {
+      try {
+        await addToCartApi(item).unwrap()
+      } catch (err) {
+        console.error("Backend addToCart failed:", err)
       }
-    } catch (err) {
-      console.error("Backend addToCart failed:", err);
     }
 
     setIsInCart(true);
@@ -149,7 +144,7 @@ export default function AddToCartButton({
 
     // Prevent invalid values
     if (newQuantity <= 0) {
-      triggerToast("Item removed successfully from cart ❌");
+      triggerToast("Item removed from cart ❌");
       // Remove from cart
       dispatch(
         removeItem({
@@ -158,10 +153,13 @@ export default function AddToCartButton({
           size: currentItem.size,
         })
       );
-      try {
-        await removeCartApi(currentItem.productId).unwrap();
-      } catch (err) {
-        console.error("Failed to remove from backend", err);
+
+      if (user) {
+        try {
+          await removeCartApi(currentItem.productId).unwrap();
+        } catch (err) {
+          console.error("Failed to remove from backend", err);
+        }
       }
 
       if (onQuantitySync) onQuantitySync(1);
@@ -232,7 +230,7 @@ export default function AddToCartButton({
         )}
 
       {/* Bottom Add/Cart Control */}
-      <div className="fixed bottom-0 left-0 w-full h-[88px] bg-white border-t border-black/10 flex justify-center items-center z-50">
+      <div className="fixed bottom-0 left-0 w-full h-[64px] px-4 bg-white border-t border-black/10 flex justify-center items-center z-50">
         <AnimatePresence mode="wait">
           {!isInCart ? (
             <motion.button
@@ -242,14 +240,9 @@ export default function AddToCartButton({
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
               transition={{ type: "spring", stiffness: 250, damping: 18 }}
-              className="w-[360px] h-[70px] bg-[#005770] rounded-[44px] text-white font-inter font-semibold text-[24px] flex flex-col items-center justify-center shadow-lg"
+              className="w-full h-[48px] bg-[#005770] rounded-[44px] text-white font-inter font-semibold text-[24px] flex flex-col items-center justify-center shadow-lg"
             >
               <span>Add to cart</span>
-              {product.discount > 0 && (
-                <span className="text-[16px] font-inter text-white/80">
-                  {product.discount}% off
-                </span>
-              )}
             </motion.button>
           ) : (
             <motion.div
@@ -258,9 +251,9 @@ export default function AddToCartButton({
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
               transition={{ type: "spring", stiffness: 250, damping: 18 }}
-              className="flex items-center gap-2"
+              className="flex justify-between w-full"
             >
-              <div className="flex items-center border border-black/30 rounded-[4px] overflow-hidden h-[48px]">
+              <div className="flex items-center border border-black/30 rounded-[4px] overflow-hidden h-[48px] ">
                 <button
                   onClick={() => handleQuantityChange("minus")}
                   className="w-[36px] h-full bg-[#EEEEEE] text-[22px] text-black/70"
@@ -280,10 +273,10 @@ export default function AddToCartButton({
 
               <motion.a
                 href="/cart"
-                className="w-[200px] h-[48px] bg-[#005770] rounded-[44px] text-white font-inter font-semibold text-[20px] flex items-center justify-center gap-2 shadow-lg"
+                className="px-6 h-[48px] bg-[#005770] rounded-[44px] text-white font-inter font-semibold text-[20px] flex items-center justify-center gap-2 shadow-lg"
                 whileTap={{ scale: 0.95 }}
               >
-                Go to cart 🛒
+                Go to cart
               </motion.a>
             </motion.div>
           )}

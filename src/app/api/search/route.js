@@ -7,12 +7,13 @@ export async function GET(req) {
   // get query string from URL
   const { searchParams } = new URL(req.url)
   const query = searchParams.get("query")
+  const storeId = searchParams.get("storeId");
 
   try {
-    const results = await Product.find(
-      { $text: { $search: query } },
-      { score: { $meta: "textScore" } }
-    ).sort({ score: { $meta: "textScore" } })
+    const results = await Product.find({
+      $text: { $search: query },
+      ...(storeId && { storeId }),
+    }).sort({ score: { $meta: "textScore" } });
 
     return new Response(
       JSON.stringify({ products: results }),

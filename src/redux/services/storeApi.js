@@ -41,4 +41,4 @@ export const {
   useUpdateMyStoreMutation,
   useGetMyStoreQuery,
   useGetStoreBySlugQuery,
-} = storeApi;
+} = storeApi

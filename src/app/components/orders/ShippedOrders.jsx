@@ -2,13 +2,11 @@
 
 import React, { useMemo, useState } from "react";
 import Image from "next/image";
-import { Funnel, Check, TruckElectric, Loader2 } from "lucide-react";
+import { Funnel, Check, TruckElectric } from "lucide-react";
 import {
-  useGetBuyerOrdersQuery,
   useUpdateOrderStatusMutation,
 } from "@/redux/services/orderApi";
-import { useMeQuery } from "@/redux/services/authApi";
-import OrderDetails from "./OrderDetails";
+import formatPrice from "@/lib/utils/formatPrice";
 
 const FILTERS = [
   { label: "All time", value: "all" },
@@ -16,14 +14,8 @@ const FILTERS = [
   { label: "Last 30 days", value: "30" },
 ];
 
-export default function ShippedOrders() {
-  const { data: orders = [] } = useGetBuyerOrdersQuery();
-  const { data } = useMeQuery();
-  const userId = data?.user?._id;
-
+export default function ShippedOrders({ orders = [], onSelectOrder }) {
   const [updateOrderStatus] = useUpdateOrderStatusMutation();
-
-  const [selectedOrder, setSelectedOrder] = useState(null);
   const [filter, setFilter] = useState("all");
   const [showFilter, setShowFilter] = useState(false);
   const [loadingId, setLoadingId] = useState(null);
@@ -32,7 +24,6 @@ export default function ShippedOrders() {
     const now = new Date();
 
     return orders
-      .filter((o) => String(o.userId) === String(userId))
       .filter((o) => o.orderStatus === "shipped")
       .filter((o) => o.items?.length > 0)
       .filter((o) => {
@@ -43,10 +34,7 @@ export default function ShippedOrders() {
         return diff <= days;
       })
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-  }, [orders, filter, userId]);
-
-  const formatPrice = (n) =>
-    new Intl.NumberFormat("en-NG").format(n || 0);
+  }, [orders, filter]);
 
   const handleConfirmDelivery = async (orderId) => {
     try {
@@ -64,13 +52,13 @@ export default function ShippedOrders() {
     <div>
       {/* Header */}
       <div className="flex items-center justify-between">
-        <p className="font-[Montserrat] font-medium text-[20px] text-black">
+        <p className="font-[Montserrat] font-medium text-[16px] text-black">
           Shipped ({shippedOrders.length})
         </p>
 
         <div className="relative">
           <button onClick={() => setShowFilter(!showFilter)}>
-            <Funnel size={20} className="text-black/50" />
+            <Funnel size={16} className="text-black/50" />
           </button>
 
           {showFilter && (
@@ -96,16 +84,18 @@ export default function ShippedOrders() {
       </div>
 
       {/* Notice */}
-      <div className="mt-4 border border-black/20 rounded-[2px] p-2 overflow-hidden">
-        <div className="flex items-center gap-2 text-[#1A7709]">
-          <TruckElectric size={19} />
-          <div className="relative w-full overflow-hidden">
-            <div className="whitespace-nowrap animate-marquee text-[12px] font-inter font-medium">
-              Our courier is on the way and will call you shortly
+      {shippedOrders.length > 0 && (
+        <div className="mt-4 border border-black/20 rounded-[2px] p-2 overflow-hidden">
+          <div className="flex items-center gap-2 text-[#005770]">
+            <TruckElectric size={16} />
+            <div className="relative w-full overflow-hidden">
+              <div className="whitespace-nowrap animate-marquee text-[12px] font-inter font-medium">
+                Our courier is on the way and will call you shortly
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Empty */}
       {shippedOrders.length === 0 && (
@@ -121,79 +111,62 @@ export default function ShippedOrders() {
 
       {/* Orders */}
       <div className="mt-4 space-y-6">
-        {shippedOrders.map((order) => (
-          <div key={order._id}>
-            {/* Meta */}
-            <div className="flex justify-between items-center">
-              <p className="text-[12px] font-inter text-black/50">
-                ID: {order._id.slice(-8)}
-              </p>
-
-              <button onClick={() => setSelectedOrder(order)}>
-                <span className="text-[12px] font-inter text-black/50">
-                  View
-                </span>
-              </button>
-            </div>
-
-            {selectedOrder && (
-              <OrderDetails
-                order={selectedOrder}
-                onClose={() => setSelectedOrder(null)}
-              />
-            )}
-
-            {/* Items */}
-            <div className="mt-3 flex items-start justify-between gap-4">
-              <div className="flex gap-4 overflow-x-auto">
-                {order.items.map((item, i) => (
-                  <div key={i} className="w-[88px]">
-                    <div className="relative w-[88px] h-[74px]">
-                      <Image
-                        src={item.image || "/placeholder.png"}
-                        fill
-                        alt={item.name}
-                        className="object-cover rounded-[4px]"
-                      />
-                    </div>
-
-                    <p className="mt-[4px] text-[10px] text-black/50 truncate">
-                      {item.name}
+              {shippedOrders.map((order) => (
+                <div key={order._id}>
+                  {/* Meta */}
+                  <div className="flex justify-between items-center">
+                    <p className="text-[12px] font-inter text-black/50">
+                      ID: {order._id.slice(-8)}
                     </p>
-
-                    <p className="text-[12px] font-semibold text-[#005770]">
-                      ₦{formatPrice(item.discountedPrice)}
-                    </p>
+      
+                    <button onClick={() => onSelectOrder(order)}>
+                      <span className="text-[12px] font-inter text-black/50">
+                        View
+                      </span>
+                    </button>
                   </div>
-                ))}
-              </div>
-
-              <div className="w-[80px] h-[123px] bg-[#F8F9FA] rounded-[6px] flex flex-col items-center justify-center">
-                <p className="text-[16px] text-black/50">
-                  ₦{formatPrice(order.totalAmount)}
-                </p>
-                <p className="text-[12px] text-black/50">
-                  {order.items.length} items
-                </p>
-              </div>
-            </div>
-
-            {/* Confirm */}
-            <div className="flex justify-center">
-              <button
-                disabled={loadingId === order._id}
-                onClick={() => handleConfirmDelivery(order._id)}
-                className="mt-3 underline text-[10px] font-inter text-[#005770]"
-              >
-                {loadingId === order._id ? (
-                  <Loader2 size={12} className="animate-spin inline" />
-                ) : (
-                  "I have received this order"
-                )}
-              </button>
-            </div>
-          </div>
-        ))}
+      
+                  {/* Items + Summary */}
+                  <div className="mt-3 flex items-start justify-between gap-4">
+                    <div className="flex gap-4 overflow-x-auto">
+                      {order.items.map((item, i) => (
+                        <div key={i} className="w-[88px]">
+                          <div className="relative w-[88px] h-[74px]">
+                            <Image
+                              src={item.image || "/placeholder.png"}
+                              fill
+                              alt={item.name}
+                              className="object-cover rounded-[4px]"
+                            />
+                          </div>
+                    
+                          <p className="mt-1 text-[10px] text-black/50 truncate">
+                            {item.name}
+                          </p>
+                    
+                          <p className="text-[8px]">
+                            {item.color} {item.size && `/ ${item.size}`}
+                          </p>
+                    
+                          <p className="text-[12px] font-semibold text-[#005770]">
+                            ₦{formatPrice(item.price)}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+      
+                    <div className="w-[80px] h-[123px] bg-[#F8F9FA] rounded-[6px] flex flex-col justify-center items-center">
+                      <p className="text-[16px] text-black/50">
+                        ₦{formatPrice(order.totalAmount)}
+                      </p>
+                      <p className="text-[12px] text-black/50">
+                        {order.items.length}{" "}
+                        {order.items.length > 1 ? "items" : "item"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
       </div>
     </div>
   );

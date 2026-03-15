@@ -7,9 +7,8 @@ import Seller from "@/models/seller";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-// ===============================
 // GET — Single product
-// ===============================
+
 export async function GET(req, { params }) {
   await dbConnect();
 
@@ -21,9 +20,8 @@ export async function GET(req, { params }) {
   return NextResponse.json(product);
 }
 
-// ===============================
 // PUT — Update product
-// ===============================
+
 export async function PUT(req, { params }) {
   try {
     await dbConnect();
@@ -75,9 +73,8 @@ export async function PUT(req, { params }) {
   }
 }
 
-// ===============================
 // DELETE — Delete product
-// ===============================
+
 export async function DELETE(req, { params }) {
   try {
     await dbConnect();

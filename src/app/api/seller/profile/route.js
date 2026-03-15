@@ -4,6 +4,7 @@ import { NextResponse } from "next/server"
 import jwt from "jsonwebtoken"
 import bcrypt from "bcryptjs"
 import Product from "@/models/product"
+import store from "@/models/store"
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -72,6 +73,13 @@ export async function PUT(req) {
       }
     });
 
+    // 🔹 Location update (nested object)
+    if (body.location) {
+      seller.location.city = body.location.city ?? seller.location.city;
+      seller.location.street = body.location.street ?? seller.location.street;
+      seller.location.district = body.location.district ?? seller.location.district;
+    }
+
     await seller.save();
     const updated = seller.toObject();
     delete updated.passwordHash;
@@ -94,17 +102,29 @@ export async function DELETE(req) {
 
     const decoded = jwt.verify(token, JWT_SECRET);
 
-    // Delete all products by this seller
-    await Product.deleteMany({ seller: decoded.id });
+    // 🔹 Fetch seller FIRST
+    const seller = await Seller.findById(decoded.id);
+    if (!seller) {
+      return NextResponse.json({ error: "Seller not found" }, { status: 404 });
+    }
 
-    // Delete the seller
-    await Seller.findByIdAndDelete(decoded.id);
+    // 🔹 Delete all products
+    await Product.deleteMany({ sellerId: seller._id });
 
-    // (Optional) TODO: cleanup other stuff (orders, reviews, cloudinary images, etc.)
+    // 🔹 Delete store if premium
+    if (seller.sellerType === "premium_seller") {
+      await store.deleteMany({ sellerId: seller._id });
+    }
 
-    // Clear cookie so they’re logged out immediately
+    // 🔹 Delete seller
+    await Seller.findByIdAndDelete(seller._id);
+
+    // 🔹 Clear cookie
     const res = NextResponse.json({ message: "Profile deleted successfully" });
-    res.cookies.set("sellerToken", "", { httpOnly: true, expires: new Date(0) });
+    res.cookies.set("sellerToken", "", {
+      httpOnly: true,
+      expires: new Date(0),
+    });
 
     return res;
   } catch (error) {

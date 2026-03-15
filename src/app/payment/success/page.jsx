@@ -24,6 +24,7 @@ export default function PaymentSuccessPage() {
       const data = await res.json();
 
       if (data.status === "success" || data.data?.status === "success") {
+        localStorage.removeItem("cart") // ← clear for guests
         router.replace(`/orders?reference=${reference}`);
       } else {
         router.replace("/payment/failed");
@@ -35,7 +36,7 @@ export default function PaymentSuccessPage() {
 
   return (
     <div className="w-full h-screen flex items-center justify-center">
-      <p className="text-lg font-medium">Verifying your payment...</p>
+      <p className="text-lg ">Verifying your payment...</p>
     </div>
   );
 }

@@ -30,7 +30,7 @@ export default function PickupPage({ onClose, setSelectedPickupStation }) {
             {/* Encryption Notice */}
             <div className="flex items-center justify-center gap-[2px] mb-[12px]">
                 <Image src="/lock.svg" alt="Lock" width={12} height={12} />
-                <p className="text-[12px] font-inter font-normal text-[#1A7709]">All data will be encrypted</p>
+                <p className="text-[12px] font-inter font-normal text-[#005770]">All data will be encrypted</p>
             </div>
 
             {/* Search Bar */}

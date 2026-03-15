@@ -14,26 +14,33 @@ export async function POST(req) {
 
     const seller = await Seller.findOne({ email });
     if (!seller) {
-      return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
+      // Clear message: account doesn't exist
+      return NextResponse.json({ error: "The account doesn't exist" }, { status: 404 });
     }
 
     const isMatch = await bcrypt.compare(password, seller.passwordHash);
     if (!isMatch) {
-      return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
+      // Clear message: password invalid
+      return NextResponse.json({ error: "Password is invalid" }, { status: 401 });
     }
 
     const token = jwt.sign(
       {
-        id: seller._id.toString()
+        id: seller._id.toString(),
+        sellerType: seller.sellerType, 
       },
       JWT_SECRET,
       { expiresIn: "7d" }
     );
 
-    const response = NextResponse.json({ message: "Login successful" });
+    const response = NextResponse.json({
+      message: "Login successful",
+      sellerType: seller.sellerType, // add this for frontend routing
+    });
+
     response.cookies.set("sellerToken", token, {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
       maxAge: 7 * 24 * 60 * 60,

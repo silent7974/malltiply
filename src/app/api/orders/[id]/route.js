@@ -8,7 +8,7 @@ export async function PATCH(req, context) {
 
   await dbConnect();
 
-  const { status, orderStatus } = await req.json();
+  const { status, orderStatus, refund } = await req.json();
 
   try {
     const order = await Order.findById(id);
@@ -59,8 +59,15 @@ export async function PATCH(req, context) {
       order.orderStatus = orderStatus;
     }
 
-    await order.save();
+    if (refund) {
+      order.refund = {
+        ...refund,
+        requestedAt: new Date(),
+      }
+      order.orderStatus = "returned"
+    }
 
+    await order.save();
 
     return NextResponse.json({ message: "Order updated", order }, { status: 200 });
 

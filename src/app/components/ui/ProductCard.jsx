@@ -1,19 +1,10 @@
 "use client"
 
+import formatPrice from "@/lib/utils/formatPrice"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 
 export default function ProductCard({ product, index }) {
-  const hasDiscount = product.discount && product.discount > 0
-  const discountedPrice = hasDiscount
-    ? product.price - (product.price * product.discount) / 100
-    : product.price
-
-  const formatPrice = (price) => {
-    if (!price || price === 0) return ""
-    return `₦${price.toLocaleString("en-NG")}`
-  }
-
   const router = useRouter()
 
   return (
@@ -41,13 +32,8 @@ export default function ProductCard({ product, index }) {
         <div className="flex items-center justify-between mt-[2px]">
           <div className="flex items-baseline space-x-[2px]">
             <span className="font-[Inter] font-medium text-[10px]">
-              {discountedPrice > 0 ? formatPrice(discountedPrice) : ""}
+             ₦  {formatPrice(product.price)}
             </span>
-            {hasDiscount && product.price > 0 && (
-              <span className="font-[Inter] text-[8px] text-black/50 line-through">
-                {formatPrice(product.price)}
-              </span>
-            )}
           </div>
 
           <div className="w-[36px] h-[29px] flex items-center justify-center border border-black/50 rounded-[24px]">
@@ -58,10 +44,6 @@ export default function ProductCard({ product, index }) {
               alt="Add shopping cart"
             />
           </div>
-        </div>
-
-        <div className="mt-[2px] font-[Inter] text-[8px] text-[#016A87]">
-          {hasDiscount ? `${product.discount}% off` : ""}
         </div>
       </div>
     </div>

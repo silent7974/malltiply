@@ -3,9 +3,7 @@
 import React, { useMemo, useState } from "react";
 import Image from "next/image";
 import { Funnel, Check, ClockArrowUp } from "lucide-react";
-import { useGetBuyerOrdersQuery } from "@/redux/services/orderApi";
-import { useMeQuery } from "@/redux/services/authApi";
-import OrderDetails from "./OrderDetails";
+import formatPrice from "@/lib/utils/formatPrice";
 
 const FILTERS = [
   { label: "All time", value: "all" },
@@ -18,17 +16,10 @@ const STATUS_STYLES = {
   processing: { bg: "#001D67", text: "#A3CEFF", label: "Processing" },
   shipped: { bg: "#440067", text: "#DDA3FF", label: "Shipped" },
   delivered: { bg: "#006707", text: "#A3FFA9", label: "Delivered" },
-  cancelled: { bg: "#671D00", text: "#FFB7A3", label: "Cancelled" },
+  Returned: { bg: "#671D00", text: "#FFB7A3", label: "Cancelled" },
 };
 
-export default function AllOrders() {
-  const { data: orders = [] } = useGetBuyerOrdersQuery();
-  const { data } = useMeQuery();
-  const userId = data?.user?._id;
-
-  console.log("USER:", userId)
-
-  const [selectedOrder, setSelectedOrder] = useState(null);
+export default function AllOrders({ orders = [], onSelectOrder  }) {
   const [filter, setFilter] = useState("all");
   const [showFilter, setShowFilter] = useState(false);
 
@@ -36,7 +27,6 @@ export default function AllOrders() {
     const now = new Date();
 
     return orders
-      .filter((o) => String(o.userId) === String(userId))
       .filter((o) => o.items?.length > 0)
       .filter((o) => {
         if (filter === "all") return true;
@@ -46,22 +36,19 @@ export default function AllOrders() {
         return diff <= days;
       })
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-  }, [orders, filter, userId]);
-
-  const formatPrice = (n) =>
-    new Intl.NumberFormat("en-NG").format(n || 0);
+  }, [orders, filter]);
 
   return (
     <div>
       {/* Header */}
       <div className="flex items-center justify-between">
-        <p className="font-[Montserrat] font-medium text-[20px] text-black">
+        <p className="font-[Montserrat] font-medium text-[16px] text-black">
           All ({buyerOrders.length})
         </p>
 
         <div className="relative">
           <button onClick={() => setShowFilter(!showFilter)}>
-            <Funnel size={20} className="text-black/50" />
+            <Funnel size={16} className="text-black/50" />
           </button>
 
           {showFilter && (
@@ -87,18 +74,20 @@ export default function AllOrders() {
       </div>
 
       {/* Notice */}
-      <div className="mt-4 border border-black/20 rounded-[2px] p-2 overflow-hidden">
-        <div className="flex items-center gap-2 text-[#1A7709]">
-          <ClockArrowUp size={19} />
+      {buyerOrders.length > 0 && (
+        <div className="mt-4 border border-black/20 rounded-[2px] p-2 overflow-hidden">
+          <div className="flex items-center gap-2 text-[#005770]">
+            <ClockArrowUp size={16} />
 
-          {/* Marquee wrapper */}
-          <div className="relative w-full overflow-hidden">
-            <div className="whitespace-nowrap animate-marquee text-[12px] font-inter font-medium">
-              Orders are typically fulfilled within 12 hours
+            {/* Marquee wrapper */}
+            <div className="relative w-full overflow-hidden">
+              <div className="whitespace-nowrap animate-marquee text-[12px] font-inter font-medium">
+                We've received your order, orders are typically fulfilled within 24 hours
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
 
       {/* Empty */}
@@ -126,20 +115,13 @@ export default function AllOrders() {
                 </p>
 
                 <button
-                  onClick={() => setSelectedOrder(order)}
-                  className="px-[10px] py-[4px] rounded-[24px] text-[12px] font-inter font-medium"
+                  onClick={() => onSelectOrder(order)}
+                  className="px-[10px] py-[4px] rounded-[24px] text-[10px] font-inter font-medium"
                   style={{ backgroundColor: status.bg, color: status.text }}
                 >
                   {status.label}
                 </button>
               </div>
-
-              {selectedOrder && (
-                <OrderDetails
-                  order={selectedOrder}
-                  onClose={() => setSelectedOrder(null)}
-                />
-              )}
 
               <div className="mt-3 flex justify-between gap-4">
                 <div className="flex gap-4 overflow-x-auto">
@@ -163,7 +145,7 @@ export default function AllOrders() {
                       </p>
 
                       <p className="text-[12px] font-semibold text-[#005770]">
-                        ₦{formatPrice(item.discountedPrice)}
+                        ₦{formatPrice(item.price)}
                       </p>
                     </div>
                   ))}
@@ -174,7 +156,8 @@ export default function AllOrders() {
                     ₦{formatPrice(order.totalAmount)}
                   </p>
                   <p className="text-[12px] text-black/50">
-                    {order.items.length} items
+                    {order.items.length}{" "}
+                    {order.items.length > 1 ? "items" : "item"}
                   </p>
                 </div>
               </div>

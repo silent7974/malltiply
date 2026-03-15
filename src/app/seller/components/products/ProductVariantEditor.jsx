@@ -153,8 +153,13 @@ export default function ProductVariantEditor({
     const list = []
     const v = productMapping?.variants || {}
 
+    // ✅ Resolve correct sizes — use categorySizes override if available for this subCategory
+    const activeSizes = (v.categorySizes && subCategory && v.categorySizes[subCategory])
+      ? v.categorySizes[subCategory]
+      : v.sizes
+
     if (v.colors) list.push({ key: 'color', label: 'Color', type: 'select' })
-    if (v.sizes) list.push({ key: 'size', label: 'Size', type: 'select', options: v.sizes })
+    if (activeSizes) list.push({ key: 'size', label: 'Size', type: 'select', options: activeSizes }) // ← was v.sizes
     if (v.measurement) list.push({ key: 'measurement', label: `${v.measurement}`, type: 'number' })
 
     list.push({ key: 'quantity', label: 'Quantity', type: 'number' })
@@ -162,7 +167,7 @@ export default function ProductVariantEditor({
     list.push({ key: 'sku', label: 'SKU', type: 'sku' })
 
     return list
-  }, [productMapping])
+  }, [productMapping, subCategory])
 
   function makeEmptyColumn() {
     const obj = {}

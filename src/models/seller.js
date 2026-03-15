@@ -36,6 +36,10 @@ const SellerSchema = new mongoose.Schema(
       default: "normal_seller",
     },
 
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
+
+
     // premium-only references
     storeSlug: String,
     brandName: String,

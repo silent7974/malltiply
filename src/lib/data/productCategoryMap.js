@@ -30,10 +30,14 @@ const productCategoryMap = {
   "Unisex Fashion": {
     categories: {
       "T-shirts": ["Plain Tee", "Graphic Tee"],
-      "Hoodies": ["Pullover Hoodie", "Zip Hoodie"]
+      "Hoodies": ["Pullover Hoodie", "Zip Hoodie"],
+      "Shoes": ["Loafers", "Sneakers", "palms", "heels"],
     },
     variants: {
       sizes: ["XS", "S", "M", "L", "XL", "XXL", "XXXL"],
+      categorySizes: {
+        "Shoes": ["39", "40", "41", "42", "43", "44", "45", "46"]
+      },
       colors: true
     }
   },
@@ -116,6 +120,6 @@ const productCategoryMap = {
       colors: true
     }
   }
-};
+}
 
 export default productCategoryMap

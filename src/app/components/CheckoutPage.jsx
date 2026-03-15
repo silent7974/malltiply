@@ -2,10 +2,10 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSelector } from "react-redux";
-import { Check, ChevronLeft } from "lucide-react";
+import { Check, ChevronLeft, CreditCardIcon } from "lucide-react";
 import Image from "next/image";
 import { useMeQuery } from "@/redux/services/authApi";
-import { useCreateOrderMutation } from "@/redux/services/orderApi";
+import { useCreateGuestOrderMutation, useCreateOrderMutation } from "@/redux/services/orderApi";
 import formatPrice from "@/lib/utils/formatPrice";
 import PickupPage from "./PickupPage";
 import { useInitializePaymentMutation } from "@/redux/services/paymentApi";
@@ -25,50 +25,69 @@ export default function CheckoutPage({ onClose }) {
     const [selectedPickupStation, setSelectedPickupStation] = useState(null);
     const [showPickupPage, setShowPickupPage] = useState(false);
     const [createOrder, { isLoading }] = useCreateOrderMutation();
+    const [createGuestOrder] = useCreateGuestOrderMutation();
     const [initializePayment] = useInitializePaymentMutation();
     const [clearCart] = useClearCartMutation();
     const [selectedPayment, setSelectedPayment] = useState("card");
 
+    const guestInfo = typeof window !== "undefined"
+      ? JSON.parse(localStorage.getItem("guestInfo") || "null")
+      : null
+
+    const activeUser = user || guestInfo  // use whichever is available
+
     const handlePlaceOrder = async () => {
-      if (!user) return alert("User not loaded.");
+      if (!activeUser) return alert("Please add your delivery details first.")
 
       try {
+
+        const shippingAddress = user
+        ? user.address
+        : guestInfo?.address
+
         // 1️⃣ Create order first (status = PENDING)
         const orderData = {
           items: cart.items,
           shippingMethod: selectedShipping,
           pickupAddress: selectedPickupStation,
-          shippingAddress: user.address,
+          shippingAddress,
           paymentMethod: selectedPayment, 
           paymentStatus: "pending",
           itemsTotal: cart.totalPrice,
-          discountTotal: cart.totalPrice - cart.totalDiscountedPrice,
           shippingFee: calculateStandardFee(cart),
-          totalAmount: cart.totalDiscountedPrice,
+          totalAmount: cart.totalPrice,
+          ...(!user && { guestInfo }),
         };
 
-        const orderRes = await createOrder(orderData).unwrap();
-        const orderId = orderRes.order._id;
+        // Use the right order endpoint
+        const orderRes = user
+          ? await createOrder(orderData).unwrap()
+          : await createGuestOrder(orderData).unwrap()
 
-        // 2️⃣ Initialize payment
+        const orderId = orderRes.order._id
+
+        // ← add this for guests
+        if (!user) {
+          const existing = JSON.parse(localStorage.getItem("guestOrderIds") || "[]")
+          localStorage.setItem("guestOrderIds", JSON.stringify([...existing, orderId]))
+        }
+
+        // Initialize payment
+        const email = user ? user.email : guestInfo?.email
         const paymentRes = await initializePayment({
-          email: user.email,
-          amount: cart.totalDiscountedPrice,
+          email,
+          amount: cart.totalPrice,
           channels: ["card", "bank_transfer"],
           metadata: { orderId },
           callback_url: `${window.location.origin}/payment/success`
-        }).unwrap();
+        }).unwrap()
 
+        window.location.href = paymentRes.data.authorization_url
 
-        // 3️⃣ Redirect user to Paystack
-        console.log("AUTH URL:", paymentRes.data.authorization_url);
-
-        window.location.href = paymentRes.data.authorization_url;
-
-      } catch (err) {
-        console.error(err);
-        alert("Failed to place order. Try again.");
-      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to place order. Try again.");
+    }
     };
 
 
@@ -85,21 +104,21 @@ export default function CheckoutPage({ onClose }) {
 
       {/* NOTICE */}
       <div className="flex mx-[16px] items-center justify-center border border-black/20 rounded-[2px] p-[4px] mb-[16px]">
-        <div className="flex items-center gap-[6px] text-[#1A7709]">
-          <Check size={19} />
-          <span className="text-[10px] font-inter font-medium">Get ₦1,500 for delay</span>
-          <div className="w-[4px] h-[4px] bg-[#1A7709] rounded-full" />
-          <span className="text-[10px] font-inter font-medium">All data safeguarded</span>
+        <div className="flex items-center gap-1 text-[#005770]">
+          <CreditCardIcon size={16} />
+          <span className="text-[10px] font-inter font-medium">Secure payment via paystack</span>
+          {/* <div className="w-[4px] h-[4px] bg-[#005770] rounded-full" />
+          <span className="text-[10px] font-inter font-medium">All data safeguarded</span> */}
         </div>
       </div>
 
       {/* Address */}
       <div className="mx-[16px] flex flex-col gap-[8px] mb-[16px]">
-        <p className="text-[14px] font-inter font-medium text-black">{user?.fullName}</p>
-        <p className="text-[14px] font-inter text-black/70">{user?.phone}</p>
-        <p className="text-[14px] font-inter font-medium text-[#005770]">{user?.address?.street}</p>
+        <p className="text-[14px] font-inter font-medium text-black">{activeUser?.fullName}</p>
+        <p className="text-[14px] font-inter text-black/70">{activeUser?.phone}</p>
+        <p className="text-[14px] font-inter font-medium text-[#005770]">{activeUser?.address?.street}</p>
         <p className="text-[14px] font-inter text-black">
-          {user?.address?.district}, {user?.address?.city}
+          {activeUser?.address?.district}, {activeUser?.address?.city}
           <br /> Nigeria
         </p>
       </div>
@@ -121,18 +140,18 @@ export default function CheckoutPage({ onClose }) {
                 alt={item.name}
                 className="object-cover rounded-[4px]"
               />
-              {item.quantity < 20 && (
+              {/* {item.quantity < 20 && (
                 <div className="absolute inset-x-[2px] bottom-[2px] bg-black/50 rounded-[47px] flex items-center justify-center px-1 py-[1px]">
                   <p className="text-[8px] text-white font-montserrat font-bold text-center break-words">
                     ALMOST SOLD OUT
                   </p>
                 </div>
-              )}
+              )} */}
             </div>
 
             <div className="flex items-center gap-[4px] mt-[4px]">
-              <p className="text-[10px] font-inter font-semibold">₦{formatPrice(item.discountedPrice)}</p>
-              <p className="text-[8px] text-black/50 line-through">₦{formatPrice(item.price)}</p>
+              <p className="text-[10px] font-inter font-semibold">₦{formatPrice(item.price)}</p>
+              {/* <p className="text-[8px] text-black/50 line-through">₦{formatPrice(item.price)}</p> */}
             </div>
 
             {item.quantity > 1 && (
@@ -150,15 +169,16 @@ export default function CheckoutPage({ onClose }) {
       {/* Standard */}
       <div className="mx-[16px] mb-[8px]">
         <div className="flex items-start gap-[8px]">
-          {selectedShipping === "standard" ? (
-            <Image src="/checkout-indicator.svg" width={16} height={16} alt="Selected" />
-          ) : (
-            <div className="w-[16px] h-[16px] border border-black/50 rounded-full"
-                 onClick={() => setSelectedShipping("standard")} />
-          )}
-
+          <div className="mt-[4px] flex-shrink-0">
+            {selectedShipping === "standard" ? (
+              <Image src="/checkout-indicator.svg" width={14} height={14} alt="Selected" />
+            ) : (
+              <div className="w-[14px] h-[14px] border border-black/50 rounded-full"
+                  onClick={() => setSelectedShipping("standard")} />
+            )}
+          </div>
           <div>
-            <p className="text-[14px] font-inter font-medium text-[#1A7709]">Standard: FREE within Abuja</p>
+            <p className="text-[14px] font-inter font-medium text-[#005770]">Standard: FREE within Abuja</p>
             <p className="text-[12px] font-inter text-black">Delivery within 24 hours</p>
             <p className="text-[10px] text-black/50">Courier: GIG</p>
           </div>
@@ -166,7 +186,7 @@ export default function CheckoutPage({ onClose }) {
       </div>
 
       {/* Pickup */}
-      <div
+      {/* <div
         className="flex items-start gap-[8px] mx-[16px] cursor-pointer"
         onClick={() => {
           setSelectedShipping("pickup");
@@ -183,7 +203,7 @@ export default function CheckoutPage({ onClose }) {
           <p className="text-[14px] font-inter font-medium text-[#1A7709]">Pickup available</p>
           <p className="text-[12px] font-inter text-black">Choose a station</p>
         </div>
-      </div>
+      </div> */}
 
       {selectedPickupStation && (
         <div className="mx-[16px] mt-[4px] p-[12px] bg-black/5 rounded-[6px]">
@@ -197,7 +217,7 @@ export default function CheckoutPage({ onClose }) {
       <div className="h-[4px] bg-[#EEEEEE] w-full my-[16px]" />
 
       {/* Payment Method */}
-      <p className="text-[14px] mx-[16px] font-inter font-medium mb-[8px]">Payment Method</p>
+      <p className="text-[14px] mx-[16px] font-inter font-medium mb-[8px]">Payment methods (via paystack)</p>
 
       <div className="mx-[16px] flex flex-col gap-[12px]">
         {/* Card */}
@@ -206,11 +226,11 @@ export default function CheckoutPage({ onClose }) {
           onClick={() => setSelectedPayment("card")}
         >
           {selectedPayment === "card" ? (
-            <Image src="/checkout-indicator.svg" width={16} height={16} alt="selected" />
+            <Image src="/checkout-indicator.svg" width={14} height={14} alt="selected" />
           ) : (
-            <div className="w-[16px] h-[16px] border rounded-full border-black/50" />
+            <div className="w-[14px] h-[14px] border rounded-full border-black/50" />
           )}
-          <p className="text-[14px] font-inter font-medium">Card Payment</p>
+          <p className="text-[14px] font-inter font-medium">Card payment</p>
         </div>
 
         {/* Bank Transfer */}
@@ -223,7 +243,7 @@ export default function CheckoutPage({ onClose }) {
           ) : (
             <div className="w-[16px] h-[16px] border rounded-full border-black/50" />
           )}
-          <p className="text-[14px] font-inter font-medium">Bank Transfer</p>
+          <p className="text-[14px] font-inter font-medium">Bank transfer</p>
         </div>
       </div>
 
@@ -232,13 +252,13 @@ export default function CheckoutPage({ onClose }) {
         <div className="fixed bottom-0 left-0 w-full h-[64px] bg-white border-t border-black/10 flex justify-center items-center z-50">
           <div className="flex items-center justify-between w-[90%] max-w-[400px]">
             <div>
-              <p className="text-[20px] font-inter font-semibold">₦{formatPrice(cart.totalDiscountedPrice)}</p>
+              <p className="text-[18px] font-inter font-semibold">₦{formatPrice(cart.totalPrice)}</p>
             </div>
 
             <motion.button
               whileTap={{ scale: 0.97 }}
               onClick={handlePlaceOrder}
-              className="w-[200px] h-[48px] bg-[#005770] rounded-[44px] text-white font-inter font-semibold text-[20px]"
+              className="px-4 h-[48px] bg-[#005770] rounded-[44px] text-white font-inter font-semibold text-[18px]"
             >
               Submit order ({cart.totalQuantity})
             </motion.button>

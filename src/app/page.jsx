@@ -35,7 +35,7 @@ export default function HomePage() {
                 className="relative flex flex-col items-center pb-2"
               >
                 <span
-                  className={`font-[600] font-montserrat text-[16px] ${
+                  className={`font-[600] font-montserrat text-[14px] ${
                     isActive ? "text-black" : "text-black/50"
                   }`}
                 >

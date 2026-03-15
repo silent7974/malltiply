@@ -21,6 +21,15 @@ export const orderApi = createApi({
       invalidatesTags: ['Order'],
     }),
 
+    createGuestOrder: builder.mutation({
+      query: (orderData) => ({
+        url: '/orders/guest',
+        method: 'POST',
+        body: orderData,
+      }),
+      invalidatesTags: ['Order'],
+    }),
+
     getOrders: builder.query({
       query: () => '/orders',
       providesTags: ['Order'],
@@ -43,15 +52,25 @@ export const orderApi = createApi({
       providesTags: ["Order"],
     }),
 
+    getGuestOrders: builder.mutation({
+      query: (orderIds) => ({
+        url: '/orders/guest-lookup',
+        method: 'POST',
+        body: { orderIds },
+      }),
+    }),
+
   }),
 });
 
 
 export const { 
-  useCreateOrderMutation, 
+  useCreateOrderMutation,
+  useCreateGuestOrderMutation, 
   useGetOrdersQuery, 
   useGetOrderByIdQuery, 
   useUpdateOrderStatusMutation, 
-  useGetBuyerOrdersQuery
+  useGetBuyerOrdersQuery,
+  useGetGuestOrdersMutation
   
 } = orderApi

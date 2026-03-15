@@ -100,7 +100,7 @@ export default function SellerSignUpNormal() {
 
         <div className="mt-[16px] text-center">
           <h1 className="text-[24px] font-semibold">Sign up</h1>
-          <p className="text-[14px] text-black/50 mt-[8px]">Let’s get you setup in minutes</p>
+          <p className="text-[14px] text-black/50 mt-[8px]">Register to list and manage products on Malltiply.</p>
         </div>
 
         {/* Full Name */}
@@ -192,7 +192,7 @@ export default function SellerSignUpNormal() {
               className="bg-white w-full rounded-t-[16px] max-h-[60vh] overflow-y-auto scrollbar-hide px-[16px] pb-[36px]"
               onClick={(e) => e.stopPropagation()}
             >
-              <h2 className="text-[14px] text-center font-semibold mb-[16px] pt-[24px] sticky top-0 bg-white pb-2">
+              <h2 className="text-[14px] text-center font-semibold mb-[16px] pt-[24px] pb-2 sticky top-0 bg-white pb-2">
                 Select District
               </h2>
               <div className="flex flex-col gap-[8px]">
@@ -220,7 +220,7 @@ export default function SellerSignUpNormal() {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full mt-[24px] bg-[#005770] text-white py-[12px] rounded-[4px]"
+          className="w-full mt-[24px] bg-[#005770] text-white text-[12px] font-[Inter] font-semibold py-[12px] rounded-[4px]"
         >
           {isLoading ? 'Creating account...' : 'Create my seller account'}
         </button>

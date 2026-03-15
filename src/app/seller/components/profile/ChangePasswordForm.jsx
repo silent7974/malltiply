@@ -89,7 +89,8 @@ export default function ChangePasswordForm({ email }) {
 
   // run validation live on every form change
   useEffect(() => {
-    validate();
+    const handler = setTimeout(() => validate(), 200); // debounce
+    return () => clearTimeout(handler);
   }, [form]);
 
   const handleSubmit = async () => {
@@ -132,97 +133,107 @@ export default function ChangePasswordForm({ email }) {
         shadow-[-2px_2px_4px_rgba(0,0,0,0.25)] 
         flex flex-col mt-8 mx-auto px-[12px] py-[16px]"
       >
-        {/* Title */}
-        <h3 className="text-[16px] text-center font-inter text-black/50 mb-[12px]">
-          Change Password
-        </h3>
-
-        {/* Old password */}
-        <label className="text-[12px] font-inter font-medium text-[#000000] mb-[4px]">
-          Confirm old password
-        </label>
-        <input
-          type="password"
-          name="oldPassword"
-          value={form.oldPassword}
-          onChange={handleChange}
-          className="w-full h-[32px] bg-[#EEEEEE] px-[12px] text-[12px] font-inter font-medium text-[#000000]/80 rounded-[4px]"
-        />
-        {errors.oldPassword && (
-          <p className="text-black/30 text-[8px] mt-1">{errors.oldPassword}</p>
-        )}
-
-        {/* New password */}
-        <label className="text-[12px] font-inter font-medium text-[#000000] mt-[8px] mb-[4px]">
-          New password
-        </label>
-        <input
-          type="password"
-          name="password"
-          value={form.password}
-          onChange={handleChange}
-          className="w-full h-[32px] bg-[#EEEEEE] px-[12px] text-[12px] font-inter font-medium text-[#000000]/80 rounded-[4px]"
-        />
-
-        {/* Validation logs */}
-        <div className="mt-1 space-y-1">
-          <p
-            className={`text-[8px] ${
-              validations.length ? "text-[#1A7709]" : "text-black/30"
-            }`}
+        <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit();
+            }}
           >
-            Must be at least 8 characters
-          </p>
-          <p
-            className={`text-[8px] ${
-              validations.complexity ? "text-[#1A7709]" : "text-black/30"
-            }`}
-          >
-            Must include letters, numbers, and symbols
-          </p>
-          <p
-            className={`text-[8px] ${
-              validations.emailCheck ? "text-[#1A7709]" : "text-black/30"
-            }`}
-          >
-            Should not contain your email prefix
-          </p>
-          <p
-            className={`text-[8px] ${
-              validations.notSameAsOld ? "text-[#1A7709]" : "text-black/30"
-            }`}
-          >
-            Must not be the same as old password
-          </p>
-        </div>
+            {/* Title */}
+            <h3 className="text-[16px] text-center font-inter text-black/50 mb-[12px]">
+              Change Password
+            </h3>
 
-        {/* Confirm password */}
-        <label className="text-[12px] font-inter font-medium text-[#000000] mt-[8px] mb-[4px]">
-          Confirm password
-        </label>
-        <input
-          type="password"
-          name="confirmPassword"
-          value={form.confirmPassword}
-          onChange={handleChange}
-          className="w-full h-[32px] bg-[#EEEEEE] px-[12px] text-[12px] font-inter font-medium text-[#000000]/80 rounded-[4px]"
-        />
-        {errors.confirmPassword && (
-          <p className="text-black/30 text-[8px] mt-1">{errors.confirmPassword}</p>
-        )}
+            {/* Old password */}
+            <label className="text-[12px] font-inter font-medium text-[#000000] mb-[4px]">
+              Confirm old password
+            </label>
+            <input
+              type="password"
+              name="oldPassword"
+              value={form.oldPassword}
+              onChange={handleChange}
+              autoComplete="current-password"
+              className="w-full h-[32px] bg-[#EEEEEE] px-[12px] text-[12px] font-inter font-medium text-[#000000]/80 rounded-[4px]"
+            />
+            {errors.oldPassword && (
+              <p className="text-black/30 text-[8px] mt-1">{errors.oldPassword}</p>
+            )}
 
-        {/* Submit button */}
-        <button
-          onClick={handleSubmit}
-          disabled={!isFormValid || loading}
-          className={`mt-[12px] w-full h-[32px] rounded-[4px] text-white font-inter font-semibold text-[12px] ${
-            !isFormValid || loading
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-[#2A9CBC]"
-          }`}
-        >
-          {loading ? "Updating..." : "Update password"}
-        </button>
+            {/* New password */}
+            <label className="text-[12px] font-inter font-medium text-[#000000] mt-[8px] mb-[4px]">
+              New password
+            </label>
+            <input
+              type="password"
+              name="password"
+              value={form.password}
+              onChange={handleChange}
+              autoComplete="new-password"
+              className="w-full h-[32px] bg-[#EEEEEE] px-[12px] text-[12px] font-inter font-medium text-[#000000]/80 rounded-[4px]"
+            />
+
+            {/* Validation logs */}
+            <div className="mt-1 space-y-1">
+              <p
+                className={`text-[8px] ${
+                  validations.length ? "text-[#1A7709]" : "text-black/30"
+                }`}
+              >
+                Must be at least 8 characters
+              </p>
+              <p
+                className={`text-[8px] ${
+                  validations.complexity ? "text-[#1A7709]" : "text-black/30"
+                }`}
+              >
+                Must include letters, numbers, and symbols
+              </p>
+              <p
+                className={`text-[8px] ${
+                  validations.emailCheck ? "text-[#1A7709]" : "text-black/30"
+                }`}
+              >
+                Should not contain your email prefix
+              </p>
+              <p
+                className={`text-[8px] ${
+                  validations.notSameAsOld ? "text-[#1A7709]" : "text-black/30"
+                }`}
+              >
+                Must not be the same as old password
+              </p>
+            </div>
+
+            {/* Confirm password */}
+            <label className="text-[12px] font-inter font-medium text-[#000000] mt-[8px] mb-[4px]">
+              Confirm password
+            </label>
+            <input
+              type="password"
+              name="confirmPassword"
+              value={form.confirmPassword}
+              onChange={handleChange}
+              autoComplete="new-password"
+              className="w-full h-[32px] bg-[#EEEEEE] px-[12px] text-[12px] font-inter font-medium text-[#000000]/80 rounded-[4px]"
+            />
+            {errors.confirmPassword && (
+              <p className="text-black/30 text-[8px] mt-1">{errors.confirmPassword}</p>
+            )}
+
+              {/* Submit button */}
+              <button
+                onClick={handleSubmit}
+                disabled={!isFormValid || loading}
+                className={`mt-[12px] w-full h-[32px] rounded-[4px] text-white font-inter font-semibold text-[12px] ${
+                  !isFormValid || loading
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-[#2A9CBC]"
+                }`}
+              >
+                {loading ? "Updating..." : "Update password"}
+              </button>
+        </form>
 
         {/* Status message */}
         {status && (

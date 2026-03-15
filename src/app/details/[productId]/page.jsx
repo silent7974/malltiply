@@ -5,7 +5,11 @@ import { useGetProductByIdQuery } from "@/redux/services/productApi";
 import { ChevronDown, Upload, Ruler, ChevronRight } from "lucide-react";
 import productCategoryMap from '@/lib/data/productCategoryMap';
 import FloatingCart from "@/app/components/FloatingCart";
+import Link from "next/link"
+import { ShoppingCart } from "lucide-react"
+import { useSelector } from "react-redux"
 import AddToCartButton from "@/app/components/AddToCartButton";
+import Spinner from "@/app/components/Spinner";
 
 export default function ProductDetailsPage({ params }) {
   const unwrappedParams = React.use(params);
@@ -13,30 +17,50 @@ export default function ProductDetailsPage({ params }) {
   const { data: product, isLoading, isError } = useGetProductByIdQuery(productId);
 
   // STATE
-
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [expanded, setExpanded] = useState(false);
-  const [isOverflowing, setIsOverflowing] = useState(false);
   const [selectedColor, setSelectedColor] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedQuantity, setSelectedQuantity] = useState(1);
 
-  const descRef = useRef(null);
+  const totalQuantity = useSelector(state => state.cart.totalQuantity)
+
   const carouselRef = useRef(null);
 
-  // =======================
-  // MEMOIZED VALUES
-  // =======================
-  const mergedVariants = useMemo(() => {
-    const baseVariants = (product?.variants || []).map(v => ({
-      ...v,
-      price: v.price ?? product?.discountedPrice,
-      sku: v.sku ?? product?.sku,
-      quantity: v.quantity ?? product?.quantity,
-      isBase: true, // mark base variants so we know later
-    }));
+  // Add these to your existing state/refs
+  const navbarRef = useRef(null)
+  const [showStickyHeader, setShowStickyHeader] = useState(false)
 
-    const extraVariants = product?.variantColumns || [];
+  useEffect(() => {
+    // Observe the main navbar
+    const navbar = document.querySelector("nav") // targets your Navbar component
+    if (!navbar) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setShowStickyHeader(!entry.isIntersecting)
+      },
+      { threshold: 0 }
+    )
+
+    observer.observe(navbar)
+    return () => observer.disconnect()
+  }, [])
+
+  // MEMOIZED VALUES
+  const mergedVariants = useMemo(() => {
+  const rawVariants = product?.variants
+  const baseVariants = (
+    Array.isArray(rawVariants) ? rawVariants :
+    rawVariants && typeof rawVariants === 'object' ? [rawVariants] : // ← handle object case
+    []
+  ).map(v => ({
+    ...v,
+    price: v.price ?? product?.price,
+    sku: v.sku ?? product?.sku,
+    quantity: v.quantity ?? product?.quantity,
+    isBase: true,
+  }))
+    const extraVariants = Array.isArray(product?.variantColumns) ? product.variantColumns : []
     return [...baseVariants, ...extraVariants];
   }, [product]);
 
@@ -75,33 +99,22 @@ export default function ProductDetailsPage({ params }) {
   }, [mergedVariants, selectedColor, selectedSize, variantType]);
 
   // Make sure we always have correct display values
-  const displayPrice = activeVariant?.price ?? product?.discountedPrice ?? product?.price ?? 0;
   const displayQuantity = activeVariant?.quantity ?? product?.quantity ?? 1;
   const displaySku = activeVariant?.sku ?? product?.sku ?? "N/A";
 
-  // =======================
   // EFFECTS
-  // =======================
   useEffect(() => {
-    if (product?.variants?.[0]?.color) {
-      setSelectedColor(product.variants[0].color);
+    if (mergedVariants[0]?.color) {
+      setSelectedColor(mergedVariants[0].color)
     }
-  }, [product]);
+  }, [mergedVariants])
 
   useEffect(() => {
     setSelectedSize(colorVariants[0]?.size ?? null);
     setSelectedQuantity(1);
   }, [colorVariants]);
 
-  useEffect(() => {
-    if (descRef.current) {
-      setIsOverflowing(descRef.current.scrollHeight > descRef.current.clientHeight);
-    }
-  }, [product]);
-
-  // =======================
   // HANDLERS
-  // =======================
   const handleQuantityChange = (type) => {
     if (type === "plus" && selectedQuantity < displayQuantity) {
       setSelectedQuantity(prev => prev + 1);
@@ -128,7 +141,7 @@ export default function ProductDetailsPage({ params }) {
     if (endX - startX > 50 && currentIndex > 0) setCurrentIndex(prev => prev - 1);
   };
 
-  if (isLoading) return <p className="flex items-center justify-center mt-70">Loading...</p>;
+  if (isLoading) return <Spinner/>
   if (isError || !product) return <p className="flex items-center justify-center mt-70">Product not found</p>;
 
   const images = product.images || [];
@@ -138,7 +151,44 @@ export default function ProductDetailsPage({ params }) {
 
   return (
     <div className="w-full">
-      <FloatingCart />
+
+      {/* Sticky mini header — appears when main Navbar scrolls out of view */}
+      <div
+        className={`fixed top-0 left-0 w-full z-40 bg-white border-b border-black/10 px-4 transition-transform duration-300 ${
+          showStickyHeader ? "translate-y-0" : "-translate-y-full"
+        }`}
+        style={{ height: "48px" }}
+      >
+        <div className="flex items-center justify-between h-full">
+          {/* Product name — truncated */}
+          <p className="text-[13px] font-inter font-semibold text-black truncate max-w-[70%]">
+            Feets Allure
+          </p>
+
+          {/* Cart button */}
+          <Link href="/cart" className="relative">
+            <ShoppingCart size={22} className="text-black" />
+            {totalQuantity > 0 && (
+              <div
+                className="absolute flex items-center justify-center"
+                style={{
+                  top: "-4px", right: "-6px",
+                  width: "18px", height: "14px",
+                  borderRadius: "8px",
+                  backgroundColor: "#005770",
+                  color: "#ffffff",
+                  fontSize: "8px",
+                  fontFamily: "Inter",
+                  fontWeight: 600,
+                }}
+              >
+                {totalQuantity}
+              </div>
+            )}
+          </Link>
+        </div>
+      </div>
+      {/* <FloatingCart /> */}
       {/* Image Carousel */}
 
       <div
@@ -164,94 +214,98 @@ export default function ProductDetailsPage({ params }) {
         </div>
 
         {/* Upload icon */}
-        <div className="absolute top-6 right-3 w-9 h-9 flex items-center justify-center bg-black/80 rounded-full cursor-pointer">
-          <Upload size={20} color="#ffffff" />
+        <div className="absolute top-6 right-2 w-8 h-8 flex items-center justify-center bg-black/80 rounded-full cursor-pointer">
+          <Upload size={14} color="#ffffff" />
         </div>
 
         {/* Image indicator */}
         {images.length > 1 && (
-          <div className="absolute bottom-6 right-3 flex items-center justify-center px-3 h-6 bg-black/80 rounded-[32px]">
-            <p className="text-white font-inter font-semibold text-[16px]">
-              {currentIndex + 1}/{images.length}
-            </p>
+          <div className="absolute bottom-6 left-0 right-0 flex justify-center items-center gap-[6px]">
+            {images.map((_, idx) => (
+              <div
+                key={idx}
+                className="rounded-full transition-all duration-300"
+                style={{
+                  width: currentIndex === idx ? "8px" : "6px",
+                  height: currentIndex === idx ? "8px" : "6px",
+                  backgroundColor: currentIndex === idx ? "#ffffff" : "rgba(255,255,255,0.5)",
+                }}
+              />
+            ))}
           </div>
         )}
       </div>
 
       {/* Product Info */}
       <div className="px-4">
+
+        <p className="text-[12px] font-inter font-medium text-black/50 uppercase tracking-widest">
+          Feets Allure
+        </p>
         {/* Product name + description */}
-        <div className="flex items-start gap-1">
-          <p
-            ref={descRef}
-            className={`text-[16px] font-inter text-black leading-snug ${expanded ? "" : "line-clamp-2"}`}
-          >
-            {product.productName} – {product.description}
+        <div className="flex flex-col gap-[16px]">
+          <p className="text-[16px] font-inter font-semibold text-black leading-snug">
+            {product.productName}
           </p>
-          {!expanded && isOverflowing && (
-            <button onClick={() => setExpanded(true)} className="flex-shrink-0 mt-1">
-              <ChevronDown size={13} color="rgba(0,0,0,0.7)" />
-            </button>
-          )}
+          <p className="text-[14px] font-inter text-black leading-snug">
+            {product.description}
+          </p>
         </div>
 
         {/* Prices */}
         <div className="flex items-center justify-between mt-4">
           <div className="flex items-center gap-3">
-            <p className="text-[20px] font-inter font-semibold text-black">
-              ₦{formatPrice(displayPrice)}
-            </p>
-            <p className="text-[18px] font-inter font-light text-black/50 line-through">
+            <p className="text-[16px] font-inter font-semibold text-black">
               ₦{formatPrice(product.price)}
             </p>
           </div>
-          {product.discount > 0 && (
-            <div className="w-[45px] h-[22px] flex items-center justify-center rounded-[4px] border border-[#D8A31B]">
-              <p className="text-[16px] font-inter font-medium text-[#D8A31B]">
-                -{product.discount}%
-              </p>
-            </div>
-          )}
         </div>
 
         {/* Color Selector */}
         {allColors.length > 0 && (
-          <div className="mt-4">
-            <h3 className="font-[Montserrat] font-medium text-[20px] text-black mb-3">Color</h3>
-            <div className="flex flex-wrap gap-4">
-              {allColors.map((color, idx) => (
-                <div key={idx} className="flex items-center gap-3 cursor-pointer"
-                     onClick={() => handleColorSelect(color)}>
+        <div className="mt-4">
+          <h3 className="font-[Montserrat] font-semibold text-[16px] text-black mb-3">Color</h3>
+          <div className="flex flex-wrap gap-4">
+            {allColors.map((color, idx) => {
+              const isSelected = selectedColor?.toLowerCase() === color.toLowerCase()
+              return (
+                <div key={idx} className="flex flex-col items-center gap-2 cursor-pointer"
+                    onClick={() => handleColorSelect(color)}>
                   <div style={{
-                    backgroundColor: colorMap[color.toLowerCase()] || color,
-                    width: "22px", height: "22px", borderRadius: "50%",
-                    border: selectedColor?.toLowerCase() === color.toLowerCase()
-                      ? "2px solid black"
-                      : "1px solid rgba(0,0,0,0.4)"
-                  }} />
-                  <span className="text-[13px] font-[Inter] text-black">{color}</span>
+                    width: "28px", height: "28px", borderRadius: "50%",
+                    border: isSelected ? "1.5px solid black" : "1.5px solid transparent",
+                    padding: "2.5px",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                  }}>
+                    <div style={{
+                      backgroundColor: colorMap[color.toLowerCase()] || color,
+                      width: "100%", height: "100%", borderRadius: "50%",
+                    }} />
+                  </div>
+                  <span className="text-[12px] font-[Inter] text-black">{color}</span>
                 </div>
-              ))}
-            </div>
+              )
+            })}
           </div>
-        )}
+        </div>
+      )}
 
         {/* Size / Measurement / Tech Spec Selector */}
         {variantType && colorVariants.some(v => v[variantType]) && (
           <div className="mt-4">
             <div className="flex justify-between items-center mb-3">
-              <h3 className="font-[Montserrat] font-medium text-[20px] text-black">
+              <h3 className="font-[Montserrat] font-semibold text-[16px] text-black">
                 {variantType === "size" ? "Size" :
                  variantType === "measurement" ? "Measurement" : "Spec"}
               </h3>
-              {variantType === "size" && (
-                <button className="flex items-center justify-center gap-[2px] w-[115px] h-[24px] rounded-[16px] bg-[#EEEEEE] px-[8px]">
-                  <Ruler size={16} className="text-black" />
-                  <span className="text-[16px] font-inter text-black">Size Guide</span>
+              {/* {variantType === "size" && (
+                <button className="flex items-center justify-center gap-[4px] w-[108px] h-[24px] rounded-[16px] bg-[#EEEEEE] px-[8px]">
+                  <Ruler size={14} className="text-black" />
+                  <span className="text-[14px] font-inter text-black">Size Guide</span>
                 </button>
-              )}
+              )} */}
             </div>
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-3">
               {colorVariants.map((variant, idx) => {
                 const value = variantType === "size" ? variant.size :
                               variantType === "measurement" ? variant.measurement :
@@ -260,7 +314,7 @@ export default function ProductDetailsPage({ params }) {
                   <button
                     key={idx}
                     onClick={() => handleVariantSelect(value)}
-                    className={`px-4 py-1 rounded-[24px] border text-[16px] font-inter font-medium
+                    className={`px-4 py-1 rounded-[24px] border text-[14px] font-inter font-medium
                       ${selectedSize === value
                         ? "border-black border-[1px]"
                         : "border-black/50 border-[0.5px]"}`}
@@ -274,8 +328,8 @@ export default function ProductDetailsPage({ params }) {
         )}
 
         {/* Quantity */}
-        <div className="flex justify-between items-center">
-          <div className="mt-4 flex gap-3">
+        <div className="flex justify-between items-center mt-4">
+          <div className="flex gap-3 items-center">
             <p className="text-[16px] font-medium font-inter text-black">Qty</p>
 
             {/* Quantity Input */}
@@ -298,7 +352,7 @@ export default function ProductDetailsPage({ params }) {
             </div>
           </div>
           {/* Low Stock Badge */}
-            {displayQuantity < 20 && (
+            {/* {displayQuantity < 20 && (
               <div
                 className="flex items-center justify-center"
                 style={{
@@ -315,56 +369,43 @@ export default function ProductDetailsPage({ params }) {
                   {isOutOfStock ? "Out of stock" : `${displayQuantity} left`}
                 </span>
               </div>
-            )}
-        </div>
-
-
-        {/* SKU + Available Quantity */}
-        <div className="mt-4 text-sm text-black/70">
-          <p>SKU: {displaySku}</p>
-          <p>Available: {displayQuantity}</p>
+            )} */}
+          <p>{displayQuantity} available</p>
         </div>
       </div>
 
-      {/* ======================= */}
       {/* DELIVERY & SHIPPING INFO */}
-      {/* ======================= */}
       <div className="mt-4 w-full h-[4px] bg-[#EEEEEE]" />
 
         <div className="px-4 mt-4">
           {/* Delivery within 24 hours */}
           <a href="/delivery" className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <img src="/truck-green.svg" alt="Delivery Icon" className="w-6 h-6" />
-              <span className="text-[16px] font-inter font-normal text-[#1A7709]">
-                Delivery within 24 hours
+              <img src="/truck-green.svg" alt="Delivery Icon" className="w-4 h-4" />
+              <span className="text-[14px] font-inter font-normal text-[#005770]">
+               Abuja orders arrive within 24 hours
               </span>
             </div>
-            <ChevronRight size={13} color="rgba(0,0,0,0.7)" />
+            <ChevronRight size={13} color="#005770" />
           </a>
 
           {/* Shipping fee */}
-          <p className="mt-[22px] text-[16px] font-inter font-medium text-black">
+          <p className="mt-[22px] text-[14px] font-inter font-medium text-black">
             Shipping fee:{" "}
             <span className="font-normal text-black/50">Calculated at checkout</span>
           </p>
 
           {/* Courier company */}
-          <p className="mt-2 text-[16px] font-inter font-medium text-black">
+          <p className="mt-2 text-[14px] font-inter font-medium text-black">
             Courier company:{" "}
             <span className="font-normal text-black/50">GIG</span>
           </p>
 
-          {/* Late delivery credit */}
-          <p className="mt-2 text-[16px] font-inter font-normal text-black/50">
-            Get a ₦1,500 credit for late delivery
-          </p>
-
           {/* Internal Separator */}
-          <div className="mt-4 border-t border-black/20" />
+          {/* <div className="mt-4 border-t border-black/20" /> */}
 
           {/* Returns Section */}
-          <a href="/returns" className="flex items-center justify-between mt-4">
+          {/* <a href="/returns" className="flex items-center justify-between mt-4">
             <div className="flex items-center gap-2">
               <img src="/return-green.svg" alt="Returns Icon" className="w-6 h-6" />
               <span className="text-[16px] font-inter font-normal text-[#1A7709]">
@@ -372,50 +413,17 @@ export default function ProductDetailsPage({ params }) {
               </span>
             </div>
             <ChevronRight size={13} color="rgba(0,0,0,0.7)" />
-          </a>
+          </a> */}
         </div>
 
         {/* External Separator */}
         <div className="mt-4 w-full h-[4px] bg-[#EEEEEE]" />
 
-        {/* Shopping Security Section */}
-        <div className="px-4 mt-4">
-          <a href="/security" className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <img src="/shield-green.svg" alt="Security Icon" className="w-6 h-6" />
-              <span className="text-[16px] font-inter font-normal text-[#1A7709]">
-                Shopping Security
-              </span>
-            </div>
-            <ChevronRight size={13} color="rgba(0,0,0,0.7)" />
-          </a>
-
-          {/* Dot Listing (2 columns) */}
-          <div className="mt-2 flex justify-between">
-            <span className="text-[16px] font-inter font-normal text-black/50">
-              • Safe payments
-            </span>
-            <span className="text-[16px] font-inter font-normal text-black/50">
-              • Verified sellers
-            </span>
-          </div>
-          <div className="mt-4 flex justify-between">
-            <span className="text-[16px] font-inter font-normal text-black/50">
-              • Secure privacy
-            </span>
-            <span className="text-[16px] font-inter font-normal text-black/50">
-              • Buyer protection
-            </span>
-          </div>
-      </div>
-
-      {/* Closing Separator */}
-      <div className="mt-4 w-full h-[4px] bg-[#EEEEEE]" />
+    
 
       {/* ADD TO CART SECTION */}
       <AddToCartButton
         product={product}
-        displayPrice={displayPrice}
         Originalprice={product.price}
         selectedColor={selectedColor}
         selectedSize={selectedSize}
@@ -441,4 +449,5 @@ const colorMap = {
   green: "#008000",
   gold: "#FFD700",
   silver: "#C0C0C0",
+  burgundy: "#5c2b2e",
 };

@@ -96,7 +96,7 @@ export default function SellerSignUpPremium() {
           Premium seller signup
         </h1>
         <p className="text-[12px] text-center text-black/50 mt-[4px]">
-          Create a branded store and sell with higher visibility on Malltiply
+          Premium sellers get branded store pages and priority curation.
         </p>
 
         {/* Basic Fields */}
@@ -173,9 +173,9 @@ export default function SellerSignUpPremium() {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full mt-[24px] bg-[#005770] text-white py-[12px] rounded-[4px]"
+          className="w-full mt-[24px] bg-[#005770] text-white text-[12px] font-[Inter] font-semibold py-[12px] rounded-[4px]"
         >
-          {isLoading ? 'Creating account...' : 'Create Premium Account'}
+          {isLoading ? 'Creating account...' : 'Create premium account'}
         </button>
 
         {/* District Modal */}

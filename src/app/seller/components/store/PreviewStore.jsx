@@ -200,7 +200,7 @@ export default function PreviewStore({ onClose }) {
           </div>
         </div>
 
-        <CategoriesTabs />
+        <CategoriesTabs storeId={store?._id} />
 
         <PreviewStory />
 

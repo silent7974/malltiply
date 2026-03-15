@@ -174,4 +174,4 @@ export const {
   
 } = storeSlice.actions;
 
-export default storeSlice.reducer;
+export default storeSlice.reducer

@@ -3,6 +3,7 @@
 import React, { useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import formatPrice from "@/lib/utils/formatPrice";
 
 const STATUS_STEPS = ["pending", "processing", "shipped", "delivered"];
 
@@ -63,7 +64,7 @@ export default function OrderDetails({ order, onClose }) {
 
         {/* Modal */}
         <motion.div
-          className="fixed bottom-0 left-0 right-0 z-50 pb-[48px] bg-white rounded-t-[24px]"
+          className="fixed bottom-0 left-0 right-0 z-1000 bg-white rounded-t-[16px]"
           initial={{ y: "100%" }}
           animate={{ y: 0 }}
           exit={{ y: "100%" }}
@@ -74,13 +75,13 @@ export default function OrderDetails({ order, onClose }) {
         >
           {/* Header */}
           <div className="w-full h-[56px] bg-[#F8F9FA] border-b border-black/20 flex items-center justify-center rounded-t-[48px]">
-            <p className="font-inter font-medium text-[18px] text-black">
+            <p className="font-inter font-medium text-[16px] text-black">
               Order summary
             </p>
           </div>
 
           {/* Scrollable body */}
-          <div className="px-4 pb-6 max-h-[70vh] overflow-y-auto scrollbar-hide">
+          <div className="px-4 pb-6 max-h-[64vh] overflow-y-auto scrollbar-hide">
             {/* Tracker */}
             <div className="mt-[36px] flex items-center">
               {STATUS_STEPS.map((step, i) => {
@@ -90,7 +91,7 @@ export default function OrderDetails({ order, onClose }) {
                 return (
                   <React.Fragment key={step}>
                     <div
-                      className="w-[36px] h-[36px] rounded-full"
+                      className="w-[32px] h-[32px] rounded-full"
                       style={{
                         backgroundColor: filled ? "#2A9CBC" : "#EEEEEE",
                       }}
@@ -115,20 +116,20 @@ export default function OrderDetails({ order, onClose }) {
             {/* Meta */}
             <div className="mt-[36px] space-y-[16px]">
               <div className="flex justify-between">
-                <p className="italic font-inter text-[18px] text-black">
+                <p className="font-inter text-[16px] text-black">
                   ORDER ID:
                 </p>
-                <p className="font-inter text-[18px] text-black/50">
+                <p className="font-inter text-[16px] text-black/50">
                   {order._id.slice(-8)}
                 </p>
               </div>
 
               <div className="flex justify-between items-center">
-                <p className="italic font-inter text-[18px] text-black">
+                <p className="font-inter text-[16px] text-black">
                   STATUS:
                 </p>
                 <span
-                  className="px-[12px] py-[6px] rounded-[24px] text-[12px] font-inter font-medium"
+                  className="px-[12px] py-[6px] rounded-[24px] text-[10px] font-inter font-medium"
                   style={{
                     backgroundColor: STATUS_STYLES[order.orderStatus].bg,
                     color: STATUS_STYLES[order.orderStatus].text,
@@ -139,10 +140,10 @@ export default function OrderDetails({ order, onClose }) {
               </div>
 
               <div className="flex justify-between">
-                <p className="italic font-inter text-[18px] text-black">
+                <p className="font-inter text-[16px] text-black">
                   DATE:
                 </p>
-                <p className="font-inter text-[18px] text-black/50">
+                <p className="font-inter text-[16px] text-black/50">
                   {formatDate(order.createdAt)}
                 </p>
               </div>
@@ -150,7 +151,7 @@ export default function OrderDetails({ order, onClose }) {
 
             {/* Items */}
             <div className="mt-[20px]">
-              <p className="font-inter font-medium text-[20px] text-black">
+              <p className="font-inter font-medium text-[16px] text-black">
                 {order.items.length > 1 ? "Items" : "Item"}
               </p>
 
@@ -177,10 +178,7 @@ export default function OrderDetails({ order, onClose }) {
 
                     <div className="flex justify-between mt-[4px]">
                       <p className="text-[12px] font-inter text-[#005770] font-semibold">
-                        ₦{item.discountedPrice}
-                      </p>
-                      <p className="text-[10px] text-black/50 line-through">
-                        ₦{item.price}
+                        ₦{formatPrice(item.price)}
                       </p>
                     </div>
                   </div>
@@ -189,7 +187,7 @@ export default function OrderDetails({ order, onClose }) {
             </div>
 
             {/* Delivery */}
-            <div className="mt-[36px] space-y-[8px]">
+            <div className="mt-[20px] space-y-[8px]">
               <div className="flex items-center gap-[4px]">
                 <p className="font-inter font-medium text-[16px] text-black">
                   Delivery method:

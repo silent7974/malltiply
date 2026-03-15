@@ -5,22 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { setStoreCategories } from "@/redux/slices/storeSlice";
 import CategoryChip from "./CategoryChip";
-
-const SUGGESTED_BY_MALLTIPLY = [
-  "New Arrivals",
-  "Best Sellers",
-  "Under ₦20,000",
-  "Limited Stock",
-  "Trending",
-];
-
-const PRODUCT_BASED_CATEGORIES = [
-  "Kaftans",
-  "Shirts",
-  "Trousers",
-  "Shoes",
-  "Native Wear",
-];
+import { useGetProductsQuery } from "@/redux/services/productApi";
 
 export default function AddCategoryModal({ onClose }) {
   const dispatch = useDispatch();
@@ -29,37 +14,40 @@ export default function AddCategoryModal({ onClose }) {
 
   const [selected, setSelected] = useState(
     [...draft.suggested, ...draft.fromProducts]
-  );
+  )
+
+  const { data: products = [], isLoading } = useGetProductsQuery();
+
+  const productBasedCategories = useMemo(() => {
+    if (!products.length) return [];
+
+    const counts = {};
+
+    products.forEach(p => {
+      if (!p.subCategory) return;
+      counts[p.subCategory] = (counts[p.subCategory] || 0) + 1;
+    });
+
+    return Object.entries(counts)
+      .sort((a, b) => b[1] - a[1]) // most common first
+      .slice(0, 3)
+      .map(([name]) => name);
+  }, [products]);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => (document.body.style.overflow = "auto");
   }, []);
 
-  const suggestedSelected = selected.filter((c) =>
-    SUGGESTED_BY_MALLTIPLY.includes(c)
-  );
-
-  const productSelected = selected.filter((c) =>
-    PRODUCT_BASED_CATEGORIES.includes(c)
-  );
-
   function addCategory(label) {
     if (selected.includes(label)) return;
+    if (selected.length >= 3) return;
 
-    if (
-      SUGGESTED_BY_MALLTIPLY.includes(label) &&
-      suggestedSelected.length >= 2
-    )
-      return;
+    setSelected(prev => [...prev, label]);
+  }
 
-    if (
-      PRODUCT_BASED_CATEGORIES.includes(label) &&
-      productSelected.length >= 4
-    )
-      return;
-
-    setSelected([...selected, label]);
+  function removeCategory(label) {
+    setSelected(prev => prev.filter(c => c !== label));
   }
 
   function removeCategory(label) {
@@ -69,11 +57,12 @@ export default function AddCategoryModal({ onClose }) {
   function handleSave() {
     dispatch(
       setStoreCategories({
-        suggested: suggestedSelected,
-        fromProducts: productSelected,
+       suggested: [],
+       fromProducts: selected,
+        
       })
-    );
-    onClose();
+    )
+    onClose()
   }
 
   return (
@@ -102,47 +91,29 @@ export default function AddCategoryModal({ onClose }) {
           {/* Body */}
           <div className="px-4 pb-[120px]">
 
-            {/* Suggested */}
             <p className="mt-[20px] font-inter font-medium text-[16px]">
-              Suggested by Malltiply
+              From your products
             </p>
 
-            <div className="mt-[8px] flex flex-wrap gap-[8px]">
-              {SUGGESTED_BY_MALLTIPLY.filter(
-                (c) => !selected.includes(c)
-              ).map((label) => (
-                <CategoryChip
-                  key={label}
-                  label={label}
-                  icon={
-                    suggestedSelected.length >= 2 ? "none" : "plus"
-                  }
-                  disabled={suggestedSelected.length >= 2}
-                  onClick={() => addCategory(label)}
-                />
-              ))}
-            </div>
-
-            {/* Products */}
-            <p className="mt-[20px] font-inter font-medium text-[16px]">
-              From Your Products
-            </p>
-
-            <div className="mt-[8px] flex flex-wrap gap-[8px]">
-              {PRODUCT_BASED_CATEGORIES.filter(
-                (c) => !selected.includes(c)
-              ).map((label) => (
-                <CategoryChip
-                  key={label}
-                  label={label}
-                  icon={
-                    productSelected.length >= 3 ? "none" : "plus"
-                  }
-                  disabled={productSelected.length >= 3}
-                  onClick={() => addCategory(label)}
-                />
-              ))}
-            </div>
+            {!productBasedCategories.length ? (
+              <p className="mt-[8px] text-[14px] text-black/60 font-inter">
+                Add at least one product to create categories.
+              </p>
+            ) : (
+              <div className="mt-[8px] flex flex-wrap gap-[8px]">
+                {productBasedCategories
+                  .filter(c => !selected.includes(c))
+                  .map(label => (
+                    <CategoryChip
+                      key={label}
+                      label={label}
+                      icon={selected.length >= 3 ? "none" : "plus"}
+                      disabled={selected.length >= 3}
+                      onClick={() => addCategory(label)}
+                    />
+                  ))}
+              </div>
+            )}
 
             {/* Selected Block */}
             <div
@@ -180,5 +151,5 @@ export default function AddCategoryModal({ onClose }) {
         </motion.div>
       </motion.div>
     </AnimatePresence>
-  );
+  )
 }

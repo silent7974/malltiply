@@ -13,8 +13,20 @@ const OrderItemSchema = new mongoose.Schema({
 }, { _id: false });
 
 const OrderSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: false },
   items: [OrderItemSchema],
+
+  // Guest info
+  guestInfo: {
+    fullName: String,
+    phone: String,
+    email: String,
+    address: {
+      city: String,
+      street: String,
+      district: String,
+    }
+  },
 
   // shipping info
   shippingMethod: {
@@ -47,8 +59,24 @@ const OrderSchema = new mongoose.Schema({
 
   orderStatus: {
     type: String,
-    enum: ["pending", "processing", "shipped", "delivered", "cancelled"],
+    enum: ["pending", "processing", "shipped", "delivered", "returned"],
     default: "pending",
+  },
+
+  // add inside OrderSchema
+  refund: {
+    items: [{
+      productId: String,
+      name: String,
+      quantity: Number,
+      price: Number,
+    }],
+    totalRefundAmount: Number,
+    bankName: String,
+    accountNumber: String,
+    accountName: String,
+    status: { type: String, enum: ["requested", "approved", "completed"], default: "requested" },
+    requestedAt: Date,
   },
 }, { timestamps: true });
 

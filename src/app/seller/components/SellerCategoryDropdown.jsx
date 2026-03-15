@@ -40,10 +40,10 @@ export default function SellerCategoryDropdown({ selected, onSelect }) {
           onClick={() => setOpenModal(false)}
         >
           <div
-            className="bg-white w-full rounded-t-[16px] max-h-[60vh] overflow-y-auto scrollbar-hide px-[16px] py-[36px]"
+            className="bg-white w-full rounded-t-[16px] max-h-[60vh] overflow-y-auto scrollbar-hide px-[16px] pb-[36px]"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="text-[14px] text-center font-[Inter] font-semibold mb-[16px]">
+            <h2 className="text-[14px] text-center font-semibold mb-[16px] pt-[24px] pb-2 sticky top-0 bg-white">
               Select Product Category
             </h2>
             <div className="flex flex-col gap-[8px]">

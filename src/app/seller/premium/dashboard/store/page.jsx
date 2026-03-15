@@ -8,9 +8,9 @@ import StoreStory from "@/app/seller/components/store/StoreStory";
 import StoreCategories from "@/app/seller/components/store/StoreCategories";
 import BrandTheme from "@/app/seller/components/store/BrandTheme";
 import StoreFooter from "@/app/seller/components/store/StoreFooter";
-import { useRouter } from "next/navigation";
-import { hydrateFromStore } from "@/redux/slices/storeSlice";
-import { useEffect, useRef } from "react";
+import { useRouter } from "next/navigation"
+import { hydrateFromStore } from "@/redux/slices/storeSlice"
+import { useEffect, useRef } from "react"
 
 export default function StorePage() {
   const dispatch = useDispatch();
