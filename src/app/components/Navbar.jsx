@@ -19,7 +19,7 @@ export default function Navbar() {
   const user = me?.user;
 
   return (
-    <nav className="w-full flex flex-col px-4 pt-[48px] relative">
+    <nav className="w-full flex flex-col px-4 pt-[36px] relative">
       <div className="flex items-center justify-between w-full">
         <div className="flex items-center gap-[8px]">
           <Link href="/category">
