@@ -17,9 +17,9 @@ export default function ProductCard({ product, index }) {
         src={product.images?.[0]?.url || "/placeholder.png"}
         alt={product.productName}
         width={500}
-        height={index % 2 === 0 ? 132 : 168}
+        height={index % 2 === 0 ? 140 : 168}
         className={`w-full object-cover ${
-          index % 2 === 0 ? "h-[132px]" : "h-[168px]"
+          index % 2 === 0 ? "h-[140px]" : "h-[168px]"
         }`}
       />
 

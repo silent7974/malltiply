@@ -93,7 +93,7 @@ export default function SignUpLayout({ onClose, onSwitchToSignIn  }) {
         {/* Encryption notice */}
         <div className="flex items-center justify-center gap-[2px] mb-[36px]">
           <Image src="/lock.svg" alt="Lock" width={16} height={16} />
-          <p className="text-[16px] font-inter font-normal text-[#1A7709]">
+          <p className="text-[16px] font-inter font-normal text-[#005770]">
             All data will be encrypted
           </p>
         </div>

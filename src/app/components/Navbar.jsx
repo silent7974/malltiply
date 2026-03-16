@@ -43,6 +43,16 @@ export default function Navbar() {
 
           {showProfile && <ProfileModal onClose={() => setShowProfile(false)} />}
 
+          {showProfile && (
+            <>
+              <div
+                className="fixed inset-0 z-40"
+                onClick={() => setShowProfile(false)}
+              />
+              <ProfileModal onClose={() => setShowProfile(false)} />
+            </>
+          )}
+
           {/* Hide badge if not logged in */}
           <Link href="/cart" className="relative">
             <ShoppingCart size={28} className="text-black" />

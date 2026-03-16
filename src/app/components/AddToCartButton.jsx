@@ -251,7 +251,7 @@ export default function AddToCartButton({
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
               transition={{ type: "spring", stiffness: 250, damping: 18 }}
-              className="flex justify-between w-full"
+              className="flex justify-center gap-4 w-full"
             >
               <div className="flex items-center border border-black/30 rounded-[4px] overflow-hidden h-[48px] ">
                 <button

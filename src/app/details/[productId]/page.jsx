@@ -161,13 +161,13 @@ export default function ProductDetailsPage({ params }) {
       >
         <div className="flex items-center justify-between h-full">
           {/* Product name — truncated */}
-          <p className="text-[13px] font-inter font-semibold text-black truncate max-w-[70%]">
+          <p className="text-[16px] font-inter font-semibold text-black truncate max-w-[70%]">
             Feets Allure
           </p>
 
           {/* Cart button */}
           <Link href="/cart" className="relative">
-            <ShoppingCart size={22} className="text-black" />
+            <ShoppingCart size={24} className="text-black" />
             {totalQuantity > 0 && (
               <div
                 className="absolute flex items-center justify-center"
@@ -214,9 +214,9 @@ export default function ProductDetailsPage({ params }) {
         </div>
 
         {/* Upload icon */}
-        <div className="absolute top-6 right-2 w-8 h-8 flex items-center justify-center bg-black/80 rounded-full cursor-pointer">
+        {/* <div className="absolute top-6 right-2 w-8 h-8 flex items-center justify-center bg-black/80 rounded-full cursor-pointer">
           <Upload size={14} color="#ffffff" />
-        </div>
+        </div> */}
 
         {/* Image indicator */}
         {images.length > 1 && (

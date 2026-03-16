@@ -8,9 +8,11 @@ import {
   useGetProductsBySearchQuery, 
   useGetProductsByStoreSearchQuery 
 } from "@/redux/services/productApi"
+import { useRouter } from "next/navigation"
 
 export default function SearchModal({ onClose, storeId }) {
   const [query, setQuery] = useState("")
+  const router = useRouter()
 
   // ✅ Decide which query hook to use
   const { data, isLoading } = storeId
@@ -82,6 +84,10 @@ export default function SearchModal({ onClose, storeId }) {
             results.map((item) => (
               <div
                 key={item._id}
+                onClick={() => {
+                  onClose()
+                  router.push(`/details/${item._id}`)
+                }}
                 className="flex items-center gap-2 h-[48px] border-b border-black/20 px-1"
               >
                 <Search size={16} strokeWidth={1} className="text-black" />

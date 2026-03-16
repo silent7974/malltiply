@@ -250,7 +250,7 @@ export default function CheckoutPage({ onClose }) {
       {/* Bottom Bar */}
       {cart.items.length > 0 && (
         <div className="fixed bottom-0 left-0 w-full h-[64px] bg-white border-t border-black/10 flex justify-center items-center z-50">
-          <div className="flex items-center justify-between w-[90%] max-w-[400px]">
+          <div className="flex items-center justify-center gap-4 w-[90%] max-w-[400px]">
             <div>
               <p className="text-[18px] font-inter font-semibold">₦{formatPrice(cart.totalPrice)}</p>
             </div>
