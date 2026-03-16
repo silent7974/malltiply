@@ -12,6 +12,8 @@ const JWT_SECRET = process.env.JWT_SECRET;
 export async function GET(req, { params }) {
   await dbConnect();
 
+  const { id } = await params  // ← await params
+
   const product = await Product.findById(params.id);
   if (!product) {
     return NextResponse.json({ error: "Product not found" }, { status: 404 });
@@ -25,6 +27,8 @@ export async function GET(req, { params }) {
 export async function PUT(req, { params }) {
   try {
     await dbConnect();
+
+    const { id } = await params  // ← await params
 
     const token = await cookies().get("sellerToken")?.value;
     if (!token) {
@@ -78,6 +82,8 @@ export async function PUT(req, { params }) {
 export async function DELETE(req, { params }) {
   try {
     await dbConnect();
+
+    const { id } = await params  
 
     const token = await cookies().get("sellerToken")?.value;
     if (!token) {

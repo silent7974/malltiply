@@ -4,6 +4,8 @@ import Product from "@/models/product"
 export async function GET(_, { params }) {
   await dbConnect()
 
+  const { id } = await params
+
   const products = await Product.find({
     storeId: params.storeId,
   }).sort({ createdAt: -1 })
