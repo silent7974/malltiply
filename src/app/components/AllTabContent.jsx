@@ -2,6 +2,7 @@
 
 import { useGetPublicProductsQuery } from "@/redux/services/productApi"
 import ProductGrid from "./ui/ProductGrid"
+import Spinner from "./Spinner"
 
 
 export default function AllTabContent({ activeTab }) {
@@ -31,7 +32,7 @@ export default function AllTabContent({ activeTab }) {
 
     case "All":
     default:
-      if (isLoading) return <div className="p-4">Loading products...</div>
+      if (isLoading) return <Spinner />
       if (error) return <div className="p-4 text-red-500">Failed to load products</div>
 
       return <ProductGrid products={products} />

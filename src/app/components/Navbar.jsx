@@ -19,7 +19,7 @@ export default function Navbar() {
   const user = me?.user;
 
   return (
-    <nav className="w-full flex flex-col px-4 pt-[16px] relative">
+    <nav className="w-full flex flex-col px-4 pt-2 relative">
       <div className="flex items-center justify-between w-full">
         <div className="flex items-center gap-[8px]">
           <Link href="/category">
@@ -75,7 +75,7 @@ export default function Navbar() {
           className="w-full flex items-center h-[28px] bg-[#E1E6E8] px-[4px] gap-[8px] rounded-full cursor-pointer"
         >
           <Search size={20} className="text-black/50" />
-          <span className="font-montserrat text-[12px] font-medium text-black/50">
+          <span className="font-montserrat text-[14px] font-medium text-black/50">
             Search products and categories
           </span>
         </button>

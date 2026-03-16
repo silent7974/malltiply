@@ -23,8 +23,15 @@ export default function HomePage() {
   return (
     <div className="w-full">
       {/* Category Tabs */}
-      <div className="w-full h-[40px] mt-[8px] border-y border-black/20 flex items-center">
-        <div className="flex gap-6 px-4 overflow-x-auto scrollbar-hide">
+      <div className="relative w-full h-[40px] my-[8px] flex items-center">
+
+        {/* Left fade */}
+        <div className="absolute left-0 top-0 h-full w-5 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+
+        {/* Right fade */}
+        <div className="absolute right-0 top-0 h-full w-5 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+
+        <div className="flex gap-5 px-4 overflow-x-auto scrollbar-hide">
           {Object.keys(headerCategoryMap).map((header) => {
             const isActive = activeCategory === header
             return (
@@ -35,7 +42,7 @@ export default function HomePage() {
                 className="relative flex flex-col items-center pb-2"
               >
                 <span
-                  className={`font-[600] font-montserrat text-[14px] ${
+                  className={`font-[600] font-montserrat text-[16px] ${
                     isActive ? "text-black" : "text-black/50"
                   }`}
                 >

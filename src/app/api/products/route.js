@@ -7,10 +7,8 @@ import Seller from "@/models/seller";
 import Store from "@/models/store";
 
 const JWT_SECRET = process.env.JWT_SECRET;
-
-// ===============================
 // POST — Create product
-// ===============================
+
 export async function POST(req) {
   try {
     await dbConnect();
@@ -117,9 +115,7 @@ export async function POST(req) {
   }
 }
 
-// ===============================
 // GET — Seller products
-// ===============================
 export async function GET() {
   try {
     await dbConnect();

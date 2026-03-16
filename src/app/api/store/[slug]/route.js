@@ -2,10 +2,12 @@ import dbConnect from "@/lib/mongodb";
 import Store from "@/models/store";
 
 export async function GET(_, { params }) {
-  await dbConnect();
+  await dbConnect()
+
+  const { slug } = await params
 
   const store = await Store.findOne({
-    slug: await params.slug,
+    slug,
     isPublished: true,
   }).populate("sellerId", "brandName");
 
