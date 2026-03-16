@@ -14,7 +14,7 @@ export async function GET(req, { params }) {
 
   const { id } = await params  // ← await params
 
-  const product = await Product.findById(params.id);
+  const product = await Product.findById(id);
   if (!product) {
     return NextResponse.json({ error: "Product not found" }, { status: 404 });
   }
@@ -47,7 +47,7 @@ export async function PUT(req, { params }) {
       return NextResponse.json({ error: "Seller not found" }, { status: 404 });
     }
 
-    const product = await Product.findById(params.id);
+    const product = await Product.findById(id);
     if (!product || product.sellerId.toString() !== decoded.id) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
@@ -62,7 +62,7 @@ export async function PUT(req, { params }) {
     }
 
     const updated = await Product.findByIdAndUpdate(
-      params.id,
+      id,
       body,
       { new: true }
     );
@@ -97,7 +97,7 @@ export async function DELETE(req, { params }) {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
 
-    const product = await Product.findById(params.id);
+    const product = await Product.findById(id);
     if (!product || product.sellerId.toString() !== decoded.id) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
