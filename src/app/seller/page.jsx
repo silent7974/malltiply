@@ -55,7 +55,7 @@ export default function SellerIndexPage() {
         {/* Hero Section */}
         <div className="relative w-full h-[208px] hero-gradient py-8">
             <Image
-                src="/seller-hero.png?v=2"
+                src="/seller-hero.png"
                 alt="Seller Hero"
                 width={96}
                 height={172}
