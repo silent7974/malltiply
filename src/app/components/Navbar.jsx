@@ -41,7 +41,7 @@ export default function Navbar() {
             <Image src="/profile.svg" alt="User profile" width={28} height={28} />
           </button>
 
-          {/* {showProfile && <ProfileModal onClose={() => setShowProfile(false)} />} */}
+          {showProfile && <ProfileModal onClose={() => setShowProfile(false)} />}
 
           {/* Hide badge if not logged in */}
           <Link href="/cart" className="relative">
