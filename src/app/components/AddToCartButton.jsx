@@ -220,7 +220,7 @@ export default function AddToCartButton({
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.9, ease: "easeInOut" }}
                 onAnimationComplete={() => setBubble(null)}
-                className="fixed z-[9999] flex items-center justify-center w-6 h-6 rounded-full bg-[#005770] text-white text-[10px] font-bold pointer-events-none"
+                className="fixed z-40 flex items-center justify-center w-6 h-6 rounded-full bg-[#005770] text-white text-[10px] font-bold pointer-events-none"
               >
                 {bubble.quantity}
               </motion.div>
@@ -230,7 +230,7 @@ export default function AddToCartButton({
         )}
 
       {/* Bottom Add/Cart Control */}
-      <div className="fixed bottom-0 left-0 w-full h-[64px] px-4 bg-white border-t border-black/10 flex justify-center items-center z-50">
+      <div className="fixed bottom-0 left-0 w-full h-[64px] px-4 bg-white border-t border-black/10 flex justify-center items-center z-40">
         <AnimatePresence mode="wait">
           {!isInCart ? (
             <motion.button
