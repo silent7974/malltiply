@@ -1,6 +1,6 @@
 export default function Page() {
   return (
-    <div className="w-full flex flex-col justify-center py-24 px-6 text-center">
+    <div className="w-full flex flex-col items-center justify-center py-24 px-6 text-center">
       <h1 className="text-[18px] font-semibold text-black mb-2">
         Categories
       </h1>

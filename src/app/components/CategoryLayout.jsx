@@ -8,6 +8,7 @@ import ProductGrid from "./ui/ProductGrid"
 import Image from "next/image"
 import { ChevronRight, PackageX } from "lucide-react"
 import Spinner from "./Spinner"
+import { logEvent } from "@/lib/analytics"
 
 export default function CategoryLayout({ category }) {
   const mappedCategory = headerCategoryMap[category]
@@ -78,6 +79,13 @@ export default function CategoryLayout({ category }) {
                 onClick={() => {
                   setActiveSubCategory(sub)
                   setActiveSubType("All")
+
+                  logEvent({
+                    page: "CategoryLayout",
+                    component: "SubCategory",
+                    event: "SubCategory_Clicked",
+                    payload: { category: mappedCategory, subCategory: sub },
+                  })
                 }}
                 className="flex flex-col items-center"
               >
@@ -123,7 +131,15 @@ export default function CategoryLayout({ category }) {
               <>
                 <button
                   key="All"
-                  onClick={() => setActiveSubType("All")}
+                  onClick={() => {
+                    setActiveSubType("All")
+                    logEvent({
+                      page: "CategoryLayout",
+                      component: "SubType",
+                      event: "SubType_Clicked",
+                      payload: { category: mappedCategory, subCategory: activeSubCategory},
+                    })
+                  }}
                   className="relative flex flex-col items-center"
                 >
                   <span
@@ -142,7 +158,15 @@ export default function CategoryLayout({ category }) {
                   return (
                     <button
                       key={type}
-                      onClick={() => setActiveSubType(type)}
+                      onClick={() => {
+                        setActiveSubType(type)
+                        logEvent({
+                          page: "CategoryLayout",
+                          component: "SubType",
+                          event: "SubType_Clicked",
+                          payload: { category: mappedCategory, subCategory: activeSubCategory, subType: type },
+                        })
+                      }}
                       className="relative flex flex-col items-center"
                     >
                       <span

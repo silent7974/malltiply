@@ -6,6 +6,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation"
 import { useState } from "react"
 import SearchModal from "./SearchModal"
+import { logEvent } from "@/lib/analytics";
 import ProfileModal from "./ProfileModal"
 import { useSelector } from "react-redux"
 import { useMeQuery } from "@/redux/services/authApi"
@@ -37,7 +38,15 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-[16px] relative">
-          <button onClick={() => setShowProfile(prev => !prev)}>
+          <button onClick={() => {
+            setShowProfile(prev => !prev)
+            logEvent({
+              page: pathname,
+              component: "Navbar",
+              event: "click_profile",
+            });
+          }}
+          >
             <Image src="/profile.svg" alt="User profile" width={28} height={28} />
           </button>
 
@@ -81,7 +90,14 @@ export default function Navbar() {
 
       <div className="w-full flex justify-center mt-2">
         <button
-          onClick={() => setShowSearch(true)}
+          onClick={() => {
+          setShowSearch(true)
+            logEvent({
+              page: pathname,
+              component: "Navbar",
+              event: "click_searchbar",
+            });
+          }}
           className="w-full flex items-center h-[28px] bg-[#E1E6E8] px-[4px] gap-[8px] rounded-full cursor-pointer"
         >
           <Search size={20} className="text-black/50" />

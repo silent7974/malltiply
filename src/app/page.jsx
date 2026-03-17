@@ -4,10 +4,15 @@ import { useState, useRef, useEffect } from "react"
 import headerCategoryMap from "@/lib/data/headerCategoryMap"
 import AllLayout from "./components/AllLayout"
 import CategoryLayout from "./components/CategoryLayout"
+import { logEvent } from "@/lib/analytics"
 
 export default function HomePage() {
   const [activeCategory, setActiveCategory] = useState("All")
   const tabsRef = useRef({})
+
+  useEffect(() => {
+    logEvent({ page: "HomePage", component: "HomePage", event: "HomePage_Viewed" })
+  }, [])
 
   // Scroll the selected tab into center view
   useEffect(() => {
@@ -38,7 +43,10 @@ export default function HomePage() {
               <button
                 key={header}
                 ref={(el) => (tabsRef.current[header] = el)}
-                onClick={() => setActiveCategory(header)}
+                onClick={() => {
+                  setActiveCategory(header)
+                  logEvent({ page: "HomePage", component: "CategoryTabs", event: "CategoryTab_Clicked", payload: { category: header } })
+                }}
                 className="relative flex flex-col items-center pb-2"
               >
                 <span

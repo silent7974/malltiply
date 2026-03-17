@@ -2,6 +2,7 @@
 
 import formatPrice from "@/lib/utils/formatPrice"
 import Image from "next/image"
+import { logEvent } from "@/lib/analytics"
 import { useRouter } from "next/navigation"
 
 export default function ProductCard({ product, index }) {
@@ -10,7 +11,10 @@ export default function ProductCard({ product, index }) {
   return (
     <div 
       key={product._id}
-      onClick={() => router.push(`/details/${product._id}`)}
+      onClick={
+        () => {router.push(`/details/${product._id}`)
+        logEvent({ page: "HomePage", component: "ProductCard", event: "Product_Clicked", payload: { productId: product._id, productName: product.productName } })
+      }}
     >
       {/* Product Image */}
       <Image
@@ -36,7 +40,14 @@ export default function ProductCard({ product, index }) {
             </span>
           </div>
 
-          <div className="w-[36px] h-[29px] flex items-center justify-center border border-black/50 rounded-[24px]">
+          <div 
+          className="w-[36px] h-[29px] flex items-center justify-center border border-black/50 rounded-[24px]"
+          onClick={(e) => {
+            e.stopPropagation() // prevent navigation
+            logEvent({ page: "HomePage", component: "ProductCard", event: "AddToCart_Clicked", payload: { productId: product._id } })
+            // addToCart(product) → your existing function
+          }}
+          >
             <Image
               src="/add-shopping-cart.svg"
               width={16}

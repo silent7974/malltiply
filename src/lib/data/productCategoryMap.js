@@ -1,7 +1,7 @@
 const productCategoryMap = {
   "Men's Fashion": {
     categories: {
-      "Shoes": ["Loafers", "Sneakers", "Sandals"],
+      "Shoes": ["Palms", "Loafers", "Sneakers", "Sandals"],
       "Native": ["Agbada", "Kaftan", "Senator"],
       "Shirts": ["Casual Shirt", "Dress Shirt", "Polo Shirt"],
       "Trousers": ["Jeans", "Chinos", "Formal Pants"],
