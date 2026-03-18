@@ -47,6 +47,10 @@ export const productApi = createApi({
     getProductsByStore: builder.query({
       query: (storeId) => `/products/store/${storeId}`,
     }),
+    getProductBySlug: builder.query({
+      query: (slug) => `/product/${slug}`, // ← uses the new route
+      providesTags: (result, error, slug) => [{ type: "Products", id: slug }],
+    }),
     getProductsByStoreSearch: builder.query({
       query: ({ searchTerm, storeId }) => `/search?query=${encodeURIComponent(searchTerm)}&storeId=${storeId}`,
     })
@@ -57,7 +61,8 @@ export const {
   useAddProductMutation, 
   useGetProductsQuery, 
   useGetPublicProductsQuery,  
-  useGetProductByIdQuery, 
+  useGetProductByIdQuery,
+  useGetProductBySlugQuery, 
   useUpdateProductMutation, 
   useDeleteProductMutation, 
   useGetProductsBySearchQuery,

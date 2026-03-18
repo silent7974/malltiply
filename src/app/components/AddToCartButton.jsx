@@ -22,6 +22,7 @@ export default function AddToCartButton({
   selectedQuantity,
   onQuantitySync,
   displaySku,
+  displayQuantity,
   isOutOfStock
 }) {
   const dispatch = useDispatch();
@@ -114,7 +115,8 @@ export default function AddToCartButton({
       color: selectedColor,
       size: selectedSize,
       quantity: selectedQuantity,
-      sku: displaySku
+      sku: displaySku,
+      quantityAvailable: displayQuantity // ← add this
     };
 
     // Add to redux + backend
@@ -136,7 +138,7 @@ export default function AddToCartButton({
   const handleQuantityChange = async (type) => {
     if (!currentItem) return;
 
-    const maxQuantity = product?.quantity ?? 1;
+    const maxQuantity = displayQuantity;
     let newQuantity =
       type === "plus"
         ? currentItem.quantity + 1

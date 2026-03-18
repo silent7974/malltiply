@@ -86,7 +86,7 @@ export default function SearchModal({ onClose, storeId }) {
                 key={item._id}
                 onClick={() => {
                   onClose()
-                  router.push(`/details/${item._id}`)
+                  router.push(`/product/${item.slug}`)
                 }}
                 className="flex items-center gap-2 h-[48px] border-b border-black/20 px-1"
               >

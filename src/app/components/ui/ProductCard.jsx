@@ -12,7 +12,7 @@ export default function ProductCard({ product, index }) {
     <div 
       key={product._id}
       onClick={
-        () => {router.push(`/details/${product._id}`)
+        () => {router.push(`/product/${product.slug}`)
         logEvent({ page: "HomePage", component: "ProductCard", event: "Product_Clicked", payload: { productId: product._id, productName: product.productName } })
       }}
     >

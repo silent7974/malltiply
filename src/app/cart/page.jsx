@@ -68,11 +68,17 @@ export default function CartPage() {
 
 
   const handleQuantityChange = async (item, type) => {
+    const maxQuantity = item.quantityAvailable ?? 1; // ← this must come from product
     const newQuantity = type === "plus" ? item.quantity + 1 : item.quantity - 1;
     const productId = item.productId._id || item.productId;
 
     if (newQuantity <= 0) {
       handleRemove(item);
+      return;
+    }
+
+    if (newQuantity > maxQuantity) {
+      alert(`Only ${maxQuantity} item(s) available.`);
       return;
     }
 

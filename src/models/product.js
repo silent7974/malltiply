@@ -33,6 +33,7 @@ const ProductSchema = new mongoose.Schema(
     subCategory: String,
     subType: String,
     sku: String,
+    slug: { type: String, unique: true, index: true },
 
     variants: {
       color: String,

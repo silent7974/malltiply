@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect, useMemo } from "react";
-import { useGetProductByIdQuery } from "@/redux/services/productApi";
+import { useGetProductBySlugQuery } from "@/redux/services/productApi";
 import { ChevronDown, Upload, Ruler, ChevronRight } from "lucide-react";
 import productCategoryMap from '@/lib/data/productCategoryMap';
 import FloatingCart from "@/app/components/FloatingCart";
@@ -10,11 +10,12 @@ import { ShoppingCart } from "lucide-react"
 import { useSelector } from "react-redux"
 import AddToCartButton from "@/app/components/AddToCartButton";
 import Spinner from "@/app/components/Spinner";
+import { useParams } from "next/navigation";
 
-export default function ProductDetailsPage({ params }) {
-  const unwrappedParams = React.use(params);
-  const productId = unwrappedParams.productId;
-  const { data: product, isLoading, isError } = useGetProductByIdQuery(productId);
+export default function ProductDetailsPage() {
+  const params = useParams();
+  const slug = params.slug;
+  const { data: product, isLoading, isError } = useGetProductBySlugQuery(slug);
 
   // STATE
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -430,6 +431,7 @@ export default function ProductDetailsPage({ params }) {
         selectedQuantity={selectedQuantity}
         onQuantitySync={setSelectedQuantity}
         displaySku={displaySku}
+        displayQuantity={displayQuantity}
         onSuccess={() => alert("Added to cart successfully!")}
         isOutOfStock={isOutOfStock}
       />

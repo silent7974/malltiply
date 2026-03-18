@@ -3,9 +3,13 @@
 import { Headphones } from "lucide-react"
 import { useState } from "react"
 import SignInLayout from "./SignInLayout"
+import { useMeQuery } from "@/redux/services/authApi"
 
 export default function ProfileModal({ onClose }) {
   const [showSignIn, setShowSignIn] = useState(false)
+  const { data, isLoading } = useMeQuery()
+
+  const firstName = data?.user?.fullName?.split(" ")[0] || ""
 
   return (
     <div className="absolute right-0 top-10 z-50">
@@ -17,17 +21,24 @@ export default function ProfileModal({ onClose }) {
 
           {/* Sign in */}
           <div className="w-full flex justify-center pt-3 pb-3 px-3">
-            <button
-              onClick={() => {
-                setShowSignIn(true)
-                
-              }}
-              className="w-full h-[40px] bg-[#005770] rounded-full flex items-center justify-center hover:opacity-90 transition"
-            >
-              <span className="text-white font-semibold tracking-wide text-[14px]">
-                Sign in
-              </span>
-            </button>
+            {isLoading ? (
+              <span className="text-gray-500">Loading...</span>
+            ) : data?.user ? (
+              <h2
+                className="font-[montserrat] font-semibold text-gray font-[20px] "
+              >
+                  Hi, {firstName}
+              </h2>
+            ) : (
+              <button
+                onClick={() => setShowSignIn(true)}
+                className="w-full h-[40px] bg-[#005770] rounded-full flex items-center justify-center hover:opacity-90 transition"
+              >
+                <span className="text-white font-semibold tracking-wide text-[14px]">
+                  Sign in
+                </span>
+              </button>
+            )}
           </div>
 
           <div className="w-full h-[4px] bg-gray-200" />
