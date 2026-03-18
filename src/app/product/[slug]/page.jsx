@@ -11,6 +11,7 @@ import { useSelector } from "react-redux"
 import AddToCartButton from "@/app/components/AddToCartButton";
 import Spinner from "@/app/components/Spinner";
 import { useParams } from "next/navigation";
+import InfoModal from "@/app/components/InfoModal";
 
 export default function ProductDetailsPage() {
   const params = useParams();
@@ -22,6 +23,7 @@ export default function ProductDetailsPage() {
   const [selectedColor, setSelectedColor] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedQuantity, setSelectedQuantity] = useState(1);
+  const [modal, setModal] = useState(null);
 
   const totalQuantity = useSelector(state => state.cart.totalQuantity)
 
@@ -380,15 +382,18 @@ export default function ProductDetailsPage() {
 
         <div className="px-4 mt-4">
           {/* Delivery within 24 hours */}
-          <a href="/delivery" className="flex items-center justify-between">
+          <button
+            onClick={() => setModal("shipping")}
+            className="flex items-center justify-between w-full"
+          >
             <div className="flex items-center gap-2">
               <img src="/truck-green.svg" alt="Delivery Icon" className="w-4 h-4" />
               <span className="text-[14px] font-inter font-normal text-[#005770]">
-               Abuja orders arrive within 24 hours
+                Abuja orders arrive within 24 hours
               </span>
             </div>
             <ChevronRight size={13} color="#005770" />
-          </a>
+          </button>
 
           {/* Shipping fee */}
           <p className="mt-[22px] text-[14px] font-inter font-medium text-black">
@@ -436,7 +441,21 @@ export default function ProductDetailsPage() {
         isOutOfStock={isOutOfStock}
       />
 
+      {modal === "shipping" && (
+        <InfoModal title="Delivery info" onClose={() => setModal(null)}>
+          <p className="text-[13px] font-inter text-black mb-3">
+            Malltiply currently delivers within Abuja.
+          </p>
 
+          <p className="text-[13px] font-inter text-black mb-3">
+            Delivery is typically within 24 hours for Abuja orders. Processing time may vary slightly depending on the seller.
+          </p>
+
+          <p className="text-[13px] font-inter text-black">
+            You can track your order until it reaches your destination.
+          </p>
+        </InfoModal>
+      )}
 
     </div>
   );

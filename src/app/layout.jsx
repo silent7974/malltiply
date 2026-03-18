@@ -27,7 +27,7 @@ const mooli = Mooli({   // We'll pretend Mooli is imported similarly, adjust if 
 
 export const metadata = {
   title: "Malltiply",
-  description: "Malltiply connects buyers with trusted Abuja fashion brands. Shop quality kaftans, abayas, footwears, and more - all from verified Abuja local sellers.",
+  description: "Malltiply is a marketplace for fashion products from verified local sellers in Abuja. Shop more directly from trusted sellers.",
   icons: {
     icon: "/malltiply-logo.svg?v=2",
     shortcut: "/malltiply-logo.svg?v=2",
