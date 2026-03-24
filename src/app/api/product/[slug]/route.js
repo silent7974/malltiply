@@ -6,7 +6,8 @@ export async function GET(_, { params }) {
 
   const { slug } = await params;
 
-  const product = await Product.findOne({ slug });
+  const product = await Product.findOne({ slug })
+  .populate("sellerId", "brandName")
   if (!product) {
     return new Response("Product not found", { status: 404 });
   }

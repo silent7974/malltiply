@@ -13,7 +13,9 @@ export async function POST(req) {
   try {
     await dbConnect();
 
-    const token = await cookies().get("sellerToken")?.value;
+    const cookieStore = await cookies();
+
+    const token = cookieStore.get("sellerToken")?.value;
     if (!token) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -120,7 +122,8 @@ export async function GET() {
   try {
     await dbConnect();
 
-    const token = await cookies().get("sellerToken")?.value;
+    const cookieStore = await cookies();
+    const token = cookieStore.get("sellerToken")?.value;
     if (!token) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }

@@ -165,7 +165,7 @@ export default function ProductDetailsPage() {
         <div className="flex items-center justify-between h-full">
           {/* Product name — truncated */}
           <p className="text-[16px] font-inter font-semibold text-black truncate max-w-[70%]">
-            Feets Allure
+            {product?.sellerId?.brandName || "Brand"}
           </p>
 
           {/* Cart button */}
@@ -243,7 +243,7 @@ export default function ProductDetailsPage() {
       <div className="px-4">
 
         <p className="text-[12px] font-inter font-medium text-black/50 uppercase tracking-widest">
-          Feets Allure
+          {product?.sellerId?.brandName || "Brand"}
         </p>
         {/* Product name + description */}
         <div className="flex flex-col gap-[16px]">
@@ -468,7 +468,7 @@ const colorMap = {
   brown: "#8B4513",
   red: "#FF0000",
   green: "#008000",
-  gold: "#FFD700",
+  gold: "#CFAF5A",
   silver: "#C0C0C0",
   burgundy: "#5c2b2e",
 };
