@@ -1,5 +1,6 @@
 import dbConnect from "@/lib/mongodb";
 import Product from "@/models/product";
+import Seller from "@/models/seller" 
 
 export async function GET(_, { params }) {
   await dbConnect();
