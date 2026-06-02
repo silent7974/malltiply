@@ -471,4 +471,5 @@ const colorMap = {
   gold: "#CFAF5A",
   silver: "#C0C0C0",
   burgundy: "#5c2b2e",
+  terracotta: "#dc8866",
 };

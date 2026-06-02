@@ -29,6 +29,7 @@
 - [ ] Toggling the notifications button in /seller/settings has to load the page first
 - [ ] ProfileInfoForm should know if it's a premium seller; A brand name field should also be included
 - [ ] The dashboards layout should not be allowed to be seen completely even if seller profile doesn't exist (I think this can be controlled by middleware.js)
+- [ ] I can't sign in as a seller and get routed to dashboard in production like I normally can local mode
 
 
 

@@ -23,7 +23,7 @@ export default function MultiImageUpload({
   const videoInputRef = useRef(null)
   const videoRef = useRef(null)
 
-  const MIN_RESOLUTION = 800
+  const MIN_RESOLUTION = 400
   const MIN_VIDEO_HEIGHT = 720
   const MAX_VIDEO_DURATION = 30
 
