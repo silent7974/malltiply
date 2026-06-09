@@ -254,7 +254,7 @@ export default function CartPage() {
             return (
               <div
                 key={`${getProductId(item)}-${item.color || "x"}-${item.size || "x"}`}
-                className="flex items-start gap-2 pb-2"
+                className="flex items-start gap-2 flex-1 border-b border-black/20 pb-2"
               >
 
                 {/* Select item */}
@@ -290,7 +290,7 @@ export default function CartPage() {
 
 
                 {/* Info */}
-                <div className="flex-1 border-b border-black/20 pb-2">
+                <div className="flex-1 ">
                   <div className="flex justify-between items-start">
                     <p className="text-[11px] text-black/50 font-montserrat">
                       {item.name}

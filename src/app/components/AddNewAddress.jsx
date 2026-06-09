@@ -93,7 +93,7 @@ export default function AddNewAddress({ onClose, onSaveSuccess }) {
             </span>
           </div>
           <p className="text-[10px] font-inter font-medium text-black/50">
-            limited time
+            for the next 30 orders
           </p>
         </div>
 
