@@ -45,20 +45,19 @@ const productCategoryMap = {
     }
   },
 
-  "Fabrics & Materials": {
-    categories: {
-      "Ankara": ["Plain Ankara", "Pattern Ankara"],
-      "Lace": ["Swiss Lace", "Cord Lace"]
-    },
-    variants: {
-      measurement: "yards", // replaces size
-      colors: true
-    }
-  },
+  // "Fabrics & Materials": {
+  //   categories: {
+  //     "Ankara": ["Plain Ankara", "Pattern Ankara"],
+  //     "Lace": ["Swiss Lace", "Cord Lace"]
+  //   },
+  //   variants: {
+  //     measurement: "yards", // replaces size
+  //     colors: true
+  //   }
+  // },
 
   "Accessories": {
     categories: {
-      "Bags": ["Handbag", "Backpack"],
       "Jewelry": ["Necklace", "Bracelet", "Earrings", "Wristwatch"],
       "Glasses": ["Photochromic", "shades", "magnificated"]
     },
@@ -67,13 +66,14 @@ const productCategoryMap = {
     }
   },
 
-  // "Beauty & Personal Care": {
-  //   categories: {
-  //     "Makeup": ["Foundation", "Lipstick", "Mascara"],
-  //     "Skincare": ["Moisturizer", "Sunscreen", "Face Serum"]
-  //   },
-  //   variants: {}
-  // },  // "Kids Fashion": {
+  "Beauty & Personal Care": {
+    categories: {
+      "Perfumes": ["Men's perfume", "Women's perfume", "Unisex perfume", "Perfume oil"]
+    },
+    variants: {}
+  },  
+  
+  // "Kids Fashion": {
   //   categories: {
   //     "Boys Wear": ["Shirts", "Shorts"],
   //     "Girls Wear": ["Dresses", "Skirts"]
