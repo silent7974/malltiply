@@ -1,9 +1,22 @@
 "use client"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ChevronLeft, Check, ChevronDown, Clock } from "lucide-react"
 import Image from "next/image"
 
 export default function GuestAddressForm({ onClose, onSaveSuccess }) {
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden"
+    return () => { document.body.style.overflow = "" }
+  }, [])
+
+  useEffect(() => {
+    window.history.pushState({ overlay: "address" }, "")
+    const handlePop = () => onClose()
+    window.addEventListener("popstate", handlePop)
+    return () => window.removeEventListener("popstate", handlePop)
+  }, [])
+
   const [fullName, setFullName] = useState("")
   const [phone, setPhone] = useState("")
   const [email, setEmail] = useState("")
@@ -61,7 +74,7 @@ export default function GuestAddressForm({ onClose, onSaveSuccess }) {
               value={value}
               onChange={(e) => set(e.target.value)}
               placeholder={placeholder}
-              className="w-full h-[32px] bg-[#EEEEEE] rounded-[4px] px-[16px] mt-[4px] text-[12px] font-inter text-black/70 outline-none"
+              className="w-full h-[32px] bg-[#EEEEEE] rounded-[4px] px-[16px] mt-[4px] text-[16px] font-inter text-black/70 outline-none"
             />
           </div>
         ))}
@@ -69,7 +82,7 @@ export default function GuestAddressForm({ onClose, onSaveSuccess }) {
         <div>
           <label className="text-[12px] font-inter font-medium text-black">City</label>
           <input value="Abuja" disabled
-            className="w-full h-[32px] bg-[#EEEEEE] rounded-[4px] px-[16px] mt-[4px] text-[12px] font-inter text-black/70" />
+            className="w-full h-[32px] bg-[#EEEEEE] rounded-[4px] px-[16px] mt-[4px] text-[16px] font-inter text-black/70" />
         </div>
 
         <div>

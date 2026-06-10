@@ -1,12 +1,24 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Image from "next/image"
 import { X } from "lucide-react"
 import { useSignupMutation } from "@/redux/services/authApi"
 
 export default function SignUpLayout({ onClose, onSwitchToSignIn  }) {
   const [signup, { isLoading, error }] = useSignupMutation()
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden"
+    return () => { document.body.style.overflow = "" }
+  }, [])
+
+  useEffect(() => {
+    window.history.pushState({ overlay: "signup" }, "")
+    const handlePop = () => onClose()
+    window.addEventListener("popstate", handlePop)
+    return () => window.removeEventListener("popstate", handlePop)
+  }, [])
 
   const [form, setForm] = useState({
     fullName: "",
@@ -135,7 +147,7 @@ export default function SignUpLayout({ onClose, onSwitchToSignIn  }) {
             placeholder="Full Name"
             value={form.fullName}
             onChange={handleChange}
-            className="w-full h-[36px] px-[16px] border border-black/30 rounded-[4px] text-[12px] font-inter font-medium text-black placeholder:text-black/30"
+            className="w-full h-[36px] px-[16px] border border-black/30 rounded-[4px] text-[16px] font-inter font-medium text-black placeholder:text-black/30"
           />
           {errors.fullName && (
             <p className="text-[10px] text-red-500">{errors.fullName}</p>
@@ -147,7 +159,7 @@ export default function SignUpLayout({ onClose, onSwitchToSignIn  }) {
             placeholder="Email"
             value={form.email}
             onChange={handleChange}
-            className="w-full h-[36px] px-[16px] border border-black/30 rounded-[4px] text-[12px] font-inter font-medium text-black placeholder:text-black/30"
+            className="w-full h-[36px] px-[16px] border border-black/30 rounded-[4px] text-[16px] font-inter font-medium text-black placeholder:text-black/30"
           />
           {errors.email && (
             <p className="text-[10px] text-red-500">{errors.email}</p>
@@ -159,7 +171,7 @@ export default function SignUpLayout({ onClose, onSwitchToSignIn  }) {
             placeholder="Phone Number"
             value={form.phone}
             onChange={handleChange}
-            className="w-full h-[36px] px-[16px] border border-black/30 rounded-[4px] text-[12px] font-inter font-medium text-black placeholder:text-black/30"
+            className="w-full h-[36px] px-[16px] border border-black/30 rounded-[4px] text-[16px] font-inter font-medium text-black placeholder:text-black/30"
           />
           {errors.phone && (
             <p className="text-[10px] text-red-500">{errors.phone}</p>
@@ -173,7 +185,7 @@ export default function SignUpLayout({ onClose, onSwitchToSignIn  }) {
               placeholder="Password"
               value={form.password}
               onChange={handleChange}
-              className="w-full h-[36px] px-[16px] border border-black/30 rounded-[4px] text-[12px] font-inter font-medium text-black placeholder:text-black/30"
+              className="w-full h-[36px] px-[16px] border border-black/30 rounded-[4px] text-[16px] font-inter font-medium text-black placeholder:text-black/30"
             />
             <input
               type="password"
@@ -181,7 +193,7 @@ export default function SignUpLayout({ onClose, onSwitchToSignIn  }) {
               placeholder="Confirm Password"
               value={form.confirmPassword}
               onChange={handleChange}
-              className="w-full h-[36px] px-[16px] border border-black/30 rounded-[4px] text-[12px] font-inter font-medium text-black placeholder:text-black/30"
+              className="w-full h-[36px] px-[16px] border border-black/30 rounded-[4px] text-[16px] font-inter font-medium text-black placeholder:text-black/30"
             />
           </div>
 

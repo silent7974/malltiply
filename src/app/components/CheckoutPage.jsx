@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSelector } from "react-redux";
 import { Check, ChevronLeft, CreditCardIcon } from "lucide-react";
@@ -20,6 +20,18 @@ export default function CheckoutPage({ onClose }) {
     const { data } = useMeQuery();
     const user = data?.user;
     const cart = useSelector((state) => state.cart);
+
+    useEffect(() => {
+      document.body.style.overflow = "hidden"
+      return () => { document.body.style.overflow = "" }
+    }, [])
+
+    useEffect(() => {
+      window.history.pushState({ overlay: "checkout" }, "")
+      const handlePop = () => onClose()
+      window.addEventListener("popstate", handlePop)
+      return () => window.removeEventListener("popstate", handlePop)
+    }, [])
 
     const [selectedShipping, setSelectedShipping] = useState("standard");
     const [selectedPickupStation, setSelectedPickupStation] = useState(null);

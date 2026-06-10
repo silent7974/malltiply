@@ -1,7 +1,7 @@
 "use client"
 
 import { motion, AnimatePresence } from "framer-motion"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ChevronLeft, Search } from "lucide-react"
 import Image from "next/image"
 import { 
@@ -13,6 +13,18 @@ import { useRouter } from "next/navigation"
 export default function SearchModal({ onClose, storeId }) {
   const [query, setQuery] = useState("")
   const router = useRouter()
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden"
+    return () => { document.body.style.overflow = "" }
+  }, [])
+
+  useEffect(() => {
+    window.history.pushState({ overlay: "searchbar" }, "")
+    const handlePop = () => onClose()
+    window.addEventListener("popstate", handlePop)
+    return () => window.removeEventListener("popstate", handlePop)
+  }, [])
 
   // ✅ Decide which query hook to use
   const { data, isLoading } = storeId
@@ -46,7 +58,7 @@ export default function SearchModal({ onClose, storeId }) {
               placeholder="Search Malltiply"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="flex-1 text-black placeholder:text-[#00000080] font-montserrat font-medium text-[14px] outline-none"
+              className="flex-1 text-black placeholder:text-[#00000080] font-montserrat font-medium text-[16px] outline-none"
             />
 
             {/* Cancel button */}

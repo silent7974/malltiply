@@ -12,6 +12,18 @@ export default function AddNewAddress({ onClose, onSaveSuccess }) {
   const user = data?.user;
   const existingAddress = user?.address || {};
 
+  useEffect(() => {
+    document.body.style.overflow = "hidden"
+    return () => { document.body.style.overflow = "" }
+  }, [])
+
+  useEffect(() => {
+    window.history.pushState({ overlay: "address" }, "")
+    const handlePop = () => onClose()
+    window.addEventListener("popstate", handlePop)
+    return () => window.removeEventListener("popstate", handlePop)
+  }, [])
+
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [street, setStreet] = useState("");
@@ -116,7 +128,7 @@ export default function AddNewAddress({ onClose, onSaveSuccess }) {
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder={user?.fullName || "Enter your full name"}
-                className="w-full h-[32px] bg-[#EEEEEE] rounded-[4px] px-[16px] mt-[4px] text-[12px] font-inter text-black/70 outline-none"
+                className="w-full h-[32px] bg-[#EEEEEE] rounded-[4px] px-[16px] mt-[4px] text-[16px] font-inter text-black/70 outline-none"
               />
             </div>
 
@@ -129,7 +141,7 @@ export default function AddNewAddress({ onClose, onSaveSuccess }) {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder={user?.phone || "Enter your phone number"}
-                className="w-full h-[32px] bg-[#EEEEEE] rounded-[4px] px-[16px] mt-[4px] text-[12px] font-inter text-black/70 outline-none"
+                className="w-full h-[32px] bg-[#EEEEEE] rounded-[4px] px-[16px] mt-[4px] text-[16px] font-inter text-black/70 outline-none"
               />
             </div>
 
@@ -141,7 +153,7 @@ export default function AddNewAddress({ onClose, onSaveSuccess }) {
               <input
                 value="Abuja"
                 disabled
-                className="w-full h-[32px] bg-[#EEEEEE] rounded-[4px] px-[16px] mt-[4px] text-[12px] font-inter text-black/70"
+                className="w-full h-[32px] bg-[#EEEEEE] rounded-[4px] px-[16px] mt-[4px] text-[16px] font-inter text-black/70"
               />
             </div>
 
@@ -154,7 +166,7 @@ export default function AddNewAddress({ onClose, onSaveSuccess }) {
                 value={street}
                 onChange={(e) => setStreet(e.target.value)}
                 placeholder={existingAddress.street || "Enter street address or landmark"}
-                className="w-full h-[32px] border border-black/30 rounded-[4px] px-[16px] mt-[4px] text-[12px] font-inter text-black/70 outline-none"
+                className="w-full h-[32px] border border-black/30 rounded-[4px] px-[16px] mt-[4px] text-[16px] font-inter text-black/70 outline-none"
               />
             </div>
 

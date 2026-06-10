@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Image from "next/image"
 import { X } from "lucide-react"
 import { useSigninMutation } from "@/redux/services/authApi"
@@ -9,6 +9,18 @@ import SignUpLayout from "./SignUpLayout"
 export default function SignInLayout({ onClose }) {
   const [signin, { isLoading, error }] = useSigninMutation()
   const [showSignUp, setShowSignUp] = useState(false)
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden"
+    return () => { document.body.style.overflow = "" }
+  }, [])
+
+  useEffect(() => {
+    window.history.pushState({ overlay: "signin" }, "")
+    const handlePop = () => onClose()
+    window.addEventListener("popstate", handlePop)
+    return () => window.removeEventListener("popstate", handlePop)
+  }, [])
 
   const [form, setForm] = useState({
     emailOrPhone: "",
@@ -107,7 +119,7 @@ export default function SignInLayout({ onClose }) {
             placeholder="Email or Phone"
             value={form.emailOrPhone}
             onChange={handleChange}
-            className="w-full h-[36px] px-[16px] border border-black/30 rounded-[4px] text-[12px] font-inter font-medium text-black placeholder:text-black/30"
+            className="w-full h-[36px] px-[16px] border border-black/30 rounded-[4px] text-[16px] font-inter font-medium text-black placeholder:text-black/30"
           />
           {errors.emailOrPhone && (
             <p className="text-[10px] text-red-500">{errors.emailOrPhone}</p>
@@ -119,7 +131,7 @@ export default function SignInLayout({ onClose }) {
             placeholder="Password"
             value={form.password}
             onChange={handleChange}
-            className="w-full h-[36px] px-[16px] border border-black/30 rounded-[4px] text-[12px] font-inter font-medium text-black placeholder:text-black/30"
+            className="w-full h-[36px] px-[16px] border border-black/30 rounded-[4px] text-[16px] font-inter font-medium text-black placeholder:text-black/30"
           />
           {errors.password && (
             <p className="text-[10px] text-red-500">{errors.password}</p>
