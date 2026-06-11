@@ -35,21 +35,52 @@ export default function OrdersPage() {
   const { data: me, isLoading: authLoading } = useMeQuery()
   const user = me?.user
   const [getGuestOrders] = useGetGuestOrdersMutation()
-  const { data: buyerOrders } = useGetBuyerOrdersQuery(undefined, { skip: !user })
+  const { data: buyerOrders, isFetching: buyerOrdersFetching  } = useGetBuyerOrdersQuery(undefined, { 
+    skip: !user,
+    pollingInterval: 60000, // refetch every 60 seconds
+    refetchOnFocus: true,      // refetch when tab regains focus
+    refetchOnReconnect: true,  // refetch when internet reconnects
+  })
 
   const [guestOrders, setGuestOrders] = useState([])
 
+  const [guestFetching, setGuestFetching] = useState(false)
+
   useEffect(() => {
-    if (authLoading) return // ← wait for auth to settle first
-    if (!user) {
-      const ids = JSON.parse(localStorage.getItem("guestOrderIds") || "[]")
-      if (ids.length) {
-        getGuestOrders(ids).unwrap().then(setGuestOrders).catch(console.error)
-      }
+    if (authLoading || user) return
+    const ids = JSON.parse(localStorage.getItem("guestOrderIds") || "[]")
+    if (!ids.length) return
+
+    const fetchOrders = () => {
+      setGuestFetching(true)  // ← add this
+      getGuestOrders(ids).unwrap()
+        .then(setGuestOrders)
+        .catch(console.error)
+        .finally(() => setGuestFetching(false))  // ← add this
+    }
+    
+    fetchOrders()
+
+    const interval = setInterval(fetchOrders, 60000)
+
+    // ← refetch on tab focus for guests
+    const handleFocus = () => fetchOrders()
+    document.addEventListener("visibilitychange", handleFocus)
+
+    return () => {
+      clearInterval(interval)
+      document.removeEventListener("visibilitychange", handleFocus)
     }
   }, [user, authLoading])
 
   const orders = user ? (buyerOrders || []) : guestOrders
+
+  useEffect(() => {
+    if (selectedOrder && orders.length) {
+      const updated = orders.find(o => o._id === selectedOrder._id)
+      if (updated) setSelectedOrder(updated)
+    }
+  }, [orders])
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -95,6 +126,8 @@ export default function OrdersPage() {
     verify();
   }, []);
 
+  const isFetching = user ? buyerOrdersFetching : guestFetching
+
   return (
     <div className="relative min-h-screen pb-[72px]">
       {/* Tabs */}
@@ -125,6 +158,13 @@ export default function OrdersPage() {
             );
           })}
         </div>
+
+        {isFetching && (
+          <div className="flex items-center gap-2 px-6 py-2">
+            <div className="w-3 h-3 rounded-full bg-[#005770] animate-pulse" />
+            <span className="text-[11px] font-inter text-black/40">Updating orders...</span>
+          </div>
+        )}
 
         {/* Content */}
         <div className="mt-6">

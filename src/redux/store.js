@@ -11,6 +11,7 @@ import { orderApi } from './services/orderApi'
 import { pickupApi } from './services/pickupApi'
 import { paymentApi } from './services/paymentApi'
 import { storeApi } from './services/storeApi'
+import { setupListeners } from '@reduxjs/toolkit/query'
 
 export const store = configureStore({
   reducer: {
@@ -36,7 +37,9 @@ export const store = configureStore({
       orderApi.middleware,
       pickupApi.middleware,
       paymentApi.middleware,
-      storeApi.middleware
+      storeApi.middleware,
     ),
     devtools: true 
 })
+
+setupListeners(store.dispatch)
