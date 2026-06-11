@@ -48,9 +48,13 @@ export default function CheckoutPage({ onClose }) {
 
     const activeUser = user || guestInfo  // use whichever is available
 
+    const [isSubmitting, setIsSubmitting] = useState(false)
+
     const handlePlaceOrder = async () => {
+      if (isSubmitting) return  // ← guard
       if (!activeUser) return alert("Please add your delivery details first.")
 
+      setIsSubmitting(true)
       try {
 
         const shippingAddress = user
@@ -99,8 +103,10 @@ export default function CheckoutPage({ onClose }) {
     } catch (err) {
       console.error(err);
       alert("Failed to place order. Try again.");
+    } finally {
+      setIsSubmitting(false)
     }
-    };
+  }
 
 
   return (
@@ -235,7 +241,7 @@ export default function CheckoutPage({ onClose }) {
       <div className="h-[4px] bg-[#EEEEEE] w-full my-[16px]" />
 
       {/* Payment Method */}
-      <p className="text-[14px] mx-[16px] font-inter font-medium mb-[8px]">Payment methods (via paystack)</p>
+      <p className="text-[14px] mx-[16px] font-inter font-medium mb-[8px]">Payment</p>
 
       <div className="mx-[16px] flex flex-col gap-[12px]">
         {/* Card */}
@@ -248,11 +254,11 @@ export default function CheckoutPage({ onClose }) {
           ) : (
             <div className="w-[14px] h-[14px] border rounded-full border-black/50" />
           )}
-          <p className="text-[14px] font-inter font-medium">Card payment</p>
+          <p className="text-[14px] font-inter font-medium">Paystack</p>
         </div>
 
         {/* Bank Transfer */}
-        <div
+        {/* <div
           className="flex items-center gap-[8px] cursor-pointer"
           onClick={() => setSelectedPayment("bank_transfer")}
         >
@@ -262,7 +268,7 @@ export default function CheckoutPage({ onClose }) {
             <div className="w-[16px] h-[16px] border rounded-full border-black/50" />
           )}
           <p className="text-[14px] font-inter font-medium">Bank transfer</p>
-        </div>
+        </div> */}
       </div>
 
       {/* Bottom Bar */}
@@ -276,9 +282,10 @@ export default function CheckoutPage({ onClose }) {
             <motion.button
               whileTap={{ scale: 0.97 }}
               onClick={handlePlaceOrder}
+              disabled={isSubmitting}
               className="px-4 h-[48px] bg-[#005770] rounded-[44px] text-white font-inter font-semibold text-[18px]"
             >
-              Submit order ({cart.totalQuantity})
+              {isSubmitting ? "Processing..." : `Submit order (${cart.totalQuantity})`}
             </motion.button>
           </div>
         </div>

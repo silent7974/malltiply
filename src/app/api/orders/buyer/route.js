@@ -17,7 +17,10 @@ export async function GET() {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    const orders = await Order.find({ userId: decoded.id })
+    const orders = await Order.find({ 
+      userId: decoded.id,
+      paymentStatus: "paid" 
+    })
       .sort({ createdAt: -1 });
 
     return NextResponse.json(orders, { status: 200 });

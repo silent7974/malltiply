@@ -9,6 +9,9 @@ export async function POST(req) {
 
   if (!orderIds?.length) return NextResponse.json([], { status: 200 })
 
-  const orders = await Order.find({ _id: { $in: orderIds } }).sort({ createdAt: -1 })
+  const orders = await Order.find({ 
+    _id: { $in: orderIds },
+    paymentStatus: "paid"
+   }).sort({ createdAt: -1 })
   return NextResponse.json(orders, { status: 200 })
 }

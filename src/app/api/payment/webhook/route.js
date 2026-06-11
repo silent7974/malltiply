@@ -1,22 +1,29 @@
-// pages/api/payment/webhook.js
-import dbConnect from "@/lib/mongodb";
-import Order from "@/models/order";
+// /api/payment/webhook/route.js
+import { NextResponse } from "next/server"
+import dbConnect from "@/lib/mongodb"
+import Order from "@/models/order"
+import crypto from "crypto"
 
-export default async function handler(req, res) {
-  if (req.method === "POST") {
-    await dbConnect();
-    const event = req.body;
+export async function POST(req) {
+  const body = await req.text()
+  const signature = req.headers.get("x-paystack-signature")
+  
+  const hash = crypto
+    .createHmac("sha512", process.env.PAYSTACK_SECRET_KEY)
+    .update(body)
+    .digest("hex")
 
-    if (event.event === "charge.success") {
-      const { orderId } = event.data.metadata;
-      const order = await Order.findById(orderId);
-      if (!order) return res.status(404).send("Order not found");
-
-      order.status = "paid";
-      await order.save();
-    }
-
-    return res.status(200).send("Webhook received");
+  if (hash !== signature) {
+    return NextResponse.json({ error: "Invalid signature" }, { status: 400 })
   }
-  res.status(405).send("Method not allowed");
+
+  await dbConnect()
+  const event = JSON.parse(body)
+
+  if (event.event === "charge.success") {
+    const { orderId } = event.data.metadata
+    await Order.findByIdAndUpdate(orderId, { paymentStatus: "paid" })
+  }
+
+  return NextResponse.json({ received: true })
 }

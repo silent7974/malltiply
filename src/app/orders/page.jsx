@@ -58,7 +58,7 @@ export default function OrdersPage() {
         .catch(console.error)
         .finally(() => setGuestFetching(false))  // ← add this
     }
-    
+
     fetchOrders()
 
     const interval = setInterval(fetchOrders, 60000)
@@ -118,6 +118,7 @@ export default function OrdersPage() {
       if (user) {
         await clearCart().unwrap().catch(console.error)
       }
+
       // Always clear localStorage regardless
       dispatch(clearCartRedux()) // from cartSlice
       localStorage.removeItem("cart")
