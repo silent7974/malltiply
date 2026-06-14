@@ -56,7 +56,7 @@ export async function POST(req) {
       productId,
       name: product.productName,
       price: product.price,
-      discountedPrice: product.discountedPrice,
+      discountedPrice: product.discountedPrice ?? product.price, // ← fallback
       image: product.images?.[0]?.url || "",
       color,
       size,
@@ -65,9 +65,9 @@ export async function POST(req) {
     });
   }
 
-  cart.totalQuantity = cart.items.reduce((sum, i) => sum + i.quantity, 0);
-  cart.totalPrice = cart.items.reduce((sum, i) => sum + i.quantity * i.price, 0);
-  cart.totalDiscountedPrice = cart.items.reduce((sum, i) => sum + i.quantity * i.discountedPrice, 0);
+  cart.totalQuantity = cart.items.reduce((sum, i) => sum + (i.quantity || 0), 0)
+  cart.totalPrice = cart.items.reduce((sum, i) => sum + (i.quantity || 0) * (i.price || 0), 0)
+  cart.totalDiscountedPrice = cart.items.reduce((sum, i) => sum + (i.quantity || 0) * (i.discountedPrice || i.price || 0), 0)
 
   await cart.save();
   return NextResponse.json(cart);
