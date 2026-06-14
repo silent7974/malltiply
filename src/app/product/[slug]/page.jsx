@@ -373,7 +373,13 @@ export default function ProductDetailsPage() {
                 </span>
               </div>
             )} */}
-          <p>{displayQuantity} available</p>
+          {isOutOfStock ? (
+            <span className="text-[12px] font-inter font-semibold text-red-500">
+              Out of stock
+            </span>
+          ) : (
+            <p className="text-[12px] font-inter text-black/50">{displayQuantity} available</p>
+          )}
         </div>
       </div>
 

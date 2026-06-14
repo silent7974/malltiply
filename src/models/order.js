@@ -49,7 +49,6 @@ const OrderSchema = new mongoose.Schema({
     phone: String,     // optional, if GIG needs
   },
 
-  paymentMethod: { type: String, enum: ["card", "bank_transfer"], default: "card" },
   paymentStatus: { type: String, enum: ["pending", "paid", "failed"], default: "pending" },
 
   itemsTotal: Number,

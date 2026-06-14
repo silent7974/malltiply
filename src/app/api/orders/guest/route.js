@@ -14,7 +14,6 @@ export async function POST(req) {
     items,
     shippingMethod,
     shippingAddress: guestInfo.address,
-    paymentMethod,
     paymentStatus: "pending",
     itemsTotal,
     shippingFee: shippingFee || 0,

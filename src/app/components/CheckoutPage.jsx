@@ -40,7 +40,6 @@ export default function CheckoutPage({ onClose }) {
     const [createGuestOrder] = useCreateGuestOrderMutation();
     const [initializePayment] = useInitializePaymentMutation();
     const [clearCart] = useClearCartMutation();
-    const [selectedPayment, setSelectedPayment] = useState("card");
 
     const guestInfo = typeof window !== "undefined"
       ? JSON.parse(localStorage.getItem("guestInfo") || "null")
@@ -67,7 +66,6 @@ export default function CheckoutPage({ onClose }) {
           shippingMethod: selectedShipping,
           pickupAddress: selectedPickupStation,
           shippingAddress,
-          paymentMethod: selectedPayment, 
           paymentStatus: "pending",
           itemsTotal: cart.totalPrice,
           shippingFee: calculateStandardFee(cart),
@@ -247,28 +245,10 @@ export default function CheckoutPage({ onClose }) {
         {/* Card */}
         <div
           className="flex items-center gap-[8px] cursor-pointer"
-          onClick={() => setSelectedPayment("card")}
         >
-          {selectedPayment === "card" ? (
-            <Image src="/checkout-indicator.svg" width={14} height={14} alt="selected" />
-          ) : (
-            <div className="w-[14px] h-[14px] border rounded-full border-black/50" />
-          )}
+          <Image src="/checkout-indicator.svg" width={14} height={14} alt="selected" />
           <p className="text-[14px] font-inter font-medium">Paystack</p>
         </div>
-
-        {/* Bank Transfer */}
-        {/* <div
-          className="flex items-center gap-[8px] cursor-pointer"
-          onClick={() => setSelectedPayment("bank_transfer")}
-        >
-          {selectedPayment === "bank_transfer" ? (
-            <Image src="/checkout-indicator.svg" width={16} height={16} alt="selected" />
-          ) : (
-            <div className="w-[16px] h-[16px] border rounded-full border-black/50" />
-          )}
-          <p className="text-[14px] font-inter font-medium">Bank transfer</p>
-        </div> */}
       </div>
 
       {/* Bottom Bar */}

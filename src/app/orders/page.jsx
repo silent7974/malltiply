@@ -64,7 +64,9 @@ export default function OrdersPage() {
     const interval = setInterval(fetchOrders, 60000)
 
     // ← refetch on tab focus for guests
-    const handleFocus = () => fetchOrders()
+    const handleFocus = () => {
+      if (document.visibilityState === "visible") fetchOrders() // ← only on visible
+    }
     document.addEventListener("visibilitychange", handleFocus)
 
     return () => {
@@ -91,10 +93,13 @@ export default function OrdersPage() {
     });
   };
 
+  const verifyRan = useRef(false)
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const reference = params.get("reference") || params.get("trxref");
-    if (!reference) return;
+    if (!reference || verifyRan.current) return;
+    verifyRan.current = true  // ← prevents double run
 
     async function verify() {
       const res = await fetch("/api/payment/verify", {
