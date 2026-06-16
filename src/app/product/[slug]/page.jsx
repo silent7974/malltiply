@@ -212,7 +212,7 @@ export default function ProductDetailsPage() {
             ))
           ) : (
             <img src="/placeholder.png" alt="placeholder"
-              className="w-full h-[393px] object-cover flex-shrink-0" />
+              className="w-full h-[416px] object-cover flex-shrink-0" />
           )}
         </div>
 
