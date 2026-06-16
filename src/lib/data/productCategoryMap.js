@@ -3,7 +3,7 @@ const productCategoryMap = {
     categories: {
       "Shoes": ["Palms", "Loafers", "Sneakers", "Sandals"],
       "Native": ["Agbada", "Kaftan", "Senator"],
-      "Shirts": ["Casual Shirt", "Dress Shirt", "Polo Shirt"],
+      "Shirts": ["Casual Shirt", "Dress Shirt", "Polo Shirt", "Two-piece set"],
       "Trousers": ["Jeans", "Chinos", "Formal Pants"],
       "Jackets": ["Blazers", "Leather Jackets", "Winter Coats"]
     },
