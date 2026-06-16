@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/mongodb";
 import Order from "@/models/order";
-import Seller from "@/models/seller";
 import Product from "@/models/product";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
+import { validateOrderItems } from "@/lib/orders/validateOrderItems";
 
 export async function GET() {
   try {
@@ -60,25 +60,25 @@ export async function POST(req) {
       pickupAddress,
       paymentMethod,
       paymentStatus,
-      itemsTotal,
-      discountTotal,
       shippingFee,
-      totalAmount,
     } = data;
 
     // 1️⃣ Create the order (ONLY — no stock updates here)
+    const validated = await validateOrderItems(items);
+    const safeShippingFee = Number(shippingFee || 0);
+
     const order = await Order.create({
       userId: decoded.id,
-      items,
+      items: validated.normalizedItems,
       shippingMethod,
       shippingAddress,
       pickupAddress,
       paymentMethod,
       paymentStatus,
-      itemsTotal,
-      discountTotal,
-      shippingFee,
-      totalAmount,
+      itemsTotal: validated.itemsTotal,
+      discountTotal: validated.discountTotal,
+      shippingFee: safeShippingFee,
+      totalAmount: validated.itemsTotal + safeShippingFee,
     });
 
     // 2️⃣ Return success

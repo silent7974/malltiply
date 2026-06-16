@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import dbConnect from "@/lib/mongodb";
+import { settlePaidOrder } from "@/lib/orders/settlePaidOrder";
 
 export async function POST(req) {
   try {
@@ -15,8 +17,19 @@ export async function POST(req) {
     );
 
     const data = await response.json();
+
+    const isSuccessful =
+      data?.status === true && data?.data?.status === "success";
+    const orderId = data?.data?.metadata?.orderId;
+
+    if (isSuccessful && orderId) {
+      await dbConnect();
+      data.order = await settlePaidOrder(orderId);
+    }
+
     return NextResponse.json(data);
   } catch (error) {
+    console.error("PAYSTACK VERIFY ERROR:", error);
     return NextResponse.json({ error: "Verify payment failed" }, { status: 500 });
   }
 }

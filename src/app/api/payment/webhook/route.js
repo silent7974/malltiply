@@ -1,7 +1,7 @@
 // /api/payment/webhook/route.js
 import { NextResponse } from "next/server"
 import dbConnect from "@/lib/mongodb"
-import Order from "@/models/order"
+import { settlePaidOrder } from "@/lib/orders/settlePaidOrder"
 import crypto from "crypto"
 
 export async function POST(req) {
@@ -22,7 +22,7 @@ export async function POST(req) {
 
   if (event.event === "charge.success") {
     const { orderId } = event.data.metadata
-    await Order.findByIdAndUpdate(orderId, { paymentStatus: "paid" })
+    await settlePaidOrder(orderId)
   }
 
   return NextResponse.json({ received: true })

@@ -12,6 +12,26 @@ const initialState = savedCart || {
   totalDiscountedPrice: 0
 };
 
+function getProductId(item) {
+  const productId = typeof item.productId === "object"
+    ? item.productId._id
+    : item.productId;
+  return String(productId);
+}
+
+function matchesCartItem(item, { productId, color, size }) {
+  return getProductId(item) === String(productId) && item.color === color && item.size === size;
+}
+
+function recalculateTotals(state) {
+  state.totalQuantity = state.items.reduce((sum, i) => sum + (i.quantity || 0), 0);
+  state.totalPrice = state.items.reduce((sum, i) => sum + (i.quantity || 0) * (i.price || 0), 0);
+  state.totalDiscountedPrice = state.items.reduce(
+    (sum, i) => sum + (i.quantity || 0) * (i.discountedPrice ?? i.price ?? 0),
+    0
+  );
+}
+
 const cartSlice = createSlice({
   name: "cart",
   initialState,
@@ -19,9 +39,7 @@ const cartSlice = createSlice({
     // 🛒 Set entire cart (used when fetching from backend)
     setCart(state, action) {
       state.items = action.payload
-      state.totalQuantity = state.items.reduce((sum, i) => sum + i.quantity, 0);
-      state.totalPrice = state.items.reduce((sum, i) => sum + i.quantity * i.price, 0);
-      state.totalDiscountedPrice = state.items.reduce((sum, i) => sum + i.quantity * i.discountedPrice, 0);
+      recalculateTotals(state);
       localStorage.setItem("cart", JSON.stringify(state));
     },
 
@@ -29,18 +47,13 @@ const cartSlice = createSlice({
     addToCart(state, action) {
       const item = action.payload;
       const existing = state.items.find(
-        i =>
-          i.productId === item.productId &&
-          i.color === item.color &&
-          i.size === item.size
+        i => matchesCartItem(i, item)
       );
 
       if (existing) existing.quantity += item.quantity;
       else state.items.push(item);
 
-      state.totalQuantity = state.items.reduce((sum, i) => sum + i.quantity, 0);
-      state.totalPrice = state.items.reduce((sum, i) => sum + i.quantity * i.price, 0);
-      state.totalDiscountedPrice = state.items.reduce((sum, i) => sum + i.quantity * i.discountedPrice, 0);
+      recalculateTotals(state);
 
       localStorage.setItem("cart", JSON.stringify(state));
     },
@@ -49,22 +62,20 @@ const cartSlice = createSlice({
     updateQuantity(state, action) {
       const { productId, color, size, quantity } = action.payload;
       const item = state.items.find(
-        i => i.productId === productId && i.color === color && i.size === size
+        i => matchesCartItem(i, { productId, color, size })
       );
 
       if (item) {
         if (quantity <= 0) {
           state.items = state.items.filter(
-            i => !(i.productId === productId && i.color === color && i.size === size)
+            i => !matchesCartItem(i, { productId, color, size })
           );
         } else {
           item.quantity = quantity;
         }
       }
 
-      state.totalQuantity = state.items.reduce((sum, i) => sum + i.quantity, 0)
-      state.totalPrice = state.items.reduce((sum, i) => sum + i.quantity * i.price, 0)
-      state.totalDiscountedPrice = state.items.reduce((sum, i) => sum + i.quantity * i.discountedPrice, 0)
+      recalculateTotals(state)
 
       localStorage.setItem("cart", JSON.stringify(state))
     },
@@ -73,12 +84,10 @@ const cartSlice = createSlice({
     removeItem(state, action) {
       const { productId, color, size } = action.payload;
       state.items = state.items.filter(
-        i => !(i.productId === productId && i.color === color && i.size === size)
+        i => !matchesCartItem(i, { productId, color, size })
       );
 
-      state.totalQuantity = state.items.reduce((sum, i) => sum + i.quantity, 0);
-      state.totalPrice = state.items.reduce((sum, i) => sum + i.quantity * i.price, 0);
-      state.totalDiscountedPrice = state.items.reduce((sum, i) => sum + i.quantity * i.discountedPrice, 0);
+      recalculateTotals(state);
 
       localStorage.setItem("cart", JSON.stringify(state));
     },

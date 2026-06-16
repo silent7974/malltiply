@@ -9,7 +9,7 @@ export default function MultiImageUpload({
   adVideo,
   onAdVideoAdd,
   onAdVideoRemove,
-  maxImages = 5,
+  maxImages = 6,
   allowVideo = false,
 }) {
   const [mainIndex, setMainIndex] = useState(0)

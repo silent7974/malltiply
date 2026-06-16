@@ -21,19 +21,30 @@ export async function PUT(req, context) {
   }
 
   const { id } = await context.params;
-  const { quantity } = await req.json();
+  const { quantity, color, size } = await req.json();
 
   const cart = await Cart.findOne({ userId: decoded.id });
   if (!cart) return NextResponse.json({ error: "Cart not found" }, { status: 404 });
 
-  const item = cart.items.id(id) || cart.items.find(i => i.productId.toString() === id);
+  const item = cart.items.find(
+    i =>
+      i.productId.toString() === id &&
+      (color === undefined || i.color === color) &&
+      (size === undefined || i.size === size)
+  );
   if (!item) return NextResponse.json({ error: "Item not found" }, { status: 404 })
 
   if (quantity <= 0) {
-    cart.items = cart.items.filter(i => i.productId.toString() !== id)
+    cart.items = cart.items.filter(
+      i =>
+        !(
+          i.productId.toString() === id &&
+          (color === undefined || i.color === color) &&
+          (size === undefined || i.size === size)
+        )
+    )
   } else {
     // ← validate against live stock before allowing increase
-    const Product = require("@/models/product").default
     const product = await Product.findById(item.productId)
     let availableStock = product?.quantity ?? 0
     if (item.size || item.color) {
@@ -76,12 +87,20 @@ export async function DELETE(req, context) {
   }
 
   const { id } = await context.params;
+  const { color, size } = await req.json().catch(() => ({}));
 
   const cart = await Cart.findOne({ userId: decoded.id });
   if (!cart) return NextResponse.json({ error: "Cart not found" }, { status: 404 });
 
   // Remove the item explicitly
-  cart.items = cart.items.filter(i => i.productId.toString() !== id);
+  cart.items = cart.items.filter(
+    i =>
+      !(
+        i.productId.toString() === id &&
+        (color === undefined || i.color === color) &&
+        (size === undefined || i.size === size)
+      )
+  );
 
   // Recalculate totals
   cart.totalQuantity = cart.items.reduce((sum, i) => sum + (i.quantity || 0), 0)

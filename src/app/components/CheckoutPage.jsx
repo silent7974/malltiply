@@ -57,8 +57,20 @@ export default function CheckoutPage({ onClose }) {
       try {
 
         const shippingAddress = user
-        ? user.address
-        : guestInfo?.address
+        ? {
+            fullName: user.fullName,
+            phone: user.phone,
+            city: user.address?.city || "Abuja",
+            street: user.address?.street,
+            district: user.address?.district,
+          }
+        : {
+            fullName: guestInfo?.fullName,
+            phone: guestInfo?.phone,
+            city: guestInfo?.address?.city || "Abuja",
+            street: guestInfo?.address?.street,
+            district: guestInfo?.address?.district,
+          }
 
         // 1️⃣ Create order first (status = PENDING)
         const orderData = {
@@ -79,6 +91,7 @@ export default function CheckoutPage({ onClose }) {
           : await createGuestOrder(orderData).unwrap()
 
         const orderId = orderRes.order._id
+        const payableAmount = orderRes.order.totalAmount || cart.totalPrice
 
         // ← add this for guests
         if (!user) {
@@ -90,7 +103,7 @@ export default function CheckoutPage({ onClose }) {
         const email = user ? user.email : guestInfo?.email
         const paymentRes = await initializePayment({
           email,
-          amount: cart.totalPrice,
+          amount: payableAmount,
           channels: ["card", "bank_transfer"],
           metadata: { orderId },
           callback_url: `${window.location.origin}/payment/success`

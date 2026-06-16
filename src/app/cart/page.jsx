@@ -88,7 +88,12 @@ export default function CartPage() {
     // Only sync to backend if signed in
     if (user) {
       try {
-        await updateCartItemApi({ productId, quantity: newQuantity }).unwrap();
+        await updateCartItemApi({
+          productId,
+          color: item.color,
+          size: item.size,
+          quantity: newQuantity,
+        }).unwrap();
       } catch (err) {
         console.error("Failed to update quantity:", err);
         // Roll back only if backend fails for a signed-in user
@@ -107,7 +112,11 @@ export default function CartPage() {
     // Only call backend if user is logged in
     if (user) {
       try {
-        await removeCartItemApi(item.productId._id || item.productId).unwrap()
+        await removeCartItemApi({
+          productId: item.productId._id || item.productId,
+          color: item.color,
+          size: item.size,
+        }).unwrap()
       } catch (err) {
         console.error("Failed to remove item:", err)
       }
@@ -135,7 +144,11 @@ export default function CartPage() {
       try {
         await Promise.all(
           itemsToClear.map((item) =>
-            removeCartItemApi(item.productId._id || item.productId).unwrap()
+            removeCartItemApi({
+              productId: item.productId._id || item.productId,
+              color: item.color,
+              size: item.size,
+            }).unwrap()
           )
         )
       } catch (err) {

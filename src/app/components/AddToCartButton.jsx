@@ -43,11 +43,18 @@ export default function AddToCartButton({
     setTimeout(() => setToast({ show: false, message: "" }), 1500);
   }
 
+  function getProductId(item) {
+    const productId = typeof item.productId === "object"
+      ? item.productId._id
+      : item.productId;
+    return String(productId);
+  }
+
   // ✅ Detect existing variant in cart
   const currentItem =
     cart?.items?.find(
       (i) =>
-        i.productId === product._id &&
+        getProductId(i) === product._id &&
         i.color === selectedColor &&
         i.size === selectedSize
     ) || null;
@@ -110,7 +117,7 @@ export default function AddToCartButton({
       productId: product._id,
       name: product.productName,
       price: Originalprice,
-      discountedPrice: displayPrice,
+      discountedPrice: displayPrice ?? Originalprice,
       image: product.images?.[0]?.url,
       color: selectedColor,
       size: selectedSize,
@@ -128,6 +135,8 @@ export default function AddToCartButton({
         await addToCartApi(item).unwrap()
       } catch (err) {
         console.error("Backend addToCart failed:", err)
+        dispatch(removeItem({ productId: item.productId, color: item.color, size: item.size }))
+        if (err?.data?.error) alert(err.data.error)
       }
     }
 
@@ -150,7 +159,7 @@ export default function AddToCartButton({
       // Remove from cart
       dispatch(
         removeItem({
-          productId: currentItem.productId,
+          productId: getProductId(currentItem),
           color: currentItem.color,
           size: currentItem.size,
         })
@@ -158,16 +167,14 @@ export default function AddToCartButton({
 
       if (user) {
         try {
-          await addToCartApi(item).unwrap()
+          await removeCartApi({
+            productId: getProductId(currentItem),
+            color: currentItem.color,
+            size: currentItem.size,
+          }).unwrap()
         } catch (err) {
-          console.error("Backend addToCart failed:", err)
+          console.error("Backend removeCart failed:", err)
           // ← roll back optimistic Redux update if server rejects
-          if (err?.data?.error) {
-            dispatch(removeItem({ productId: item.productId, color: item.color, size: item.size }))
-            alert(err.data.error)
-            setIsInCart(false)
-            return
-          }
         }
       }
 
@@ -184,7 +191,7 @@ export default function AddToCartButton({
     // Update quantity both locally + backend
     dispatch(
       updateQuantity({
-        productId: currentItem.productId,
+        productId: getProductId(currentItem),
         color: currentItem.color,
         size: currentItem.size,
         quantity: newQuantity,
@@ -193,7 +200,9 @@ export default function AddToCartButton({
 
     try {
       await updateCartApi({
-        productId: currentItem.productId,
+        productId: getProductId(currentItem),
+        color: currentItem.color,
+        size: currentItem.size,
         quantity: newQuantity,
       }).unwrap();
     } catch (err) {

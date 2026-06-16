@@ -18,17 +18,18 @@ export const cartApi = createApi({
 
     }),
     updateCartItem: builder.mutation({
-      query: ({ productId, quantity }) => ({
+      query: ({ productId, quantity, color, size }) => ({
         url: `/cart/${productId}`,
         method: 'PUT',
-        body: { quantity },
+        body: { quantity, color, size },
       }),
       invalidatesTags: ['Cart'],
     }),
     removeCartItem: builder.mutation({
-      query: (productId) => ({
+      query: ({ productId, color, size }) => ({
         url: `/cart/${productId}`,
         method: 'DELETE',
+        body: { color, size },
       }),
       invalidatesTags: ['Cart'],
     }),

@@ -167,7 +167,7 @@ export default function ProductFormLayout() {
       <MultiImageUpload
         productImages={productImages}
         onImagesChange={setProductImages}
-        maxImages={sellerType === 'normal_seller' ? 5 : 10 }
+        maxImages={sellerType === 'normal_seller' ? 6 : 10 }
       />
 
       <ProductBasicDetails
