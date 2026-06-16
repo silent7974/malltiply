@@ -158,9 +158,16 @@ export default function AddToCartButton({
 
       if (user) {
         try {
-          await removeCartApi(currentItem.productId).unwrap();
+          await addToCartApi(item).unwrap()
         } catch (err) {
-          console.error("Failed to remove from backend", err);
+          console.error("Backend addToCart failed:", err)
+          // ← roll back optimistic Redux update if server rejects
+          if (err?.data?.error) {
+            dispatch(removeItem({ productId: item.productId, color: item.color, size: item.size }))
+            alert(err.data.error)
+            setIsInCart(false)
+            return
+          }
         }
       }
 

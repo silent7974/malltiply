@@ -42,12 +42,31 @@ export async function POST(req) {
   const product = await Product.findById(productId);
   if (!product) return NextResponse.json({ error: "Product not found" }, { status: 404 });
 
+  // ← Resolve actual available stock for this exact variant
+  let availableStock = product.quantity
+  if (size || color) {
+    const variant = product.variantColumns?.find(v => 
+      (!size || v.size === size) && (!color || v.color === color)
+    )
+    if (variant) availableStock = variant.quantity
+  }
+
   let cart = await Cart.findOne({ userId: decoded.id });
   if (!cart) cart = new Cart({ userId: decoded.id, items: [] });
 
   const existing = cart.items.find(
     i => i.productId.equals(productId) && i.color === color && i.size === size
   );
+
+  const requestedTotal = (existing?.quantity || 0) + quantity
+
+  // ← Reject if exceeds real stock
+  if (requestedTotal > availableStock) {
+    return NextResponse.json(
+      { error: `Only ${availableStock} item(s) available`, availableStock },
+      { status: 400 }
+    )
+  }
 
   if (existing) {
     existing.quantity += quantity;
@@ -56,12 +75,12 @@ export async function POST(req) {
       productId,
       name: product.productName,
       price: product.price,
-      discountedPrice: product.discountedPrice ?? product.price, // ← fallback
+      discountedPrice: product.discountedPrice ?? product.price,
       image: product.images?.[0]?.url || "",
       color,
       size,
       quantity,
-      sku // now valid
+      sku
     });
   }
 
