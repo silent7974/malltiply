@@ -50,7 +50,7 @@ export default function AddToCartButton({
     return String(productId);
   }
 
-  // ✅ Detect existing variant in cart
+  // Detect existing variant in cart
   const currentItem =
     cart?.items?.find(
       (i) =>
@@ -59,28 +59,28 @@ export default function AddToCartButton({
         i.size === selectedSize
     ) || null;
 
-  // ✅ Internal state
+  // Internal state
   const [isInCart, setIsInCart] = useState(false);
   const [clientReady, setClientReady] = useState(false);
 
   useEffect(() => setClientReady(true), []);
 
-  // ✅ Only sync with cart, not product details
+  // Only sync with cart, not product details
   useEffect(() => {
     setIsInCart(!!currentItem);
   }, [currentItem, cart?.items]);
 
-  // ✅ Notify details page only when quantity changes
+  // Notify details page only when quantity changes
   useEffect(() => {
     if (currentItem && onQuantitySync) {
       onQuantitySync(currentItem.quantity);
     }
   }, [currentItem?.quantity]);
 
-  // 🛒 Add to cart
+  // Add to cart
   const handleAddToCart = async (e) => {
 
-    if (isOutOfStock || product.quantity === 0) {
+    if (isOutOfStock) {
       alert("This item is out of stock.");
       return;
     }
@@ -104,7 +104,7 @@ export default function AddToCartButton({
       return;
     }
 
-    // 🎈 Bubble animation trigger
+    // Bubble animation trigger
     const rect = e.currentTarget.getBoundingClientRect();
     setBubble({
       x: rect.left + rect.width / 2,
@@ -143,7 +143,7 @@ export default function AddToCartButton({
     setIsInCart(true);
   };
 
-  // ➕ / ➖ quantity handler
+  // quantity handler
   const handleQuantityChange = async (type) => {
     if (!currentItem) return;
 
@@ -216,7 +216,7 @@ export default function AddToCartButton({
   return (
     <>
       <Toast message={toast.message} show={toast.show} />
-      {/* 🎈 Bubble Animation */}
+      {/* Bubble Animation */}
       {clientReady &&
         createPortal(
           <AnimatePresence>

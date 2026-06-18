@@ -15,7 +15,7 @@ export const cartApi = createApi({
         method: 'POST',
         body: itemData,
       }),
-
+      invalidatesTags: ['Cart'],
     }),
     updateCartItem: builder.mutation({
       query: ({ productId, quantity, color, size }) => ({

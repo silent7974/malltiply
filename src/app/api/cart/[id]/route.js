@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import dbConnect from "@/lib/mongodb";
 import Cart from "@/models/cart";
 import Product from "@/models/product"
+import { getAvailableQuantity } from "@/lib/cartAvailability";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -34,6 +35,21 @@ export async function PUT(req, context) {
   );
   if (!item) return NextResponse.json({ error: "Item not found" }, { status: 404 })
 
+  // Server-side stock check, same as POST — only relevant when increasing
+  // or setting a quantity, not when removing (quantity <= 0).
+  if (quantity > 0) {
+    const product = await Product.findById(id);
+    if (!product) return NextResponse.json({ error: "Product not found" }, { status: 404 });
+
+    const available = getAvailableQuantity(product, { color: item.color, size: item.size });
+    if (quantity > available) {
+      return NextResponse.json(
+        { error: `Only ${available} item(s) available.` },
+        { status: 400 }
+      );
+    }
+  }
+
   if (quantity <= 0) {
     cart.items = cart.items.filter(
       i =>
@@ -44,23 +60,6 @@ export async function PUT(req, context) {
         )
     )
   } else {
-    // ← validate against live stock before allowing increase
-    const product = await Product.findById(item.productId)
-    let availableStock = product?.quantity ?? 0
-    if (item.size || item.color) {
-      const variant = product?.variantColumns?.find(v => 
-        (!item.size || v.size === item.size) && (!item.color || v.color === item.color)
-      )
-      if (variant) availableStock = variant.quantity
-    }
-
-    if (quantity > availableStock) {
-      return NextResponse.json(
-        { error: `Only ${availableStock} item(s) available`, availableStock },
-        { status: 400 }
-      )
-    }
-
     item.quantity = quantity;
   }
 
@@ -92,7 +91,6 @@ export async function DELETE(req, context) {
   const cart = await Cart.findOne({ userId: decoded.id });
   if (!cart) return NextResponse.json({ error: "Cart not found" }, { status: 404 });
 
-  // Remove the item explicitly
   cart.items = cart.items.filter(
     i =>
       !(
@@ -102,7 +100,6 @@ export async function DELETE(req, context) {
       )
   );
 
-  // Recalculate totals
   cart.totalQuantity = cart.items.reduce((sum, i) => sum + (i.quantity || 0), 0)
   cart.totalPrice = cart.items.reduce((sum, i) => sum + (i.quantity || 0) * (i.price || 0), 0)
   cart.totalDiscountedPrice = cart.items.reduce((sum, i) => sum + (i.quantity || 0) * (i.discountedPrice || i.price || 0), 0)

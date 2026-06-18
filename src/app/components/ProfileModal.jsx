@@ -1,6 +1,6 @@
 "use client"
 
-import { Headphones } from "lucide-react"
+import { Headphones, ListOrdered } from "lucide-react"
 import { useState } from "react"
 import SignInLayout from "./SignInLayout"
 import { useMeQuery } from "@/redux/services/authApi"
@@ -43,6 +43,20 @@ export default function ProfileModal({ onClose }) {
 
           <div className="w-full h-[4px] bg-gray-200" />
 
+          {/* Orders */}
+
+          <a
+            href="/orders"
+            onClick={onClose}
+            className="w-full flex items-center gap-3 px-4 h-[56px] hover:bg-gray-50 border-b border-black/20"
+          >
+            <ListOrdered className="w-5 h-5 text-[#005770] flex-shrink-0" />
+            <span className="text-[13px] font-medium text-gray-800">
+              Orders
+            </span>
+          </a>
+
+
           <a
             href="https://wa.me/2349065941258"
             target="_blank"
@@ -52,7 +66,7 @@ export default function ProfileModal({ onClose }) {
           >
             <Headphones className="w-5 h-5 text-[#005770] flex-shrink-0" />
             <span className="text-[13px] font-medium text-gray-800">
-              Contact support (WhatsApp)
+              Support (WhatsApp)
             </span>
           </a>
 
