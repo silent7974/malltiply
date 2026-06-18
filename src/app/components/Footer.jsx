@@ -133,10 +133,7 @@ export default function Footer() {
             </div>
 
             <div className="font-[inter] text-[12px] font-light text-[#7B7979] text-center mt-[24px]">
-              <p>© 2025 Aliki Global Services™ </p>
-              <div className="mt-[24px] font-normal text-black/40 space-x-[24px]">
-              Malltiply is operated by Aliki Global Services
-              </div>
+              <p>© 2025 Malltiply™ </p>
             </div>
 
           </div>
@@ -254,7 +251,6 @@ export default function Footer() {
             </p>
           </InfoModal>
         )}
-
 
     </>
   );
