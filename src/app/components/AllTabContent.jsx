@@ -35,6 +35,9 @@ export default function AllTabContent({ activeTab }) {
       if (isLoading) return <Spinner />
       if (error) return <div className="p-4 text-red-500">Failed to load products</div>
 
-      return <ProductGrid products={products} />
+      // Same newest-first sort as "New In" — "All" should default to
+      // most recently added products at the top, not raw DB order.
+      const allSorted = [...products].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      return <ProductGrid products={allSorted} />
   }
 }

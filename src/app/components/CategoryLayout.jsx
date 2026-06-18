@@ -33,6 +33,12 @@ export default function CategoryLayout({ category }) {
     return true
   })
 
+  // Newest-first — same pattern as AllTabContent's "All"/"New In" sort,
+  // applied here so category browsing matches homepage behavior.
+  const sortedFilteredProducts = [...filteredProducts].sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  )
+
   if (!categoryData) {
     return (
       <div className="p-4 text-center text-gray-500">
@@ -193,13 +199,13 @@ export default function CategoryLayout({ category }) {
         <Spinner />
       ) : isError ? (
         <p className="col-span-2 text-center text-red-500 p-4">Failed to load products.</p>
-      ) : filteredProducts.length === 0 ? (
+      ) : sortedFilteredProducts.length === 0 ? (
         <div className="w-full py-10 flex flex-col items-center justify-center text-gray-400">
           <PackageX size={32} />
           <p className="mt-2 text-sm">No products found in this category yet</p>
         </div>
       ) : (
-        <ProductGrid products={filteredProducts} />
+        <ProductGrid products={sortedFilteredProducts} />
       )}
     </div>
   )
