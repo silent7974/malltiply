@@ -18,7 +18,6 @@ const productCategoryMap = {
 
   "Women's Fashion": {
     categories: {
-      "Native": ["Boubou", "Kaftan", "Ankara Gown"],
       "Dresses": ["Maxi Dress", "Midi Dress", "Mini Dress"],
       "Tops": ["Blouse", "Tank Top", "Crop Top"],
       "Skirts": ["Maxi Skirt", "Midi Skirt", "Mini Skirt"],
