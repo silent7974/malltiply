@@ -58,7 +58,7 @@ export default function ProductFormLayout() {
 
   const [addProduct, { isLoading: adding }] = useAddProductMutation()
   const [updateProduct, { isLoading: updating }] = useUpdateProductMutation()
-  const [deleteProduct, { isLoading: deleting }] = useDeleteProductMutation() // 👈 new
+  const [deleteProduct, { isLoading: deleting }] = useDeleteProductMutation()
 
   useEffect(() => {
     if (!currentProduct) return
@@ -198,7 +198,7 @@ export default function ProductFormLayout() {
         variantColumns={variantColumns}
         setVariantColumns={setVariantColumns}
         onChange={setVariantColumns}
-        maxVariants={4}
+        maxVariants={5}
       />
 
       <ProductFormProgress progress={requiredFieldsCompleted} total={requiredFieldsTotal} />

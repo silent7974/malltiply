@@ -23,10 +23,24 @@ const productCategoryMap = {
       "Tops": ["Blouse", "Tank Top", "Crop Top"],
       "Skirts": ["Maxi Skirt", "Midi Skirt", "Mini Skirt"],
       "Shoes": ["Heels", "Flats", "Sneakers"],
-      "Bags" : ["Handbag", "Purse", "Backpack"]
+      "Bags" : ["Handbag", "Purse", "Backpack"],
+      "Fabrics": ["Silk", "Lace", "Ankara"],
     },
     variants: {
       sizes: ["XS", "S", "M", "L", "XL", "XXL", "XXXL"],
+
+      categorySizes: {
+        "Shoes": ["36", "37", "38", "39", "40", "41", "42"],
+        "Fabrics": [
+          "2.5m",
+          "3m",
+          "3.5m",
+          "4m",
+          "4m",
+          "5m"
+        ]
+      },
+
       colors: true
     }
   },

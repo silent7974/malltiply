@@ -32,7 +32,7 @@ export default function Footer() {
               </summary>
               <ul className="bg-[#F2F2F2] px-[16px] py-[8px] space-y-[8px] font-[inter] font-normal text-[12px] text-black">
                 <li>
-                  Malltiply is a marketplace for fashion products from verified local sellers in Abuja.
+                  Malltiply is a marketplace for fashion products from local sellers in Abuja.
                 </li>
               </ul>
             </details>
@@ -133,7 +133,7 @@ export default function Footer() {
             </div>
 
             <div className="font-[inter] text-[12px] font-light text-[#7B7979] text-center mt-[24px]">
-              <p>© 2025 Malltiply™ </p>
+              <p>© 2026 Malltiply™ </p>
             </div>
 
           </div>

@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState, useRef, useEffect, useMemo } from "react";
-import { useGetProductBySlugQuery } from "@/redux/services/productApi";
-import { ChevronDown, Upload, Ruler, ChevronRight } from "lucide-react";
-import productCategoryMap from '@/lib/data/productCategoryMap';
-import FloatingCart from "@/app/components/FloatingCart";
+import React, { useState, useRef, useEffect, useMemo } from "react"
+import { useGetProductBySlugQuery } from "@/redux/services/productApi"
+import { ChevronDown, Upload, Ruler, ChevronRight } from "lucide-react"
+import productCategoryMap from '@/lib/data/productCategoryMap'
+import FloatingCart from "@/app/components/FloatingCart"
 import Link from "next/link"
 import { ShoppingCart } from "lucide-react"
 import { useSelector } from "react-redux"
@@ -479,4 +479,9 @@ const colorMap = {
   burgundy: "#5c2b2e",
   terracotta: "#dc8866",
   gray: "#a8a9a1",
+  cream: "#e5dccb",
+  
+  "tale blue": "#052635",
+  "dusty purple": "#371824",
+  "ash gray": "#bbb6b2",
 };
