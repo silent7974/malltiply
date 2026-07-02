@@ -30,7 +30,8 @@ export async function PUT(req, { params }) {
 
     const { id } = await params  // ← await params
 
-    const token = await cookies().get("sellerToken")?.value;
+    const cookieStore = await cookies();
+    const token = cookieStore.get("sellerToken")?.value;
     if (!token) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }

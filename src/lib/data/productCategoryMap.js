@@ -4,7 +4,7 @@ const productCategoryMap = {
       "Shoes": ["Palms", "Loafers", "Sneakers", "Sandals"],
       "Native": ["Agbada", "Kaftan", "Senator"],
       "Shirts": ["Casual Shirt", "Dress Shirt", "Polo Shirt", "Two-piece set"],
-      "Trousers": ["Jeans", "Chinos", "Formal Pants"],
+      "Trousers": ["Jeans", "Chinos", "Casual", "Formal Pants"],
       "Jackets": ["Blazers", "Leather Jackets", "Winter Coats"]
     },
     variants: {

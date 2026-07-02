@@ -480,7 +480,9 @@ const colorMap = {
   terracotta: "#dc8866",
   gray: "#a8a9a1",
   cream: "#e5dccb",
-  
+  "cadet blue": #99AFBA,
+  steel: #3F7895,
+  peach: "#dfa790",
   "tale blue": "#052635",
   "dusty purple": "#371824",
   "ash gray": "#bbb6b2",

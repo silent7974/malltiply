@@ -45,9 +45,9 @@ export default function CartPage() {
         ? item.productId._id
         : item.productId;
     }
+    
 
   const [showCheckoutPage, setShowCheckoutPage] = useState(false);
-
 
   const [selectedIds, setSelectedIds] = useState([]);
   const allSelected = selectedIds.length === cart.items.length && cart.items.length > 0;
