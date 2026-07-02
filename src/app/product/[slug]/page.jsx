@@ -212,7 +212,7 @@ export default function ProductDetailsPage() {
             ))
           ) : (
             <img src="/placeholder.png" alt="placeholder"
-              className="w-full h-[416px] object-cover flex-shrink-0" />
+              className="w-full h-[416px] object-contain flex-shrink-0 bg-[#f8f9fa]" />
           )}
         </div>
 
@@ -479,9 +479,9 @@ const colorMap = {
   burgundy: "#5c2b2e",
   terracotta: "#dc8866",
   gray: "#a8a9a1",
+  steel: "#3F7895",
   cream: "#e5dccb",
-  "cadet blue": #99AFBA,
-  steel: #3F7895,
+  "cadet blue": "#99AFBA",
   peach: "#dfa790",
   "tale blue": "#052635",
   "dusty purple": "#371824",
