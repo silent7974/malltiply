@@ -486,4 +486,5 @@ const colorMap = {
   "tale blue": "#052635",
   "dusty purple": "#371824",
   "ash gray": "#bbb6b2",
+  "off-white": "#D4CFC9"
 };
