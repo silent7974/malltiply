@@ -208,11 +208,11 @@ export default function ProductDetailsPage() {
           {images.length > 0 ? (
             images.map((img, idx) => (
               <img key={idx} src={img.url} alt={`product-image-${idx}`}
-                className="w-full h-[416px] object-cover flex-shrink-0" />
+                className="w-full h-[416px] object-contain flex-shrink-0 bg-[#f8f9fa]" />
             ))
           ) : (
             <img src="/placeholder.png" alt="placeholder"
-              className="w-full h-[416px] object-contain flex-shrink-0 bg-[#f8f9fa]" />
+              className="w-full h-[416px] object-cover flex-shrink-0" />
           )}
         </div>
 
@@ -487,4 +487,4 @@ const colorMap = {
   "dusty purple": "#371824",
   "ash gray": "#bbb6b2",
   "off-white": "#D4CFC9"
-};
+}
