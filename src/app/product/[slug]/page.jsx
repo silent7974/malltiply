@@ -208,7 +208,7 @@ export default function ProductDetailsPage() {
           {images.length > 0 ? (
             images.map((img, idx) => (
               <img key={idx} src={img.url} alt={`product-image-${idx}`}
-                className="w-full h-[416px] object-cover object-top flex-shrink-0 bg-[#f8f9fa]" />
+                className="w-full h-[416px] object-cover object-top object-bottom flex-shrink-0 bg-[#f8f9fa]" />
             ))
           ) : (
             <img src="/placeholder.png" alt="placeholder"
