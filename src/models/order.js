@@ -62,6 +62,11 @@ const OrderSchema = new mongoose.Schema({
     default: "pending",
   },
 
+  confirmationEmailSent: { 
+    type: Boolean, 
+    default: false 
+  },
+
   // add inside OrderSchema
   refund: {
     items: [{

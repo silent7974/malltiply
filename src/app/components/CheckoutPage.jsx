@@ -211,7 +211,7 @@ export default function CheckoutPage({ onClose }) {
               Standard: FREE within Abuja
 
               <span className="text-[10px] font-inter font-semibold bg-[#0A6C80] text-white px-2 py-[1px] rounded-full">
-                30 left
+                4 left
               </span>
             </p>
             <p className="text-[12px] font-inter text-black">Delivery within 24 hours</p>
