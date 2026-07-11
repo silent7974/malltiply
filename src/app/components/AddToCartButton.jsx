@@ -184,7 +184,7 @@ export default function AddToCartButton({
     }
 
     if (newQuantity > maxQuantity) {
-      alert(`Only ${maxQuantity} items available.`);
+      alert(`Only ${maxQuantity} item(s) available.`);
       return;
     }
 
