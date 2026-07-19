@@ -491,5 +491,6 @@ const colorMap = {
   "ash gray": "#bbb6b2",
   "army green": "#485744",
   beige: "#D3C1A9",
+  khaki: "#817658",
   "off white": "#D4CFC9"
 }
