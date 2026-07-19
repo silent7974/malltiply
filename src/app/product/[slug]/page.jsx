@@ -483,6 +483,7 @@ const colorMap = {
   gray: "#a8a9a1",
   steel: "#3F7895",
   cream: "#e5dccb",
+  teal: "#031D1A",
   "cadet blue": "#99AFBA",
   peach: "#dfa790",
   "tale blue": "#052635",

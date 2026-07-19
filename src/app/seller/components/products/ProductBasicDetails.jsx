@@ -3,7 +3,7 @@ import { generateSKU } from "@/lib/utils/sku";
 export default function ProductBasicDetails({ productData, setProductData }) {
 
   function handleDescriptionChange(e) {
-    if (e.target.value.length <= 110) {
+    if (e.target.value.length <= 180) {
       setProductData(prev => ({ ...prev, description: e.target.value }));
     }
   }
@@ -100,7 +100,7 @@ export default function ProductBasicDetails({ productData, setProductData }) {
 
       {/* Character count */}
       <p className="text-black/50 text-[8px] font-inter mt-1 text-right">
-        {(productData.description || '').length} / 110
+        {(productData.description || '').length} / 180
       </p>
     </form>
   );
