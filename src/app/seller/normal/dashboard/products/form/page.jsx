@@ -198,7 +198,7 @@ export default function ProductFormLayout() {
         variantColumns={variantColumns}
         setVariantColumns={setVariantColumns}
         onChange={setVariantColumns}
-        maxVariants={5}
+        maxVariants={10}
       />
 
       <ProductFormProgress progress={requiredFieldsCompleted} total={requiredFieldsTotal} />

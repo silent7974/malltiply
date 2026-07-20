@@ -210,9 +210,9 @@ export default function CheckoutPage({ onClose }) {
             <p className="text-[14px] font-inter font-medium text-[#005770] flex items-center gap-2">
               Standard: FREE within Abuja
 
-              <span className="text-[10px] font-inter font-semibold bg-[#0A6C80] text-white px-2 py-[1px] rounded-full">
+              {/* <span className="text-[10px] font-inter font-semibold bg-[#0A6C80] text-white px-2 py-[1px] rounded-full">
                 4 left
-              </span>
+              </span> */}
             </p>
             <p className="text-[12px] font-inter text-black">Delivery within 24 hours</p>
             <p className="text-[10px] text-black/50">Courier: GIG</p>

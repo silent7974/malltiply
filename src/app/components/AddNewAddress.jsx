@@ -105,7 +105,7 @@ export default function AddNewAddress({ onClose, onSaveSuccess }) {
             </span>
           </div>
           <p className="text-[10px] font-inter font-medium text-black/50">
-            4 of 5 left
+            for first time orders
           </p>
         </div>
 
