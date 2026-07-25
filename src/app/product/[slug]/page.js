@@ -1,6 +1,6 @@
 import { Suspense } from "react"
-import ProductDetailsPage from "./ProductDetailsPage"
 import Spinner from "@/app/components/Spinner"
+import ProductDetailsPage from "./productDetailsPage"
 
 export async function generateMetadata({ params }) {
   const { slug } = await params
