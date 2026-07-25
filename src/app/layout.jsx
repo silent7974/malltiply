@@ -29,9 +29,9 @@ export const metadata = {
   title: "Malltiply",
   description: "Malltiply is a marketplace for fashion products from local sellers in Abuja. Shop more directly from trusted sellers. Fast delivery within 24 hours.",
   icons: {
-    icon: "/malltiply-logo.svg?v=2",
-    shortcut: "/malltiply-logo.svg?v=2",
-    apple: "/malltiply-logo.svg?v=2",
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.png",
   }
 }
 
