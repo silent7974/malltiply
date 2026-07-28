@@ -410,7 +410,7 @@ export default function ProductDetailsPage() {
           {/* Courier company */}
           <p className="mt-2 text-[14px] font-inter font-medium text-black">
             Courier company:{" "}
-            <span className="font-normal text-black/50">GIG</span>
+            <span className="font-normal text-black/50">Bolt</span>
           </p>
 
           {/* Internal Separator */}

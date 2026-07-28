@@ -36,14 +36,14 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    // 🛒 Set entire cart (used when fetching from backend)
+    // Set entire cart (used when fetching from backend)
     setCart(state, action) {
       state.items = action.payload
       recalculateTotals(state);
       localStorage.setItem("cart", JSON.stringify(state));
     },
 
-    // ➕ Add new item
+    // Add new item
     addToCart(state, action) {
       const item = action.payload;
       const existing = state.items.find(
@@ -58,7 +58,7 @@ const cartSlice = createSlice({
       localStorage.setItem("cart", JSON.stringify(state));
     },
 
-    // 🔁 Update quantity
+    // Update quantity
     updateQuantity(state, action) {
       const { productId, color, size, quantity } = action.payload;
       const item = state.items.find(
@@ -80,7 +80,7 @@ const cartSlice = createSlice({
       localStorage.setItem("cart", JSON.stringify(state))
     },
 
-    // ❌ Remove single item (clean and explicit)
+    // Remove single item (clean and explicit)
     removeItem(state, action) {
       const { productId, color, size } = action.payload;
       state.items = state.items.filter(

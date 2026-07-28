@@ -35,12 +35,18 @@
 
 // Buyer
 
-- [ ] Banner redesign for even smaller screens
-- [ ] In AllTabContent.jsx there's a "0" that shows next to prices of products that don't have discounts
-- [ ] The modal (ProfileModal.jsx) is not responsive as screen gets smaller
-- [ ] What happens in productSchema and cartSchema when a product has a memory, measurement, RAM or other variant attributes aside colors and sizes?
-- [ ] The cart button in the productDetailspage transitions back to "Add to cart" after every tap on a '-' or '+' button
-- [ ] The AddToCartButton and the "+" button in cart page exceeds the stock of item left
-- [ ] User fullName and phone are under shippingAddress in the orderSchema but they don't get saved probably because frontend (CheckoutPage.jsx) doesn't send them
-- [ ] Forms need placeholders and more polishing (forgot password needs to work)
-- [ ] Cart page is not protected - anybody could visit anybody's cart even a non-user (guest)
+- The time and date on the order status modals supposed to be relevant to the time the order status changed (not just when the order started)
+- A signed user has no button or navigations to sign out at all.
+- Order email notifications are sent twice. Also need to test to make sure gmail doesn't throw them under "Spam" and actually notify buyers.
+- The cart button on product cards doesn't do anything. The aim is to create a modal to manage the product in cart faster. The modal should have similar styling with the InfoModal - just with more features within it.
+- No delivery API integrated. Should try Bolt (GIG seems more costly for a lightweight product delivered within Abuja).
+- No recommendations to sign up an account for a guest who just completed an order. No review system, not even recommendations on similar products - doesn't seem like anything for retention is planned.
+- Need to ensure a guest who turns to a user (with existing account) have their orders when they were guests is embedded.
+- There's no "cancelled" status for orderStatus and that should exist just to log orders that failed and were not paid.
+- The default status of refund is "requested" when no one requested anything. Never even tested the refund functionality.
+- Need to make the search system smarter with images as results not just product names, and also need to build a PLP. But not urgent yet - maybe for scale.
+- Categories page has nothing, just "Use the searchbar to find products. Categories will appear here as the catalogue grows".
+- The order record stores the guestInfo but not an existing user (even basic info like the guests).
+- Under the contact support section in the footer; there's currently a direction "Tap the WhatsApp support option to start a conversation". There should be a whatsApp button (clear icon) that routes to my whatsApp.
+- The subtype category tabs overflows out of the screen - it should be contained same as the subcategory and category tabs
+- 

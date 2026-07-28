@@ -215,7 +215,7 @@ export default function CheckoutPage({ onClose }) {
               </span> */}
             </p>
             <p className="text-[12px] font-inter text-black">Delivery within 24 hours</p>
-            <p className="text-[10px] text-black/50">Courier: GIG</p>
+            <p className="text-[10px] text-black/50">Courier: Bolt</p>
           </div>
         </div>
       </div>
