@@ -1,6 +1,7 @@
 Malltiply 
 
-Last updated: 24th July 2026
+Last updated: 31st July 2026
+Next update: 7th August 2026
 
 Platform Status
 * Total revenue received: 68,000 naira (56k + Fatima’s 12k payment)
@@ -11,14 +12,19 @@ Platform Status
 * 0 GIG deliveries, 1 Bolt delivery completed (Surayya's in-house, Haruna collected in-person, Fatima - 23rd July, first real dispatch delivery)
 * 0 stranger transactions
 * Variants expanded to 11 for zipped polo shirt (white and black added)
+* Google indexing partially active (home, category, seller index, polo shirts)
+* Free delivery updated: "on orders above 20k" (pushed 28th)
+* Courier label updated: GIG → Bolt on product and checkout pages
 
 Active Leads
 * Haruna — FULFILLED — collecting in person. White and black selected zipped polo and cadet blue round neck shirt swapped to light brown striped polo, plain black button shirt, chinos trouser (size 50/L, trouser 30). Sourced from Wuse manually.
 * Wadata — asking for “price” on striped polo shirt. Replied with “okay” after I asked him for size.
-* Jabir — no reply in 48+ hours, likely cold. Follow up sent.
 * Fatima Aliyu — FULFILLED — delivered via Bolt 23rd July, paid via oPay. Paystack checkout bug encountered. Wanted beige zipped polo from the image, but buttoned one was available,
-* Bruno — sent product links, awaiting selection. 23rd July.
-* Smally — potential new seller. Waiting for product photos once inventory becomes accessible.
+* Bruno — cold. Archive
+* Jabir — cold. Archive
+* Smally — still waiting for mom to open storeroom. Passive
+* Yaya's customer — sent links and images, will order naturally or contact when ready
+* Surayya — wants to pay for second fabric (20k) on 31st July via Malltiply
 
 Active Reserves
 * Surayya — 1 fabric (unpaid) - jacquard luxe, color green — pays next month
@@ -75,8 +81,9 @@ Active Sellers
 * Charwills Beauty House — perfumes — uploaded 
 * Nies kouture single perfume - uploaded also
 * Magaji Menswear — 9 products listed — volatile stock model, requires pre-confirmation before fulfillment. Bashir (apprentice) is day-to-day contact.
-* Magaji has new stock arrived — update his status to “new stock available, visiting tomorrow morning 23rd July”.
 * Bashir contact issue — phone switched off — note as reliability risk
+* Magaji — no new arrivals confirmed yet. Follow up pending
+* Y Nana — Italian silk updated with AI mannequin images (27th). Posted on warm channels (28th). 22k price set. 33-21 Snapchat views, 38-33 WhatsApp views. No inquiries
 
 Foundation Loops Still Open
 * First GIG delivery
@@ -88,3 +95,30 @@ Wins
 * 21st July: First genuine stranger inquiry from Snapchat content (Jabir)
 * 22nd July: 120 Snapchat views — highest organic reach yet
 * 23rd July: First real Bolt dispatch delivery completed. Third order fulfilled. Fatima Aliyu.
+* 25th July: Google indexing activated via TXT record
+* 26th July: Founder-cofounder structure established. Weekly Sunday calls, Belel on project-0 branch, Hassan reviews before merging to main
+* 28th July: First AI mannequin product images live. First Italian silk post on warm channels
+
+
+What actually needs to happen this week:
+
+1. Surayya's second fabric payment
+She called on 31st. Guide her through Malltiply checkout. This is your fourth transaction and second clean Paystack proof. Priority.
+
+2. Anti Kuluwa's fabric payment
+End of July was the deadline. Follow up today. Same — guide her through the platform.
+
+3. Yaya's customer
+She's ready to choose and pay. Go when Yaya confirms she's available. Guide her in person.
+
+4. Belel's 5 tasks review
+He has until Sunday. Review his project-0 branch before next Sunday's call.
+
+5. Magaji follow up
+If he replies with new stock — visit, snap, upload. Don't list without confirming availability first.
+
+One thing above everything else this week:
+
+Get Surayya's second fabric payment through Malltiply cleanly. That's the most certain transaction available right now.
+
+Everything else is secondary.

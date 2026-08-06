@@ -30,6 +30,7 @@
 - [ ] ProfileInfoForm should know if it's a premium seller; A brand name field should also be included
 - [ ] The dashboards layout should not be allowed to be seen completely even if seller profile doesn't exist (I think this can be controlled by middleware.js)
 - [ ] I can't sign in as a seller and get routed to dashboard in production like I normally can local mode
+- Unexpectedly can't route to dashboard after signing in and session token gets created, it keeps rerouting back to the sign in page.
 
 
 
@@ -49,4 +50,8 @@
 - The order record stores the guestInfo but not an existing user (even basic info like the guests).
 - Under the contact support section in the footer; there's currently a direction "Tap the WhatsApp support option to start a conversation". There should be a whatsApp button (clear icon) that routes to my whatsApp.
 - The subtype category tabs overflows out of the screen - it should be contained same as the subcategory and category tabs
-- 
+- No feature that easily allows sharing a product
+- There should be a zoomed-in product images for better view
+- Guest ordering on a built-in snapchat/instagram browser; do their session tokens disappear after closing and reopening the app? Need to test that
+- The "share cart" and "report" buttons in the cart page don't do anything currently. 
+- The globe icon as the web logo (not favicons; the logo that displays in google searched results and even snapchat links) makes the platform looks amatuer to me tbh.

@@ -488,6 +488,7 @@ const colorMap = {
   peach: "#dfa790",
   "tale blue": "#052635",
   purple: "#3D1C2E",
+  ash: "#8A847B",
   "ash gray": "#bbb6b2",
   "army green": "#485744",
   beige: "#D3C1A9",
