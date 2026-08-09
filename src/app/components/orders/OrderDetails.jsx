@@ -192,7 +192,7 @@ export default function OrderDetails({ order, onClose }) {
                 <p className="font-inter font-medium text-[16px] text-black">
                   Delivery method:
                 </p>
-                <p className="font-inter text-[16px] text-black/50">GIG</p>
+                <p className="font-inter text-[16px] text-black/50">Bolt</p>
               </div>
 
               <div className="flex items-center gap-[4px]">
