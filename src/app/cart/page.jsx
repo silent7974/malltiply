@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
 import { EllipsisVertical, CircleAlert, Check, Circle, ShoppingBasket } from "lucide-react";
@@ -56,6 +56,21 @@ export default function CartPage() {
     if (allSelected) setSelectedIds([]);
     else setSelectedIds(cart.items.map((i) => i.productId._id || i.productId));
   };
+
+  // Lock body scroll whenever any overlay is open
+  useEffect(() => {
+    if (showAddressModal || showCheckoutPage) {
+      document.body.style.overflow = "hidden"
+      document.documentElement.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = ""
+      document.documentElement.style.overflow = ""
+    }
+    return () => {
+      document.body.style.overflow = ""
+      document.documentElement.style.overflow = ""
+    }
+  }, [showAddressModal, showCheckoutPage])
 
   const toggleSelect = (id) => {
     const pid = id._id || id; // handle both object and string

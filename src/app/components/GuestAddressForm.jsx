@@ -7,6 +7,7 @@ export default function GuestAddressForm({ onClose, onSaveSuccess }) {
 
   useEffect(() => {
     document.body.style.overflow = "hidden"
+    document.documentElement.style.overflow = "hidden"
     return () => { document.body.style.overflow = "" }
   }, [])
 
@@ -31,7 +32,7 @@ export default function GuestAddressForm({ onClose, onSaveSuccess }) {
   ]
 
   const handleSave = () => {
-    if (!fullName || !phone || !street || !district) {
+    if (!fullName || !phone || !email || !street || !district) {
       alert("Please fill all fields.")
       return
     }
@@ -65,7 +66,7 @@ export default function GuestAddressForm({ onClose, onSaveSuccess }) {
         {[
           { label: "Full name", value: fullName, set: setFullName, placeholder: "Enter your full name" },
           { label: "Phone number", value: phone, set: setPhone, placeholder: "Enter your phone number" },
-          { label: "Email (for order updates)", value: email, set: setEmail, placeholder: "Enter your email" },
+          { label: "Email", value: email, set: setEmail, placeholder: "Enter your email" },
           { label: "Street address", value: street, set: setStreet, placeholder: "Enter street address" },
         ].map(({ label, value, set, placeholder }) => (
           <div key={label}>

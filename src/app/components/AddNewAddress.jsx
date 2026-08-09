@@ -14,6 +14,7 @@ export default function AddNewAddress({ onClose, onSaveSuccess }) {
 
   useEffect(() => {
     document.body.style.overflow = "hidden"
+    document.documentElement.style.overflow = "hidden"
     return () => { document.body.style.overflow = "" }
   }, [])
 
@@ -57,14 +58,12 @@ export default function AddNewAddress({ onClose, onSaveSuccess }) {
         },
       };
       await updateProfile(data).unwrap();
-      onSaveSuccess?.();
+      onSaveSuccess?.() // onSaveSuccess calls onClose internally via cart/page.jsx
     } catch (err) {
       console.error("Failed to save address:", err);
-      alert("Failed to update address. Please try again.");
-    } finally {
-      onClose();
+      alert("Failed to update address. Please try again.")
     }
-  };
+  }
 
   return (
     <AnimatePresence>
