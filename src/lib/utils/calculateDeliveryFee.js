@@ -7,7 +7,7 @@
 //
 // Free delivery threshold: orders totalling ₦20,000 or above.
 
-const FREE_DELIVERY_THRESHOLD = 20000;
+const FREE_DELIVERY_THRESHOLD = 18000;
 
 // District → zone mapping from Life Camp origin.
 // Zone 0 = same area (free regardless of order total)
