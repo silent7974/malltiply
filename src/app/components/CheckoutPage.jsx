@@ -195,7 +195,7 @@ export default function CheckoutPage({ onClose }) {
           <div className="flex-1">
             <p className="text-[14px] font-inter font-medium text-[#005770]">
               {isFreeDelivery
-                ? "Standard: FREE - order above ₦20,000"
+                ? "Standard: FREE - order above ₦18,000"
                 : `Standard: ₦${formatPrice(deliveryFee)}`}
             </p>
             <p className="text-[12px] font-inter text-black">Delivery within 24 hours</p>
