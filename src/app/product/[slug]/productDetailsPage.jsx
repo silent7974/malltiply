@@ -478,6 +478,7 @@ const colorMap = {
   maroon: "#5C2B2E",
   blush: "#ecb6b4",
   gold: "#D4AF37",
+  yellow: "#d5ce98",
   mint: "#d4dbd7",
   terracotta: "#dc8866",
   gray: "#a8a9a1",

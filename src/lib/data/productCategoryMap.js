@@ -23,7 +23,7 @@ const productCategoryMap = {
       "Skirts": ["Maxi Skirt", "Midi Skirt", "Mini Skirt"],
       "Shoes": ["Heels", "Flats", "Sneakers"],
       "Bags" : ["Handbag", "Purse", "Backpack"],
-      "Fabrics": ["Silk", "Lace", "Ankara"],
+      "Fabrics": ["Silk", "Cotton", "Lace", "Ankara"],
     },
     variants: {
       sizes: ["XS", "S", "M", "L", "XL", "XXL", "XXXL"],
