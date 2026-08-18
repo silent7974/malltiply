@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useState } from 'react'
-import { Trash2, VolumeX, Volume2, Maximize2 } from 'lucide-react'
+import { Trash2, VolumeX, Volume2, Maximize2, Tag } from 'lucide-react'
 
 export default function MultiImageUpload({
   productImages = [],
@@ -11,11 +11,13 @@ export default function MultiImageUpload({
   onAdVideoRemove,
   maxImages = 6,
   allowVideo = false,
+  availableColors = [], // ← NEW: list of color names the seller has already defined for this product
 }) {
   const [mainIndex, setMainIndex] = useState(0)
   const [mode, setMode] = useState('images')
   const [showControls, setShowControls] = useState(false)
   const [videoMuted, setVideoMuted] = useState(true)
+  const [colorPickerIdx, setColorPickerIdx] = useState(null) // ← NEW: which image is being tagged
 
   const MAX_IMAGES = maxImages
   const fileInputRef = useRef(null)
@@ -73,7 +75,7 @@ export default function MultiImageUpload({
       }
       try {
         await validateImage(file)
-        valid.push({ file, url: URL.createObjectURL(file) })
+        valid.push({ file, url: URL.createObjectURL(file), color: '' }) // ← color starts untagged
       } catch (err) {
         alert(err)
       }
@@ -85,6 +87,15 @@ export default function MultiImageUpload({
   function deleteImage(idx) {
     onImagesChange(productImages.filter((_, i) => i !== idx))
     if (mainIndex === idx && idx > 0) setMainIndex(idx - 1)
+  }
+
+  // ← NEW: assign a color to a specific image, leaving everything else untouched
+  function assignColor(idx, color) {
+    const next = productImages.map((img, i) =>
+      i === idx ? { ...img, color } : img
+    )
+    onImagesChange(next)
+    setColorPickerIdx(null)
   }
 
   /* ---------------- video upload ---------------- */
@@ -231,25 +242,48 @@ export default function MultiImageUpload({
             <>
               <div className="relative rounded-[16px]" style={{ width: '100%', maxWidth: '416px', height: '295px', padding: '4px' }}>
                 <img src={productImages[mainIndex]?.url} className="w-full h-full object-cover rounded-[16px]" />
+
+                {/* Color tag badge on the main preview */}
+                {availableColors.length > 0 && (
+                  <button
+                    onClick={() => setColorPickerIdx(mainIndex)}
+                    className="absolute bottom-[12px] left-[12px] flex items-center gap-1 bg-black/70 text-white text-[12px] font-inter px-3 py-1 rounded-full"
+                  >
+                    <Tag size={12} />
+                    {productImages[mainIndex]?.color || 'Tag color'}
+                  </button>
+                )}
               </div>
 
               <div className="mt-4 w-full overflow-x-auto scrollbar-hide">
                 <div className="flex gap-4">
                   {productImages.map((img, idx) => (
-                    <div
-                      key={idx}
-                      onClick={() => setMainIndex(idx)}
-                      className="relative cursor-pointer rounded-[2px] overflow-hidden flex-shrink-0"
-                      style={{ width: '64px', height: '64px', padding: '4px', boxSizing: 'border-box' }}
-                    >
-                      <img src={img.url} className="w-full h-full object-cover rounded-[2px]" />
-                      {idx === mainIndex && (
-                        <button
-                          onClick={(e) => { e.stopPropagation(); deleteImage(idx) }}
-                          className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-[2px]"
+                    <div key={idx} className="flex flex-col items-center flex-shrink-0">
+                      <div
+                        onClick={() => setMainIndex(idx)}
+                        className="relative cursor-pointer rounded-[2px] overflow-hidden"
+                        style={{ width: '64px', height: '64px', padding: '4px', boxSizing: 'border-box' }}
+                      >
+                        <img src={img.url} className="w-full h-full object-cover rounded-[2px]" />
+                        {idx === mainIndex && (
+                          <button
+                            onClick={(e) => { e.stopPropagation(); deleteImage(idx) }}
+                            className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-[2px]"
+                          >
+                            <img src="/trashcan.svg" className="w-[48px]" />
+                          </button>
+                        )}
+                      </div>
+                      {/* Small color label under each thumbnail */}
+                      {availableColors.length > 0 && (
+                        <span
+                          onClick={() => setColorPickerIdx(idx)}
+                          className={`mt-1 text-[9px] font-inter cursor-pointer ${
+                            img.color ? 'text-[#005770] font-medium' : 'text-black/40'
+                          }`}
                         >
-                          <img src="/trashcan.svg" className="w-[48px]" />
-                        </button>
+                          {img.color || 'Tag'}
+                        </span>
                       )}
                     </div>
                   ))}
@@ -276,6 +310,44 @@ export default function MultiImageUpload({
         </>
       )}
 
+      {/* Color picker bottom sheet - same visual pattern as your other dropdowns */}
+      {colorPickerIdx !== null && (
+        <div
+          className="fixed inset-0 bg-black/50 flex justify-center items-end z-50"
+          onClick={() => setColorPickerIdx(null)}
+        >
+          <div
+            className="bg-white w-full rounded-t-[16px] max-h-[60vh] overflow-y-auto scrollbar-hide px-[16px] py-[36px]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="text-[14px] text-center font-inter font-semibold mb-[16px]">
+              Which color is this photo?
+            </h2>
+            <div className="flex flex-col gap-[8px]">
+              {availableColors.map((color) => (
+                <button
+                  key={color}
+                  onClick={() => assignColor(colorPickerIdx, color)}
+                  className={`text-[12px] font-inter px-[12px] py-[8px] text-left rounded-[4px] ${
+                    productImages[colorPickerIdx]?.color === color
+                      ? 'bg-[#2A9CBC]/10 text-[#2A9CBC]'
+                      : 'bg-gray-100 text-black'
+                  }`}
+                >
+                  {color}
+                </button>
+              ))}
+              <button
+                onClick={() => assignColor(colorPickerIdx, '')}
+                className="text-[12px] font-inter px-[12px] py-[8px] text-left rounded-[4px] bg-red-50 text-red-500 mt-[8px]"
+              >
+                Remove tag
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Guide text */}
       <div className="mt-4 flex flex-col max-w-[300px] ">
         <p className="text-[12px] font-inter text-black">
@@ -288,6 +360,11 @@ export default function MultiImageUpload({
         ) : (
           <p className="text-[12px] text-black/50 mt-1">
             Adding a short product ad helps buyers understand your product better
+          </p>
+        )}
+        {availableColors.length > 0 && (
+          <p className="text-[12px] text-[#005770] mt-1">
+            Tap "Tag" under a photo to link it to a color - buyers will jump straight to it.
           </p>
         )}
       </div>

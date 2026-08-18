@@ -18,7 +18,7 @@ const ProductSchema = new mongoose.Schema(
       index: true,
     },
 
-    // 🔗 STORE CONNECTION
+    // STORE CONNECTION
     storeId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Store",
@@ -45,6 +45,7 @@ const ProductSchema = new mongoose.Schema(
       {
         url: String,
         public_id: String,
+        color: String, // optional - tags which variant color this photo shows
       },
     ],
 

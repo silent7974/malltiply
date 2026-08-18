@@ -195,7 +195,7 @@ export default function CheckoutPage({ onClose }) {
           <div className="flex-1">
             <p className="text-[14px] font-inter font-medium text-[#005770]">
               {isFreeDelivery
-                ? "Standard: FREE - order above ₦18,000"
+                ? "Standard: FREE - order above ₦20,000"
                 : `Standard: ₦${formatPrice(deliveryFee)}`}
             </p>
             <p className="text-[12px] font-inter text-black">Delivery within 24 hours</p>
@@ -239,6 +239,9 @@ export default function CheckoutPage({ onClose }) {
         <Image src="/checkout-indicator.svg" width={14} height={14} alt="selected" />
         <p className="text-[14px] font-inter font-medium">Paystack</p>
       </div>
+      <p className="text-[13px] font-inter text-black/50 mx-[16px] mt-[4px]">
+        You'll be able to pay by bank transfer or card. If you choose transfer, we'll show you an account number to send money to.
+      </p>
 
       {/* Bottom Bar */}
       {cart.items.length > 0 && (

@@ -56,6 +56,14 @@ export default function ProductFormLayout() {
   const [variants, setVariants] = useState(currentProduct?.variants || {})
   const [variantColumns, setVariantColumns] = useState(currentProduct?.variantColumns || [])
 
+  // Derive the list of colors already defined for this product,
+  // so MultiImageUpload can offer them as tagging options.
+  const availableColors = [
+    ...new Set(
+      [variants.color, ...variantColumns.map(v => v.color)].filter(Boolean)
+    )
+  ]
+
   const [addProduct, { isLoading: adding }] = useAddProductMutation()
   const [updateProduct, { isLoading: updating }] = useUpdateProductMutation()
   const [deleteProduct, { isLoading: deleting }] = useDeleteProductMutation()
@@ -168,6 +176,7 @@ export default function ProductFormLayout() {
         productImages={productImages}
         onImagesChange={setProductImages}
         maxImages={sellerType === 'normal_seller' ? 6 : 10 }
+        availableColors={availableColors}
       />
 
       <ProductBasicDetails

@@ -59,7 +59,7 @@ export default function GuestAddressForm({ onClose, onSaveSuccess }) {
           <Clock size={16} />
           <span className="text-[10px] font-inter font-medium">Free delivery across Abuja</span>
         </div>
-        <p className="text-[10px] font-inter font-medium text-black/50">on orders above 18k</p>
+        <p className="text-[10px] font-inter font-medium text-black/50">on orders above 20k</p>
       </div>
 
       <div className="flex flex-col gap-[16px]">

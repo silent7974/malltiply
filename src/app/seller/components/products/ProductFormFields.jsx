@@ -166,8 +166,8 @@ export default function ProductFormFields({
   setSubType,
   variants = {},
   setVariants,
-  productData,           // ✅ we need productData here
-  setProductData         // ✅ so we can update SKU
+  productData,           // we need productData here
+  setProductData         // so we can update SKU
 }) {
 
   const [showSizeGuide, setShowSizeGuide] = useState(false)
@@ -189,7 +189,7 @@ export default function ProductFormFields({
     ? v.categorySizes[subCategory] 
     : v.sizes
 
-  // ✅ Central SKU updater — called on any variant change
+  // Central SKU updater — called on any variant change
   function updateSKUWithVariants(newVariants) {
     setProductData(prev => ({
       ...prev,
@@ -227,7 +227,7 @@ export default function ProductFormFields({
       {subCategory && (
         <div className="mt-4 space-y-4">
 
-          {/* ✅ Size Guide button only if this category supports sizes */}
+          {/* Size Guide button only if this category supports sizes */}
           {activeSizes && (
             <>
               <div className="flex justify-end mb-1">
@@ -250,7 +250,7 @@ export default function ProductFormFields({
                 onSelect={(val) => {
                   const updated = { ...variants, size: val }
                   setVariants(updated)
-                  updateSKUWithVariants(updated)  // ✅ recompute SKU
+                  updateSKUWithVariants(updated)  // recompute SKU
                 }}
               />
             </>
@@ -279,13 +279,13 @@ export default function ProductFormFields({
               onSelect={(val) => {
                 const updated = { ...variants, color: val }
                 setVariants(updated)
-                updateSKUWithVariants(updated)  // ✅ recompute SKU
+                updateSKUWithVariants(updated)  // recompute SKU
               }}
             />
           )}
         </div>
       )}
-      {/* 🔥 Size Guide Modal Placeholder */}
+      {/* Size Guide Modal Placeholder */}
       {showSizeGuide && (
         <SizeGuide onClose={() => setShowSizeGuide(false)} />
       )}

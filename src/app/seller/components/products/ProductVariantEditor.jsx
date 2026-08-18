@@ -153,7 +153,7 @@ export default function ProductVariantEditor({
     const list = []
     const v = productMapping?.variants || {}
 
-    // ✅ Resolve correct sizes — use categorySizes override if available for this subCategory
+    // Resolve correct sizes — use categorySizes override if available for this subCategory
     const activeSizes = (v.categorySizes && subCategory && v.categorySizes[subCategory])
       ? v.categorySizes[subCategory]
       : v.sizes

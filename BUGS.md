@@ -31,7 +31,8 @@
 - [ ] The dashboards layout should not be allowed to be seen completely even if seller profile doesn't exist (I think this can be controlled by middleware.js)
 - [ ] I can't sign in as a seller and get routed to dashboard in production like I normally can local mode
 - Unexpectedly can't route to dashboard after signing in and session token gets created, it keeps rerouting back to the sign in page.
-
+- Yes images can be tagged with colors now (good for auto-slides on the product page - buyer side), but a unique color should be enforced per image (2 images shouldn't have the same color)
+- Adding color tags to images is on possible in edit mode, not fresh uploading mode
 
 
 // Buyer
