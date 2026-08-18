@@ -6,7 +6,7 @@ export default function InfoModal({ title, children, onClose }) {
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-50"
+        className="fixed inset-0 z-[1100]"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
