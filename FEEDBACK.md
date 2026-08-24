@@ -88,12 +88,3 @@ Wins
 * 10th Aug: Domain investment recovered plus profit within 5 months
 * 13th Aug: Delivery fee calculation implemented
 * 16th Aug: Y Nana marketing independently for third time — first organic seller-driven growth signal
-
-This Week's Priority (18th-22nd August, 4 usable days before Thursday exam)
-1. Fix color selector auto-swap bug — confirmed causing lost orders, contained frontend fix, do not delegate to Belel
-2. Build simple visual how-to-order guide — addresses the core familiarity gap identified as the platform's biggest unsolved problem
-3. Resolve Belel's project-0 branch access (new email, remove old)
-4. Clarify Anti Kuluwa's fabric payment status
-5. Implement 10% commission model for Y Nana, communicate clearly
-
-Single most important task: Fix the color-image sync bug and ship the how-to-order guide. These two directly address why buyers keep bypassing the platform for personal transfer — the biggest unsolved problem on the platform right now.

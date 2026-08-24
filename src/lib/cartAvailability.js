@@ -54,3 +54,43 @@ export function getAvailableQuantity(product, { color, size } = {}) {
   // we genuinely can't find the variant being asked about.
   return match ? match.quantity ?? product.quantity ?? 0 : 0;
 }
+
+// Sibling to getAvailableQuantity — same variant-matching logic, but
+// resolves the correct PRICE for a given color/size instead of stock.
+// Critical: this is what prevents a variant priced above/below the base
+// product from silently being charged at the wrong amount.
+export function getVariantPrice(product, { color, size } = {}) {
+  if (!product) return 0;
+ 
+  const rawVariants = product.variants;
+  const baseVariants = (
+    Array.isArray(rawVariants)
+      ? rawVariants
+      : rawVariants && typeof rawVariants === "object"
+      ? [rawVariants]
+      : []
+  )
+    .filter((v) => v && (v.color || v.size || v.measurement || v.memory || v.ram))
+    .map((v) => ({ ...v, price: v.price ?? product.price }));
+ 
+  const extraVariants = Array.isArray(product.variantColumns) ? product.variantColumns : [];
+  const mergedVariants = [...baseVariants, ...extraVariants];
+ 
+  if (mergedVariants.length === 0) {
+    return product.price ?? 0;
+  }
+ 
+  const match = mergedVariants.find((v) => {
+    const colorMatches = !v.color || !color ? true : normalize(v.color) === normalize(color);
+ 
+    const variantSizeValue = v.size ?? v.measurement ?? v.memory ?? v.ram ?? null;
+    const sizeMatches =
+      !variantSizeValue || !size ? true : normalize(variantSizeValue) === normalize(size);
+ 
+    return colorMatches && sizeMatches;
+  });
+ 
+  // Fall back to base price if no exact variant match — never silently
+  // charge 0.
+  return match ? match.price ?? product.price ?? 0 : product.price ?? 0;
+}

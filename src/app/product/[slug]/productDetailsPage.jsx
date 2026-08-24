@@ -316,7 +316,7 @@ export default function ProductDetailsPage() {
         <div className="flex items-center justify-between mt-4">
           <div className="flex items-center gap-3">
             <p className="text-[16px] font-inter font-semibold text-black">
-              ₦{formatPrice(product.price)}
+              ₦{formatPrice(activeVariant?.price ?? product.price)}
             </p>
           </div>
         </div>
@@ -442,7 +442,7 @@ export default function ProductDetailsPage() {
       {/* ADD TO CART SECTION — z-index bumped so it stays above the full-screen viewer */}
       <AddToCartButton
         product={product}
-        Originalprice={product.price}
+        Originalprice={activeVariant?.price ?? product.price}
         selectedColor={selectedColor}
         selectedSize={selectedSize}
         selectedQuantity={selectedQuantity}
