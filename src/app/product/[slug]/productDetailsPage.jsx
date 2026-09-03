@@ -555,5 +555,9 @@ const colorMap = {
   "army green": "#485744",
   beige: "#D3C1A9",
   khaki: "#817658",
-  "off white": "#D4CFC9"
+  "off white": "#D4CFC9",
+  "man u": "#c41e22",
+  "man city": "#73a3d3",
+  arsenal: "#d82b27",
+  barca: "#567efa",
 }

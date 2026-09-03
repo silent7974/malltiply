@@ -3,14 +3,31 @@ const productCategoryMap = {
     categories: {
       "Shoes": ["Palms", "Loafers", "Sneakers", "Sandals"],
       "Native": ["Agbada", "Kaftan", "Senator"],
-      "Shirts": ["Casual Shirt", "Dress Shirt", "Polo Shirt", "Two-piece set"],
+      "Shirts": ["Casual Shirt", "Dress Shirt", "Polo Shirt", "Two-piece set", "Jersey"],
       "Trousers": ["Jeans", "Chinos", "Casual", "Formal Pants"],
       "Jackets": ["Blazers", "Leather Jackets", "Winter Coats"]
     },
     variants: {
       sizes: ["XS", "S", "M", "L", "XL", "XXL", "XXXL"],
       categorySizes: {
-        "Shoes": ["39", "40", "41", "42", "43", "44", "45", "46"]
+        "Shoes": ["39", "40", "41", "42", "43", "44", "45", "46"],
+        "Jerseys": {
+      type: "club",
+      options: [
+        "Manchester United",
+        "Manchester City",
+        "Arsenal",
+        "Chelsea",
+        "Liverpool",
+        "Barcelona",
+        "Real Madrid",
+        "PSG",
+        "Juventus",
+        "Bayern Munich",
+        "Inter Milan",
+        "AC Milan"
+      ]
+    }
       },
       colors: true
     }
