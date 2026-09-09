@@ -560,4 +560,6 @@ const colorMap = {
   "man city": "#73a3d3",
   arsenal: "#d82b27",
   barca: "#567efa",
+  "real madrid": "#d0beb2",
+  "real madrid (third)": "#801132"
 }
