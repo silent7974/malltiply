@@ -556,6 +556,7 @@ const colorMap = {
   beige: "#D3C1A9",
   khaki: "#817658",
   "off white": "#D4CFC9",
+  milk: "#F5F1E8",
   "man u": "#c41e22",
   "man city": "#73a3d3",
   arsenal: "#d82b27",

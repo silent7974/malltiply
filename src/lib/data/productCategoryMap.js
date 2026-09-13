@@ -5,7 +5,8 @@ const productCategoryMap = {
       "Native": ["Agbada", "Kaftan", "Senator"],
       "Shirts": ["Casual Shirt", "Dress Shirt", "Polo Shirt", "Two-piece set", "Jersey"],
       "Trousers": ["Jeans", "Chinos", "Casual", "Formal Pants"],
-      "Jackets": ["Blazers", "Leather Jackets", "Winter Coats"]
+      "Jackets": ["Blazers", "Leather Jackets", "Winter Coats"],
+      "Jallabiya": ["Morocco", "Emirate", "Hoodie", "Kandoor"]
     },
     variants: {
       sizes: ["XS", "S", "M", "L", "XL", "XXL", "XXXL"],
