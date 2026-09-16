@@ -8,6 +8,7 @@ import { useGetCartQuery } from "@/redux/services/cartApi";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import SignInLayout from "./SignInLayout";
+import CartModal from "./CartModal";
 import { usePathname } from "next/navigation";
 import { useGetProfileQuery } from "@/redux/services/sellerApi"; // ✅ hook
 
@@ -64,6 +65,7 @@ export default function LayoutWrapper({ children }) {
       )} */}
 
       {showSignIn && <SignInLayout onClose={() => setShowSignIn(false)} />}
+      <CartModal />
     </div>
     </>
   );

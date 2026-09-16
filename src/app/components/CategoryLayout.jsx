@@ -128,71 +128,67 @@ export default function CategoryLayout({ category }) {
       </div>
 
       {/* Sub-type Tabs */}
-      <div className="w-full h-[40px] flex items-center">
-        <div className="relative my-4 py-[6px]">
+      {activeSubCategory !== "All" && (
+        <div className="relative w-full h-[40px] my-4 py-[6px] flex items-center">
           <div className="absolute left-0 top-0 h-full w-5 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
           <div className="absolute right-0 top-0 h-full w-5 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
           <div className="flex gap-4 px-4 overflow-x-auto scrollbar-hide">
-            {activeSubCategory !== "All" && (
-              <>
+            <button
+              key="All"
+              onClick={() => {
+                setActiveSubType("All")
+                logEvent({
+                  page: "CategoryLayout",
+                  component: "SubType",
+                  event: "SubType_Clicked",
+                  payload: { category: mappedCategory, subCategory: activeSubCategory},
+                })
+              }}
+              className="relative flex flex-col items-center"
+            >
+              <span
+                className={`font-[500] font-montserrat text-[14px] whitespace-nowrap ${
+                  activeSubType === "All" ? "text-black" : "text-black/40"
+                }`}
+              >
+                All
+              </span>
+              {activeSubType === "All" && (
+                <span className="absolute bottom-0 w-[12px] h-[2px] rounded-full bg-black" />
+              )}
+            </button>
+            {categoryData.categories[activeSubCategory]?.map((type) => {
+              const isActive = activeSubType === type
+              return (
                 <button
-                  key="All"
+                  key={type}
                   onClick={() => {
-                    setActiveSubType("All")
+                    setActiveSubType(type)
                     logEvent({
                       page: "CategoryLayout",
                       component: "SubType",
                       event: "SubType_Clicked",
-                      payload: { category: mappedCategory, subCategory: activeSubCategory},
+                      payload: { category: mappedCategory, subCategory: activeSubCategory, subType: type },
                     })
                   }}
                   className="relative flex flex-col items-center"
                 >
                   <span
-                    className={`font-[500] font-montserrat text-[14px] whitespace-nowrap ${
-                      activeSubType === "All" ? "text-black" : "text-black/40"
+                    className={`font-[500] font-montserrat text-[13px] whitespace-nowrap ${
+                      isActive ? "text-black" : "text-black/40"
                     }`}
                   >
-                    All
+                    {type}
                   </span>
-                  {activeSubType === "All" && (
+                  {isActive && (
                     <span className="absolute bottom-0 w-[12px] h-[2px] rounded-full bg-black" />
                   )}
                 </button>
-                {categoryData.categories[activeSubCategory]?.map((type) => {
-                  const isActive = activeSubType === type
-                  return (
-                    <button
-                      key={type}
-                      onClick={() => {
-                        setActiveSubType(type)
-                        logEvent({
-                          page: "CategoryLayout",
-                          component: "SubType",
-                          event: "SubType_Clicked",
-                          payload: { category: mappedCategory, subCategory: activeSubCategory, subType: type },
-                        })
-                      }}
-                      className="relative flex flex-col items-center"
-                    >
-                      <span
-                        className={`font-[500] font-montserrat text-[13px] whitespace-nowrap ${
-                          isActive ? "text-black" : "text-black/40"
-                        }`}
-                      >
-                        {type}
-                      </span>
-                      {isActive && (
-                        <span className="absolute bottom-0 w-[12px] h-[2px] rounded-full bg-black" />
-                      )}
-                    </button>
-                  )
-                })}
-              </>
-            )}
+              )
+            })}
           </div>
-      </div>
-    </div>
+        </div>
+      )}
 
       {/* Products Grid */}
       {isLoading ? (

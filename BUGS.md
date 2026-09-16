@@ -40,7 +40,7 @@
 - The time and date on the order status modals supposed to be relevant to the time the order status changed (not just when the order started)
 - A signed user has no button or navigations to sign out at all.
 - Order email notifications are sent twice. Also need to test to make sure gmail doesn't throw them under "Spam" and actually notify buyers.
-- The cart button on product cards doesn't do anything. The aim is to create a modal to manage the product in cart faster. The modal should have similar styling with the InfoModal - just with more features within it.
+- The cart button on product cards doesn't do anything. The aim is to create a modal to manage the product in cart faster. The modal should have similar styling with the InfoModal - just with more features within it. ✅
 - No delivery API integrated. Should try Bolt (GIG seems more costly for a lightweight product delivered within Abuja).
 - No recommendations to sign up an account for a guest who just completed an order. No review system, not even recommendations on similar products - doesn't seem like anything for retention is planned.
 - Need to ensure a guest who turns to a user (with existing account) have their orders when they were guests is embedded.
@@ -49,10 +49,10 @@
 - Need to make the search system smarter with images as results not just product names, and also need to build a PLP. But not urgent yet - maybe for scale.
 - Categories page has nothing, just "Use the searchbar to find products. Categories will appear here as the catalogue grows".
 - The order record stores the guestInfo but not an existing user (even basic info like the guests).
-- Under the contact support section in the footer; there's currently a direction "Tap the WhatsApp support option to start a conversation". There should be a whatsApp button (clear icon) that routes to my whatsApp.
-- The subtype category tabs overflows out of the screen - it should be contained same as the subcategory and category tabs
+- Under the contact support section in the footer; there's currently a direction "Tap the WhatsApp support option to start a conversation". There should be a whatsApp button (clear icon) that routes to my whatsApp. ✅
+- The subtype category tabs overflows out of the screen - it should be contained same as the subcategory and category tabs ✅
 - No feature that easily allows sharing a product
-- There should be a zoomed-in product images for better view
+- There should be a zoomed-in product images for better view ✅
 - Guest ordering on a built-in snapchat/instagram browser; do their session tokens disappear after closing and reopening the app? Need to test that
 - The "share cart" and "report" buttons in the cart page don't do anything currently. 
 - The globe icon as the web logo (not favicons; the logo that displays in google searched results and even snapchat links) makes the platform looks amatuer to me tbh.
