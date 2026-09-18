@@ -549,6 +549,7 @@ const colorMap = {
   "cadet blue": "#99AFBA",
   peach: "#dfa790",
   "tale blue": "#052635",
+   "sky blue": "#87CEEB",
   purple: "#3D1C2E",
   ash: "#8A847B",
   "ash gray": "#bbb6b2",

@@ -61,7 +61,7 @@ export function getAvailableQuantity(product, { color, size } = {}) {
 // product from silently being charged at the wrong amount.
 export function getVariantPrice(product, { color, size } = {}) {
   if (!product) return 0;
- 
+
   const rawVariants = product.variants;
   const baseVariants = (
     Array.isArray(rawVariants)
@@ -72,25 +72,44 @@ export function getVariantPrice(product, { color, size } = {}) {
   )
     .filter((v) => v && (v.color || v.size || v.measurement || v.memory || v.ram))
     .map((v) => ({ ...v, price: v.price ?? product.price }));
- 
+
   const extraVariants = Array.isArray(product.variantColumns) ? product.variantColumns : [];
   const mergedVariants = [...baseVariants, ...extraVariants];
- 
+
   if (mergedVariants.length === 0) {
     return product.price ?? 0;
   }
- 
+
   const match = mergedVariants.find((v) => {
     const colorMatches = !v.color || !color ? true : normalize(v.color) === normalize(color);
- 
+
     const variantSizeValue = v.size ?? v.measurement ?? v.memory ?? v.ram ?? null;
     const sizeMatches =
       !variantSizeValue || !size ? true : normalize(variantSizeValue) === normalize(size);
- 
+
     return colorMatches && sizeMatches;
   });
- 
+
   // Fall back to base price if no exact variant match — never silently
   // charge 0.
   return match ? match.price ?? product.price ?? 0 : product.price ?? 0;
+}
+
+// Resolves the correct product IMAGE for a given color, so a cart item
+// always shows the photo of the color the buyer actually picked instead
+// of always defaulting to images[0].
+export function getVariantImage(product, { color } = {}) {
+  if (!product) return "";
+
+  const images = Array.isArray(product.images) ? product.images : [];
+  if (images.length === 0) return "";
+
+  if (color) {
+    const match = images.find((img) => normalize(img.color) === normalize(color));
+    if (match) return match.url;
+  }
+
+  // No color given, or no image tagged for that color — fall back to
+  // the first image exactly as before, so untagged products keep working.
+  return images[0]?.url || "";
 }

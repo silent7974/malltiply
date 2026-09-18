@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import dbConnect from "@/lib/mongodb";
 import Cart from "@/models/cart";
 import Product from "@/models/product";
-import { getAvailableQuantity } from "@/lib/cartAvailability";
+import { getAvailableQuantity, getVariantImage  } from "@/lib/cartAvailability";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -92,7 +92,7 @@ export async function POST(req) {
       name: product.productName,
       price: product.price,
       discountedPrice: product.discountedPrice ?? product.price,
-      image: product.images?.[0]?.url || "",
+       image: getVariantImage(product, { color }), 
       color,
       size,
       quantity,

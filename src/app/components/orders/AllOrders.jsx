@@ -147,6 +147,9 @@ export default function AllOrders({ orders = [], onSelectOrder  }) {
                       <p className="text-[12px] font-semibold text-[#005770]">
                         ₦{formatPrice(item.price)}
                       </p>
+                      {item.quantity > 1 && (
+                        <p className="text-[8px] font-inter font-medium text-black/60">x{item.quantity}</p>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -156,8 +159,8 @@ export default function AllOrders({ orders = [], onSelectOrder  }) {
                     ₦{formatPrice(order.totalAmount)}
                   </p>
                   <p className="text-[12px] text-black/50">
-                    {order.items.length}{" "}
-                    {order.items.length > 1 ? "items" : "item"}
+                    {order.items.reduce((sum, i) => sum + i.quantity, 0)}{" "}
+                    {order.items.reduce((sum, i) => sum + i.quantity, 0) > 1 ? "items" : "item"}
                   </p>
                 </div>
               </div>

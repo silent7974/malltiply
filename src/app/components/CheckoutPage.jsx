@@ -162,24 +162,45 @@ export default function CheckoutPage({ onClose }) {
       </p>
 
       <div className="grid grid-cols-3 mx-[16px] gap-x-[20px] gap-y-[8px] mb-[16px]">
-        {cart.items.map((item, i) => (
-          <div key={i}>
-            <div className="relative w-[88px] h-[74px]">
-              <Image
-                src={item.image || "/placeholder.png"}
-                fill
-                alt={item.name}
-                className="object-cover rounded-[4px]"
-              />
+        {cart.items.map((item, i) => {
+          const variantLine = (() => {
+            const parts = [];
+            if (item.color) parts.push(`Color: ${item.color}`);
+            if (item.size) parts.push(`Size: ${item.size}`);
+            if (item.measurement) parts.push(`Measurement: ${item.measurement}`);
+            return parts.join(" / ");
+          })();
+
+          return (
+            <div key={i}>
+              <div className="relative w-[88px] h-[74px]">
+                <Image
+                  src={item.image || "/placeholder.png"}
+                  fill
+                  alt={item.name}
+                  className="object-cover rounded-[4px]"
+                />
+              </div>
+
+              <p className="mt-[4px] text-[9px] font-inter text-black/50 truncate">
+                {item.name}
+              </p>
+
+              {variantLine && (
+                <p className="text-[8px] font-inter text-black">
+                  {variantLine}
+                </p>
+              )}
+
+              <div className="flex items-center gap-[4px] mt-[2px]">
+                <p className="text-[10px] font-inter font-semibold">₦{formatPrice(item.price)}</p>
+              </div>
+              {item.quantity > 1 && (
+                <p className="text-[10px] font-inter font-medium mt-[1px]">x{item.quantity}</p>
+              )}
             </div>
-            <div className="flex items-center gap-[4px] mt-[4px]">
-              <p className="text-[10px] font-inter font-semibold">₦{formatPrice(item.price)}</p>
-            </div>
-            {item.quantity > 1 && (
-              <p className="text-[10px] font-inter font-medium mt-[1px]">x{item.quantity}</p>
-            )}
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <div className="h-[4px] bg-[#EEEEEE] w-full mb-[16px]" />

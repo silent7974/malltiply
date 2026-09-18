@@ -1,4 +1,5 @@
 import Product from "@/models/product";
+import { getVariantImage } from "@/lib/cartAvailability";
 
 function findVariant(product, item) {
   if (!Array.isArray(product.variantColumns)) return null;
@@ -53,7 +54,7 @@ export async function validateOrderItems(items = []) {
     normalizedItems.push({
       productId: product._id,
       name: product.productName,
-      image: product.images?.[0]?.url || item.image || "",
+      image: item.image || getVariantImage(product, { color: item.color }),
       color: item.color,
       size: item.size,
       quantity: requestedQuantity,

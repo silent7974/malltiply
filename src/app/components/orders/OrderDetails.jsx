@@ -152,9 +152,8 @@ export default function OrderDetails({ order, onClose }) {
             {/* Items */}
             <div className="mt-[20px]">
               <p className="font-inter font-medium text-[16px] text-black">
-                {order.items.length > 1 ? "Items" : "Item"}
+                {order.items.reduce((sum, i) => sum + i.quantity, 0) > 1 ? "Items" : "Item"}
               </p>
-
               <div className="mt-[16px] grid grid-cols-3 gap-4">
                 {order.items.map((item, i) => (
                   <div key={i}>
@@ -180,6 +179,9 @@ export default function OrderDetails({ order, onClose }) {
                       <p className="text-[12px] font-inter text-[#005770] font-semibold">
                         ₦{formatPrice(item.price)}
                       </p>
+                      {item.quantity > 1 && (
+                        <p className="text-[10px] font-inter font-medium text-black/60">x{item.quantity}</p>
+                      )}
                     </div>
                   </div>
                 ))}

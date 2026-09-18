@@ -118,7 +118,10 @@ export default function AddToCartButton({
       name: product.productName,
       price: Originalprice,
       discountedPrice: displayPrice ?? Originalprice,
-      image: product.images?.[0]?.url,
+      image:
+        product.images?.find(
+          img => img.color?.toLowerCase() === selectedColor?.toLowerCase()
+        )?.url || product.images?.[0]?.url,
       color: selectedColor,
       size: selectedSize,
       quantity: selectedQuantity,

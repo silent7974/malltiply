@@ -56,6 +56,9 @@ export default function ReturnedOrders({ orders = [], onSelectOrder }) {
                 <p className="text-[14px] font-inter font-semibold text-[#005770]">
                   ₦{formatPrice(order.refund.totalRefundAmount)}
                 </p>
+                {item.quantity > 1 && (
+                  <p className="text-[8px] font-inter font-medium text-black/60">x{item.quantity}</p>
+                )}
                 <p className="text-[10px] text-black/50 mt-1">
                   {order.refund.bankName} · {order.refund.accountNumber}
                 </p>
@@ -78,7 +81,10 @@ export default function ReturnedOrders({ orders = [], onSelectOrder }) {
               </div>
               <div className="w-[80px] h-[123px] bg-[#F8F9FA] rounded-[6px] flex flex-col justify-center items-center">
                 <p className="text-[14px] text-black/50">₦{formatPrice(order.totalAmount)}</p>
-                <p className="text-[12px] text-black/50">{order.items.length} {order.items.length > 1 ? "items" : "item"}</p>
+                <p className="text-[12px] text-black/50">
+                  {order.items.reduce((sum, i) => sum + i.quantity, 0)}{" "}
+                  {order.items.reduce((sum, i) => sum + i.quantity, 0) > 1 ? "items" : "item"}
+                </p>
               </div>
             </div>
           </div>
