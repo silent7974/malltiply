@@ -6,7 +6,7 @@ import { closeCart, addToCart, clearModalProduct } from "@/redux/slices/cartSlic
 import { useAddToCartMutation } from "@/redux/services/cartApi";
 import { useMeQuery } from "@/redux/services/authApi";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Check } from "lucide-react";
+import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import productCategoryMap from "@/lib/data/productCategoryMap";
 
@@ -15,7 +15,7 @@ const colorMap = {
   black: "#000000",
   blue: "#2E2B77",
   brown: "#8B4513",
-  red: "#8B0000",
+  red: "#2e0b12",
   green: "#008000",
   silver: "#C0C0C0",
   maroon: "#5C2B2E",
@@ -345,7 +345,7 @@ export default function CartModal({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25, ease: "easeInOut" }}
             onClick={() => dispatch(closeCart())}
-            className="fixed inset-0 bg-black/60 z-50 backdrop-blur-[2px]"
+            className="fixed inset-0 bg-black/30 z-50"
           />
 
           {/* Bottom Sheet Modal - smooth slide up and down in reverse */}
@@ -354,21 +354,21 @@ export default function CartModal({
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
-            transition={{ type: "spring", damping: 30, stiffness: 300 }}
-            className="fixed bottom-0 left-0 right-0 bg-white rounded-t-[24px] z-[55] max-h-[85vh] overflow-y-auto shadow-2xl"
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed bottom-0 left-0 right-0 bg-white rounded-t-[16px] z-[55] max-h-[85vh] overflow-y-auto scrollbar-hide shadow-2xl"
           >
             {/* Header with close button */}
-            <div className="sticky top-0 bg-white border-b border-black/10 flex items-center justify-between px-4 py-3 rounded-t-[24px] z-10">
-              <h2 className="text-[18px] font-inter font-semibold text-black">
+            <div className="sticky top-0 bg-[#F8F9FA] border-b border-black/10 flex items-center justify-between px-4 h-[56px] rounded-t-[16px] z-10">
+              <h2 className="text-[16px] font-inter font-medium text-black">
                 Select Options
               </h2>
               <button
                 type="button"
                 onClick={() => dispatch(closeCart())}
-                className="p-1 hover:bg-gray-100 rounded-full transition cursor-pointer"
+                className="p-1 hover:bg-black/5 rounded-full transition cursor-pointer"
                 title="Close"
               >
-                <X size={24} className="text-black" />
+                <X size={20} className="text-black" />
               </button>
             </div>
 
@@ -440,26 +440,29 @@ export default function CartModal({
                           title={color}
                         >
                           <div
-                            className={`w-[34px] h-[34px] rounded-full transition-all relative flex items-center justify-center ${
-                              isSelected
-                                ? "ring-2 ring-black ring-offset-2 scale-105"
-                                : "group-hover:scale-105 border border-black/20"
-                            }`}
                             style={{
-                              backgroundColor: colorHex,
-                              boxShadow: isLight ? "inset 0 0 0 1px rgba(0,0,0,0.15)" : "none",
+                              width: "28px",
+                              height: "28px",
+                              borderRadius: "50%",
+                              border: isSelected ? "1.5px solid black" : "1.5px solid transparent",
+                              padding: "2.5px",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
                             }}
                           >
-                            {isSelected && (
-                              <Check
-                                size={15}
-                                className={isLight ? "text-black" : "text-white"}
-                                strokeWidth={3}
-                              />
-                            )}
+                            <div
+                              style={{
+                                backgroundColor: colorHex,
+                                width: "100%",
+                                height: "100%",
+                                borderRadius: "50%",
+                                boxShadow: isLight ? "inset 0 0 0 1px rgba(0,0,0,0.15)" : "none",
+                              }}
+                            />
                           </div>
                           <span
-                            className={`text-[11px] font-inter capitalize max-w-[65px] text-center leading-tight truncate ${
+                            className={`text-[12px] font-inter capitalize max-w-[65px] text-center leading-tight truncate ${
                               isSelected ? "text-black font-semibold" : "text-black/60 font-medium"
                             }`}
                           >
@@ -493,10 +496,10 @@ export default function CartModal({
                           key={idx}
                           type="button"
                           onClick={() => handleSizeClick(size)}
-                          className={`px-3.5 py-1.5 rounded-[18px] border text-[13px] font-inter font-medium transition cursor-pointer ${
+                          className={`px-4 py-1.5 rounded-[24px] border text-[14px] font-inter font-medium transition cursor-pointer ${
                             isSelected
-                              ? "border-black bg-black text-white shadow-sm"
-                              : "border-black/20 text-black hover:border-black bg-white"
+                              ? "border-black border-[1px] text-black bg-transparent"
+                              : "border-black/50 border-[0.5px] text-black/80 hover:border-black bg-transparent"
                           }`}
                         >
                           {size}
