@@ -63,6 +63,20 @@ export default function ProductDetailsPage() {
     return () => observer.disconnect()
   }, [])
 
+  useEffect(() => {
+    if (isViewerOpen) {
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    };
+  }, [isViewerOpen]);
+
   // MEMOIZED VALUES
   const mergedVariants = useMemo(() => {
     const rawVariants = product?.variants
@@ -469,7 +483,10 @@ export default function ProductDetailsPage() {
 
       {/* ← NEW: Full-screen image viewer with blurred backdrop */}
       {isViewerOpen && (
-        <div className="fixed inset-0 z-[900] bg-black/85 backdrop-blur-xl flex flex-col">
+        <div 
+          className="fixed inset-0 z-[900] bg-black/85 backdrop-blur-xl flex flex-col"
+          onClick={() => setIsViewerOpen(false)}
+        >
           {/* Close button */}
           <div className="flex justify-end p-4">
             <button
@@ -486,6 +503,7 @@ export default function ProductDetailsPage() {
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
+            onClick={(e) => e.stopPropagation()}
             ref={viewerCarouselRef}
           >
             <div

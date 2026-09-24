@@ -126,12 +126,29 @@ export default function Footer() {
 
           {/* Second part of footer */}
           <div className="bg-[#EEEEEE] py-[16px]">
-            <div className="flex justify-center items-center gap-[48px]">
-              <Image src="/instagram.svg" alt="Instagram" width={16} height={16} />
-              <Image src="/twitter.svg" alt="Twitter" width={16} height={16} />
-              <Image src="/tiktok.svg" alt="TikTok" width={16} height={16} />
-            </div>
-
+          <div className="flex justify-center items-center gap-[48px]">
+            
+            <a  href="https://www.instagram.com/malltiply.ng?stkn=ZWJ5YzJzc29xbWp0&utm_source=qr"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Image src="/instagram.svg" alt="Instagram" width={20} height={20} />
+            </a>
+            
+            <a  href="https://wa.me/2349065941258"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Image src="/whatsapp.svg" alt="WhatsApp" width={20} height={20} />
+            </a>
+            
+            <a  href="https://www.tiktok.com/@malltiply.ng"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Image src="/tiktok.svg" alt="TikTok" width={20} height={20} />
+            </a>
+          </div>
             <div className="font-[inter] text-[12px] font-light text-[#7B7979] text-center mt-[24px]">
               <p>© 2026 Malltiply™ </p>
             </div>
@@ -198,9 +215,14 @@ export default function Footer() {
               Our support team is available on WhatsApp to assist you with any issues.
             </p>
 
-            <p className="text-[13px] font-inter text-black">
-              Tap the WhatsApp support option to start a conversation.
-            </p>
+            <a
+              href="https://wa.me/2349065941258"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 w-full h-[36px] rounded-[32px] bg-[#005770] text-white font-inter font-semibold text-[13px] mt-2"
+            >
+              Chat on WhatsApp
+            </a>
           </InfoModal>
         )}
 

@@ -43,7 +43,7 @@ export default function SearchModal({ onClose, storeId }) {
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
         transition={{ duration: 0.2, ease: "easeInOut" }}
-        className="fixed inset-0 bg-white z-50 px-4 pt-4 flex flex-col"
+        className="fixed inset-0 bg-white z-[1001] px-4 pt-4 flex flex-col"
       >
         {/* Header */}
         <div className="flex items-center gap-[8px] mb-4">
