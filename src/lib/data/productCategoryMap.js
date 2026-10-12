@@ -9,7 +9,7 @@ const productCategoryMap = {
       "Jallabiya": ["Morocco", "Emirate", "Hoodie", "Kandoor"]
     },
     variants: {
-      sizes: ["XS", "S", "M", "L", "XL", "XXL", "XXXL"],
+      sizes: ["44/XS", "46/S", "48/M", "50/L", "52/XL", "54/XXL", "56/XXXL"],
       categorySizes: {
         "Shoes": ["39", "40", "41", "42", "43", "44", "45", "46"],
         "Jerseys": {
