@@ -9,6 +9,7 @@ import Image from "next/image"
 import { ChevronRight, PackageX } from "lucide-react"
 import Spinner from "./Spinner"
 import { logEvent } from "@/lib/analytics"
+import { motion, AnimatePresence } from "framer-motion"
 
 export default function CategoryLayout({ category }) {
   const mappedCategory = headerCategoryMap[category]
@@ -128,68 +129,78 @@ export default function CategoryLayout({ category }) {
       </div>
 
       {/* Sub-type Tabs */}
-      {activeSubCategory !== "All" && (
-        <div className="relative w-full h-[40px] my-4 py-[6px] flex items-center">
-          <div className="absolute left-0 top-0 h-full w-5 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 h-full w-5 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
-          <div className="flex gap-4 px-4 overflow-x-auto scrollbar-hide">
-            <button
-              key="All"
-              onClick={() => {
-                setActiveSubType("All")
-                logEvent({
-                  page: "CategoryLayout",
-                  component: "SubType",
-                  event: "SubType_Clicked",
-                  payload: { category: mappedCategory, subCategory: activeSubCategory},
-                })
-              }}
-              className="relative flex flex-col items-center"
-            >
-              <span
-                className={`font-[500] font-montserrat text-[14px] whitespace-nowrap ${
-                  activeSubType === "All" ? "text-black" : "text-black/40"
-                }`}
-              >
-                All
-              </span>
-              {activeSubType === "All" && (
-                <span className="absolute bottom-0 w-[12px] h-[2px] rounded-full bg-black" />
-              )}
-            </button>
-            {categoryData.categories[activeSubCategory]?.map((type) => {
-              const isActive = activeSubType === type
-              return (
-                <button
-                  key={type}
-                  onClick={() => {
-                    setActiveSubType(type)
-                    logEvent({
-                      page: "CategoryLayout",
-                      component: "SubType",
-                      event: "SubType_Clicked",
-                      payload: { category: mappedCategory, subCategory: activeSubCategory, subType: type },
-                    })
-                  }}
-                  className="relative flex flex-col items-center"
-                >
-                  <span
-                    className={`font-[500] font-montserrat text-[13px] whitespace-nowrap ${
-                      isActive ? "text-black" : "text-black/40"
-                    }`}
-                  >
-                    {type}
-                  </span>
-                  {isActive && (
-                    <span className="absolute bottom-0 w-[12px] h-[2px] rounded-full bg-black" />
-                  )}
-                </button>
-              )
-            })}
-          </div>
-        </div>
-      )}
+      <AnimatePresence initial={false}>
+        {activeSubCategory !== "All" && (
+          <motion.div
+            key="subtype-row"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 40, opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="relative w-full my-4 overflow-hidden"
+          >
+            <div className="absolute left-0 top-0 h-full w-5 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 h-full w-5 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
 
+            <div className="flex gap-4 px-4 py-[6px] overflow-x-auto scrollbar-hide h-[40px] items-center">
+              <button
+                onClick={() => {
+                  setActiveSubType("All")
+                  logEvent({
+                    page: "CategoryLayout",
+                    component: "SubType",
+                    event: "SubType_Clicked",
+                    payload: { category: mappedCategory, subCategory: activeSubCategory },
+                  })
+                }}
+                className="relative flex flex-col items-center"
+              >
+                <span
+                  className={`font-[500] font-montserrat text-[14px] whitespace-nowrap ${
+                    activeSubType === "All" ? "text-black" : "text-black/40"
+                  }`}
+                >
+                  All
+                </span>
+                {activeSubType === "All" && (
+                  <span className="absolute bottom-0 w-[12px] h-[2px] rounded-full bg-black" />
+                )}
+              </button>
+
+              {categoryData.categories[activeSubCategory]?.map((type) => {
+                const isActive = activeSubType === type
+                return (
+                  <button
+                    key={type}
+                    onClick={() => {
+                      setActiveSubType(type)
+                      logEvent({
+                        page: "CategoryLayout",
+                        component: "SubType",
+                        event: "SubType_Clicked",
+                        payload: { category: mappedCategory, subCategory: activeSubCategory, subType: type },
+                      })
+                    }}
+                    className="relative flex flex-col items-center"
+                  >
+                    <span
+                      className={`font-[500] font-montserrat text-[13px] whitespace-nowrap ${
+                        isActive ? "text-black" : "text-black/40"
+                      }`}
+                    >
+                      {type}
+                    </span>
+                    {isActive && (
+                      <span className="absolute bottom-0 w-[12px] h-[2px] rounded-full bg-black" />
+                    )}
+                  </button>
+                )
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      
       {/* Products Grid */}
       {isLoading ? (
         <Spinner />
