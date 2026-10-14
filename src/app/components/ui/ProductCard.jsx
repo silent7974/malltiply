@@ -4,9 +4,12 @@ import formatPrice from "@/lib/utils/formatPrice"
 import Image from "next/image"
 import { logEvent } from "@/lib/analytics"
 import { useRouter } from "next/navigation"
+import { useDispatch } from "react-redux"
+import { openCart } from "@/redux/slices/cartSlice"
 
 export default function ProductCard({ product, index }) {
   const router = useRouter()
+  const dispatch = useDispatch()
 
   return (
     <div 
@@ -41,11 +44,11 @@ export default function ProductCard({ product, index }) {
           </div>
 
           <div 
-          className="w-[36px] h-[29px] flex items-center justify-center border border-black/50 rounded-[24px]"
+          className="w-[36px] h-[29px] flex items-center justify-center border border-black/50 rounded-[24px] hover:bg-black/5 transition cursor-pointer"
           onClick={(e) => {
             e.stopPropagation() // prevent navigation
             logEvent({ page: "HomePage", component: "ProductCard", event: "AddToCart_Clicked", payload: { productId: product._id } })
-            // addToCart(product) → your existing function
+            dispatch(openCart(product))
           }}
           >
             <Image

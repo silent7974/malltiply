@@ -5,11 +5,13 @@ const savedCart = typeof window !== "undefined"
   ? JSON.parse(localStorage.getItem("cart"))
   : null;
 
-const initialState = savedCart || {
+const initialState = savedCart ? { ...savedCart, isCartOpen: false, modalProduct: null } : {
   items: [],
   totalQuantity: 0,
   totalPrice: 0,
-  totalDiscountedPrice: 0
+  totalDiscountedPrice: 0,
+  isCartOpen: false,
+  modalProduct: null,
 };
 
 function getProductId(item) {
@@ -100,8 +102,28 @@ const cartSlice = createSlice({
       state.totalDiscountedPrice = 0;
       localStorage.removeItem("cart");
     },
+
+    // Cart Modal Actions
+    openCart(state, action) {
+      state.isCartOpen = true;
+      if (action.payload) {
+        state.modalProduct = action.payload;
+      }
+    },
+
+    closeCart(state) {
+      state.isCartOpen = false;
+    },
+
+    clearModalProduct(state) {
+      state.modalProduct = null;
+    },
+
+    toggleCart(state) {
+      state.isCartOpen = !state.isCartOpen;
+    },
   },
 });
 
-export const { setCart, addToCart, updateQuantity, removeItem, clearCart } = cartSlice.actions;
+export const { setCart, addToCart, updateQuantity, removeItem, clearCart, openCart, closeCart, clearModalProduct, toggleCart } = cartSlice.actions;
 export default cartSlice.reducer;
