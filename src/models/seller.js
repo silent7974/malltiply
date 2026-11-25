@@ -39,6 +39,8 @@ const SellerSchema = new mongoose.Schema(
     resetPasswordToken: String,
     resetPasswordExpires: Date,
 
+    // true only for Malltiply's own products (set by hand in the database)
+    isOriginals: { type: Boolean, default: false },
 
     // premium-only references
     storeSlug: String,

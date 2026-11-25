@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/mongodb";
 import Order from "@/models/order";
-import { settlePaidOrder } from "@/lib/orders/settlePaidOrder";
+
+// Payment is settled only by /api/payment/verify and /api/payment/webhook.
+// Letting the browser say "this order is paid" lets anyone skip paying.
 
 export async function PATCH(req, context) {
   const { id } = await context.params;
@@ -16,12 +18,7 @@ export async function PATCH(req, context) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
 
-    // Handle payment status updates
-    if (status === "paid" && order.paymentStatus !== "paid") {
-      await settlePaidOrder(id);
-    }
-
-    // ✅ Handle order status updates (THIS IS WHAT YOU NEED)
+    // Handle order status updates (THIS IS WHAT YOU NEED)
     if (orderStatus) {
       order.orderStatus = orderStatus;
     }

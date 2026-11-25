@@ -20,9 +20,19 @@ export async function POST(req) {
   await dbConnect()
   const event = JSON.parse(body)
 
+  // Stops a missing metadata object from crashing it
   if (event.event === "charge.success") {
-    const { orderId } = event.data.metadata
-    await settlePaidOrder(orderId)
+    const orderId = event.data?.metadata?.orderId
+    if (orderId) {
+      try {
+        await settlePaidOrder(orderId, { paidKobo: event.data.amount })
+      } catch (err) {
+        // A short payment will never fix itself, so don't make Paystack retry it.
+        // Anything else (like a database hiccup) still returns a 500 so Paystack retries.
+        if (err?.name !== "AmountMismatchError") throw err
+        console.error("Webhook amount mismatch:", orderId)
+      }
+    }
   }
 
   return NextResponse.json({ received: true })

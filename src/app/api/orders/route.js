@@ -5,6 +5,7 @@ import Product from "@/models/product";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { validateOrderItems } from "@/lib/orders/validateOrderItems";
+import { computeDelivery } from "@/lib/utils/calculateDeliveryFee";
 
 export async function GET() {
   try {
@@ -65,7 +66,11 @@ export async function POST(req) {
 
     // 1️⃣ Create the order (ONLY — no stock updates here)
     const validated = await validateOrderItems(items);
-    const safeShippingFee = Number(shippingFee || 0);
+    const delivery = computeDelivery({
+      originalsTotal: validated.originalsTotal,
+      area: shippingAddress?.district,
+    });
+    const safeShippingFee = delivery.fee;
 
     const order = await Order.create({
       userId: decoded.id,
@@ -83,8 +88,15 @@ export async function POST(req) {
 
     // 2️⃣ Return success
     return NextResponse.json({ success: true, order }, { status: 201 });
-  } catch (error) {
+    
+    } catch (error) {
+    if (error?.name === "OrderValidationError") {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+    if (error?.name === "JsonWebTokenError" || error?.name === "TokenExpiredError") {
+      return NextResponse.json({ error: "Your session has expired. Please sign in again." }, { status: 401 });
+    }
     console.error("Order creation error:", error);
-    return NextResponse.json({ error: "Failed to create order" }, { status: 500 });
+    return NextResponse.json({ error: "We could not create your order. Please try again." }, { status: 500 });
   }
 }

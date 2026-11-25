@@ -44,6 +44,19 @@
 3. **State Management:**
    - Redux slices store seller profiles, product forms, and active cart data.
    - Avoid redundant client-side fetching loops (e.g. infinite GET requests when reading profile data).
+
 4. **Tracking Documents:**
    - `BUGS.md`: Active list of confirmed bugs and tasks across Seller and Buyer flows.
-   - `FEEDBACK.md`: Operational notes, sales log, user testing feedback, and feature gap prioritization.
+   - FEEDBACK.md and the business playbook live in the private malltiply-ops repo. Do not create them here.
+
+## Read first
+docs/ORIENTATION.md, docs/playbook/CODE_PLAYBOOK.md, docs/OPEN_ITEMS.md
+
+## Hard rules
+- Price = selected variant's price. Image = photo tagged with the chosen color. Stock = selected variant's quantity (unknown = 0).
+- Never trust the browser for money: amount, delivery fee and "paid" come from the server.
+- Each rule lives in one place. Do not copy lists or rules into components.
+- Free delivery: Malltiply Originals items add up to ₦36,000 or more (computeDelivery).
+- Checkout: validate before creating an order, plain-sentence errors, never re-enable Submit during the redirect.
+- Overlays: lock scroll on body and html, in the parent only.
+- Do not change files outside the assigned task. List every file you touch.
