@@ -16,6 +16,7 @@ import AddNewAddress from "../components/AddNewAddress";
 import CheckoutPage from "../components/CheckoutPage";
 import { useMeQuery } from "@/redux/services/authApi";
 import GuestAddressForm from "../components/GuestAddressForm";
+import { validateDeliveryDetails } from "@/lib/utils/validators"
 
 export default function CartPage() {
   const dispatch = useDispatch();
@@ -30,9 +31,23 @@ export default function CartPage() {
   const { data: me } = useMeQuery()
   const user = me?.user
 
-  const handleCheckout = () => {
-    setShowAddressModal(true)
+  const hasSavedDetails = () => {
+    let source = user;
+    if (!source) {
+      try { source = JSON.parse(localStorage.getItem("guestInfo") || "null"); } catch { source = null; }
+    }
+    if (!source) return false;
+    return validateDeliveryDetails(
+      { fullName: source.fullName, phone: source.phone, email: source.email,
+        street: source.address?.street, district: source.address?.district },
+      { requireEmail: true }
+    ).ok;
   }
+
+  const handleCheckout = () => {
+    if (hasSavedDetails()) setShowCheckoutPage(true);
+    else setShowAddressModal(true);
+  };
 
   const totalQuantity = cart.items.reduce((sum, i) => sum + i.quantity, 0);
   const totalPrice = cart.items.reduce(
@@ -448,9 +463,10 @@ export default function CartPage() {
             transition={{ type: "tween", duration: 0.35 }}
             className="fixed top-0 right-0 w-full max-w-[420px] h-full bg-white z-[999] shadow-2xl overflow-y-auto"
           >
-            <CheckoutPage
-              onClose={() => setShowCheckoutPage(false)}
-            />
+          <CheckoutPage
+            onClose={() => setShowCheckoutPage(false)}
+            onEditAddress={() => { setShowCheckoutPage(false); setShowAddressModal(true) }}
+          />
           </motion.div>
         )}
       </AnimatePresence>

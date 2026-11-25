@@ -42,12 +42,12 @@ export async function sendOrderConfirmation({ to, order }) {
       <p style="text-align:right;font-size:16px"><strong>Total: ${formatPrice(order.totalAmount)}</strong></p>
 
       <div style="background:#f0f9ff;padding:16px;border-radius:8px;margin-top:16px">
-        <p style="margin:0;font-size:14px;color:#005770">🚚 Delivery within 24 hours across Abuja via GIG</p>
+        <p style="margin:0;font-size:14px;color:#005770">🚚 Delivery within 24 hours across Abuja via Bolt</p>
       </div>
 
       <p style="margin-top:24px;font-size:12px;color:#999">
         Questions? WhatsApp us at +2349065941258<br/>
-        Malltiply — Your Abuja Fashion Marketplace
+        Malltiply - Your Abuja Fashion Marketplace
       </p>
     </div>
   `
@@ -55,7 +55,7 @@ export async function sendOrderConfirmation({ to, order }) {
     await transporter.sendMail({
         from: `"Malltiply" <${process.env.EMAIL_USER}>`,
         to,
-        subject: `Order Confirmed #${String(order._id).slice(-8).toUpperCase()} — Malltiply`,
+        subject: `Order Confirmed #${String(order._id).slice(-8).toUpperCase()} - Malltiply`,
         html,
         text: `
         Order Confirmed ✅
@@ -65,11 +65,11 @@ export async function sendOrderConfirmation({ to, order }) {
         Your order #${String(order._id).slice(-8).toUpperCase()} has been confirmed and is being processed.
 
         Items:
-        ${order.items.map(item => `• ${item.name} (${item.color || "N/A"} / ${item.size || "N/A"}) x${item.quantity} — ₦${item.price.toLocaleString()}`).join("\n")}
+        ${order.items.map(item => `• ${item.name} (${item.color || "N/A"} / ${item.size || "N/A"}) x${item.quantity} - ₦${item.price.toLocaleString()}`).join("\n")}
 
         Total: ₦${order.totalAmount.toLocaleString()}
 
-        Delivery within 24 hours across Abuja via GIG.
+        Delivery within 24 hours across Abuja via Bolt.
 
         Questions? WhatsApp us at +2349065941258
         Malltiply - Your Abuja Fashion Marketplace

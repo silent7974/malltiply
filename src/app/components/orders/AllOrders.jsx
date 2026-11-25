@@ -16,7 +16,7 @@ const STATUS_STYLES = {
   processing: { bg: "#001D67", text: "#A3CEFF", label: "Processing" },
   shipped: { bg: "#440067", text: "#DDA3FF", label: "Shipped" },
   delivered: { bg: "#006707", text: "#A3FFA9", label: "Delivered" },
-  Returned: { bg: "#671D00", text: "#FFB7A3", label: "Cancelled" },
+  returned: { bg: "#671D00", text: "#FFB7A3", label: "Cancelled" },
 };
 
 export default function AllOrders({ orders = [], onSelectOrder  }) {

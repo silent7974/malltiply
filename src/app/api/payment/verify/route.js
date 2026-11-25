@@ -24,7 +24,7 @@ export async function POST(req) {
 
     if (isSuccessful && orderId) {
       await dbConnect();
-      data.order = await settlePaidOrder(orderId);
+      data.order = await settlePaidOrder(orderId, { paidKobo: data?.data?.amount });
     }
 
     return NextResponse.json(data);
